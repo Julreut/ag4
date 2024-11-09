@@ -6,3 +6,4 @@ channels
 pandas
 openpyxl
 whitenoise
+xlsxwriter

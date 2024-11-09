@@ -30,14 +30,13 @@ def get_xlsx_file_from_database(selected_tables):
     db_path = settings.DATABASES['default']['NAME']
     conn = sqlite3.connect(db_path)
     excel_file = BytesIO()
-    xlsxwriter = pd.ExcelWriter(excel_file)
+    xlsxwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
     print(selected_tables)
     for table in selected_tables:
         sqlquery = get_query(table)
         dbfile = pd.read_sql(sqlquery, conn)
-        dbfile.to_excel(xlsxwriter, index = False, sheet_name = table, encoding="utf-16")
+        dbfile.to_excel(xlsxwriter, index = False, sheet_name = table)
 
-    xlsxwriter.save()
     xlsxwriter.close()
     excel_file.seek(0)
 

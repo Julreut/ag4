@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import shutil
+from dotenv import load_dotenv
+
+load_dotenv()  # Liest die .env-Datei ein
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,12 +27,12 @@ print(f"Base dir: {BASE_DIR}")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'n*vms&0n)98o4py0vpydyu1l3-qt2%g*hm8c5n31fg+)8bh@zy'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'DEBUG_MODE' in os.environ
+# SECURITY WARNING: don't run with debug turned on in production! ##aenderungJuliane
+DEBUG = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
 if DEBUG:
     print("Enabling debug mode")
 
-ALLOWED_HOSTS = ["fakebook.projects.bayern", "localhost"]
+ALLOWED_HOSTS = ["fakebook.projects.bayern", "localhost", "127.0.0.1"]
 
 
 # Application definition
