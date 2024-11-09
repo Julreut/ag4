@@ -29,8 +29,8 @@
                             class="fas fa-grin"
                             style="color: #0084FF;padding: 17px;cursor: pointer;"
                     > </i></div>
-                    <div class="one wide column"> <button class="ui button mt-5 soft-button-disable" style='background-color:white'> <h4> <i class="far fa-images" style='color:green'></i>  </h4> </button> </div>
-                    <div class="nine wide column"> {{p_form.image}} </div>
+                    {% comment %} <div class="one wide column"> <button class="ui button mt-5 soft-button-disable" style='background-color:white'> <h4> <i class="far fa-images" style='color:green'></i>  </h4> </button> </div> {% endcomment %}
+                    {% comment %} <div class="nine wide column"> {{p_form.image}} </div> {% endcomment %}
                     <div class="five wide right aligned column"> <button type='submit' name="submit_p_form" class="ui positive button w-full mt-5 ">{% trans 'post-send' %}</button> </div>
                 </div>
              </form>
@@ -65,17 +65,8 @@
             <div class="content post-content">
                 <div class="post-id-field" style="display: none">{{ obj.id }}</div>
                 <p> {{ obj.content }} </p>
-             </div>
-             
-            <div class="ui fluid image post-image">
-                <div class="post-id-field" style="display: none">{{ obj.id }}</div>
-                {% if obj.image %}
-                    <img src={{obj.image.url}}>
-                {% endif %}
-            </div>
-            
-            
-             
+             </div>           
+
             <!--Reaction-->
             <div class="content">
                 <div class="ui grid">

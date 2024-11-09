@@ -9,7 +9,7 @@ from .utils import format_likes_string
 
 class Post(models.Model):
     content = models.TextField()
-    image = models.ImageField(upload_to='posts', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
+    # image = models.ImageField(upload_to='posts', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
     liked = models.ManyToManyField(Profile, blank=True, related_name='likes')
     disliked = models.ManyToManyField(Profile, blank=True, related_name='dislikes')
     reported = models.ManyToManyField(Profile, blank=True, related_name='reports')

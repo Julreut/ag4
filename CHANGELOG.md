@@ -17,6 +17,11 @@
 
 ### Updates:
 
+- remove image feature
+- change readme
+- anpassen von data directory
+- delete unused data folder
+
 ### Frage:
 
 ## [2024-11-12]

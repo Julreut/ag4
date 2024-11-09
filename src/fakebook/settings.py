@@ -132,7 +132,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -218,3 +217,5 @@ def copy_db_template():
         print("Copied template data")
 
 copy_db_template()
+
+print(DATA_DIRECTORY)
