@@ -2,6 +2,12 @@
 
 ## Using the tool
 
+### Install requirements
+
+```
+pip install -r requirements.txt
+```
+
 ### Run the server:
 
 ```
