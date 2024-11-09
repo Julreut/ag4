@@ -8,7 +8,9 @@ from fakebook.downloads import get_csv
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     actions = ['download_csv']
-    list_display = ['id', 'content', 'image', 'updated', 'created', 'author_id']
+    list_display = ['id', 'content', 'updated', 'created', 'author_id']
+    # list_display = ['id', 'content', 'image', 'updated', 'created', 'author_id']
+
 
     def download_csv(self, request, queryset):
         response = get_csv(self.list_display, queryset, 'posts.csv')
