@@ -20,7 +20,7 @@ msgstr ""
 
 #: forms.py:8
 msgid "post_creation_prompt"
-msgstr "Erstelle einen Post..."
+msgstr "Schreibe einen Kommentar zu diesem Artikel..."
 
 #: forms.py:16
 msgid "comment_creation_prompt"

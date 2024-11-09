@@ -28,6 +28,18 @@ This will update all migration scripts. You can then apply them using:
 python3 src/manage.py migrate
 ```
 
+### Änderungen in Anweisungsdateien .po (Schritte zur Aktualisierung der Übersetzungen)
+
+**Übersetzungen kompilieren:**
+
+Führe den folgenden Befehl aus, um die `.po`-Dateien in `.mo`-Dateien zu kompilieren:
+
+```
+python3 src/manage.py compilemessages
+```
+
+Dieser Befehl erstellt die .mo-Dateien, die von Django zur Laufzeit verwendet werden. Die .mo-Dateien müssen nach jeder Änderung in den .po-Dateien neu erstellt werden.
+
 ### We offer access to Fakebook in two different ways:
 
 1. Researchers can get free online access to the tool. We will create a new instance on a university server within the EU, and the researcher receives sole admin access for this instance. Thus, the researcher becomes the project maintainer of his or her instance and can inspect and control all data on this instance. If you would like to have online access, please send an email with your name, institution, start date and anticipated end date of the project to support@fakebook.projects.bayern
