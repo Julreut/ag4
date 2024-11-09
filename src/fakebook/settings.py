@@ -19,7 +19,7 @@ load_dotenv()  # Liest die .env-Datei ein
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(f"Base dir: {BASE_DIR}")
+# print(f"Base dir: {BASE_DIR}")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -201,21 +201,35 @@ LAST_MESSAGE_CHAT_DRAWER_MAX_LENGTH = 18
 
 
 # in case it doesn't exist copy template db in data.template/ to data/
+import shutil
+
 def copy_db_template():
+    template_db_path = "data.template/db.sqlite3"
+    target_db_path = os.path.join(DATA_DIRECTORY, 'db.sqlite3')
+
+    # Überprüfe, ob das Vorlagenverzeichnis existiert
     if not os.path.isdir("data.template"):
-        print("Default database not found, skipping creation...")
+        print("Default database template not found, skipping creation...")
         return
 
+    # Erstelle das DATA_DIRECTORY, falls es nicht existiert
     if not os.path.isdir(DATA_DIRECTORY):
         os.mkdir(DATA_DIRECTORY)
 
-    if not os.path.isfile(DATABASES["default"]["NAME"]):
-        print("Copying template data...")
-        shutil.copy("data.template/db.sqlite3", f"{DATA_DIRECTORY}/db.sqlite3")
-        if os.path.isdir("data.template/media"):
-            shutil.copytree("data.template/media", f"{DATA_DIRECTORY}/media")
-        print("Copied template data")
+    # Kopiere die Datenbank nur, wenn sie noch nicht existiert
+    if not os.path.isfile(target_db_path):
+        print(f"Database not found at {target_db_path}. Copying template database...")
+        shutil.copy(template_db_path, target_db_path)
+        print("Template database copied successfully.")
 
-copy_db_template()
+        # Kopiere den Media-Ordner, falls er in der Vorlage existiert
+        template_media_path = "data.template/media"
+        target_media_path = os.path.join(DATA_DIRECTORY, "media")
 
-print(DATA_DIRECTORY)
+        if os.path.isdir(template_media_path):
+            if not os.path.isdir(target_media_path):
+                shutil.copytree(template_media_path, target_media_path)
+                print("Template media folder copied successfully.")
+    else:
+        print("Database already exists. Skipping template copy.")
+
