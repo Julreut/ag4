@@ -10,11 +10,11 @@ class APIAdvertisementModelForm(forms.ModelForm):
         model = Advertisement
         fields = ('image',)
 
-class APIPostModelForm(forms.ModelForm):
-    image = forms.ImageField(label='', required=True)
-    class Meta:
-        model = Post
-        fields = ('image',)
+# class APIPostModelForm(forms.ModelForm):
+#     image = forms.ImageField(label='', required=True)
+#     class Meta:
+#         model = Post
+#         fields = ('image',)
 
 class APIProfileModelForm(forms.ModelForm):
     avatar = forms.ImageField(label='', required=True)
