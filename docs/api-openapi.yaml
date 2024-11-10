@@ -129,21 +129,22 @@ paths:
       tags:
         - default
       summary: http://localhost:8000/api/profile/post
-      description: Creates a new post. Can be in the future.
+      description: Creates a new comment.
       requestBody:
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
-                type: string
-                format: binary
+                content:
+                  type: string
+                  description: The text content of the new comment
       parameters:
         - name: profileId
           in: query
           schema:
             type: integer
-          description: The profile id of the author of the post
+          description: The profile id of the author of the comment
           example: "15"
         - name: created
           in: query
@@ -155,7 +156,7 @@ paths:
           in: query
           schema:
             type: string
-          description: The text content of the new post
+          description: The text content of the new comment
           example: this user should have an avatar
       responses:
         "200":
