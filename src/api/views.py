@@ -135,17 +135,7 @@ def create_delete_post(request):
         if author is None:
             return HttpResponse(content="404 Not Found", status=404)
 
-        if request.FILES.get("image", None) is not None:
-            form = APIPostModelForm(request.POST, request.FILES)
-            if not form.is_valid():
-                return HttpResponse(content="400 Bad request - form is invalid", status=400)
-            post = form.save(commit=False)
-            post.author = author
-            post.created = created
-            post.content = content
-        else:
-            post = Post.objects.create(author=author, created=created, content=content)
-
+        post = Post.objects.create(author=author, created=created, content=content)
         post.save()
 
         post_id = post.id

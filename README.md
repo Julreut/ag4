@@ -11,7 +11,7 @@ pip install -r requirements.txt
 ### Run the server:
 
 ```
-python src/manage.py runserver
+python3 src/manage.py runserver
 ```
 
 ### Migrations:

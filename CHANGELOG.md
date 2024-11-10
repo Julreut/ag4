@@ -21,6 +21,7 @@
 - change readme
 - anpassen von data directory
 - delete unused data folder
+- remove image from API
 
 ### Frage:
 
