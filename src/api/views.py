@@ -111,8 +111,8 @@ def modify_relationship(request):
 
 @csrf_exempt
 def create_delete_post(request):
-    if not verify_token(request):
-        return HttpResponse(content="401 Unauthorized", status=401)
+    # if not verify_token(request):
+    #     return HttpResponse(content="401 Unauthorized", status=401)
 
     if request.method != "POST" and request.method != "DELETE":
         return HttpResponse(content="405 Method Not Allowed", status=405)
@@ -132,6 +132,7 @@ def create_delete_post(request):
 
         author = Profile.objects.filter(id=author_id).first()
 
+
         if author is None:
             return HttpResponse(content="404 Not Found", status=404)
 
@@ -145,6 +146,7 @@ def create_delete_post(request):
         return json_response({
             "postId": post_id
         })
+
 
     elif request.method == "DELETE":
         try:
@@ -295,5 +297,5 @@ def json_response(data):
     return HttpResponse(content=json.dumps(data), content_type="application/json", status=200)
 
 def verify_token(request):
-    return request.headers.get("Token", "") == get_the_config().management_token
+    return print(request.headers.get("Token", "") == get_the_config().management_token)
 
