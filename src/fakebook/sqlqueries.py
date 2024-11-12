@@ -28,7 +28,7 @@ def get_query(table):
                "WHERE analytics_trackedpostview.profile_id = profiles_profile.id AND profiles_profile.user_id = auth_user.id"
 
     if table == "posts":
-        return "SELECT posts_post.id AS \"post_id\", posts_post.author_id, posts_post.content, posts_post.created, posts_post.image, "\
+        return "SELECT posts_post.id AS \"post_id\", posts_post.author_id, posts_post.content, posts_post.created, "\
 		        "(SELECT COUNT(*) "\
 		        "FROM posts_comment "\
 		        "WHERE posts_post.id = posts_comment.post_id) AS \"comments\", "\
