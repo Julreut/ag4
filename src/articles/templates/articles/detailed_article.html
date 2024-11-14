@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% load i18n %} {% block title %} {{ article.title }}
+{% endblock title %} {% block content %}
+<div class="article-container">
+  <h1 class="article-title">{{ article.title }}</h1>
+
+  <div class="article-meta">
+    <span>Published on: {{ article.published_date }}</span>
+    <span> | </span>
+    <span>Author: {{ article.author }}</span>
+  </div>
+
+  {% if article.image %}
+  <div class="article-image">
+    <img
+      src="{{ article.image.url }}"
+      alt="{{ article.title }}"
+      class="img-fluid"
+    />
+  </div>
+  {% endif %}
+
+  <div class="article-content">
+    <p>{{ article.content|linebreaks }}</p>
+  </div>
+
+  <div class="article-footer">
+    <a href="{% url 'articles:all-articles' %}" class="btn btn-secondary"
+      >Back to Articles</a
+    >
+  </div>
+</div>
+{% endblock content %}

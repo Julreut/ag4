@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'posts',
     'profiles',
     'advertisements',
+    'articles',
 
     'channels',
     'chat',

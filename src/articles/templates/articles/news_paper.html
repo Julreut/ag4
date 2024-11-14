@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% load static %} {% load i18n %} {% block title %}
+Newspapers {% endblock title %} {% block content %}
+<div class="ui container" style="padding: 20px">
+  <h1>Newspapers</h1>
+
+  {% if news_papers %}
+  <div
+    class="newspaper-grid"
+    style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    "
+  >
+    {% for newspaper in news_papers %}
+    <div
+      class="newspaper-item"
+      style="
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <div
+        class="image-container"
+        style="text-align: center; margin-bottom: 10px"
+      >
+        <img
+          src="{{ newspaper.image }}"
+          alt="{{ newspaper.name }}"
+          style="max-width: 100%; height: auto; border-radius: 5px"
+        />
+      </div>
+      <div class="content" style="text-align: center">
+        <h2 style="font-size: 1.2em; color: #333">{{ newspaper.name }}</h2>
+        <p style="font-size: 0.9em; color: #555">ID: {{ newspaper.id }}</p>
+        <a
+          href="{% url 'articles:all-articles' %}?id={{ newspaper.id }}"
+          class="ui button"
+          style="
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+          "
+          >Read more</a
+        >
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="text-align: center; color: #777">No newspapers available.</p>
+  {% endif %}
+</div>
+{% endblock content %}
