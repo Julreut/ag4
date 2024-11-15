@@ -15,7 +15,7 @@ def get_newspapers(request):
     context = {
         'news_papers': news_papers #must use a string
     }
-    return render(request, 'articles/news_paper.html', context)
+    return render(request, 'articles/news_papers.html', context)
 
 ## Article definitions
 

@@ -43,7 +43,7 @@ urlpatterns = [
     path('analytics/', include('analytics.urls', namespace='analytics')),
     path('api/', include('api.urls', namespace='api')),
     path('advertisements/', include('advertisements.urls', namespace='advertisements')),
-    path('newspaper/', include('articles.urls', namespace='newspaper')),
+    path('newspapers/', include('articles.urls', namespace='newspapers')),
 
 
     # https://stackoverflow.com/questions/5836674/why-does-debug-false-setting-make-my-django-static-files-access-fail

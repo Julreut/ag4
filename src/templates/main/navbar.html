@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% url 'home-view' as path_to_home %}
-{% url 'posts:main-post-view' as path_to_posts %}
+{% url 'articles:news-papers' as path_to_news_papers %}
 {% url 'profiles:my-profile-view' as path_to_my_profile %}
 {% url 'profiles:my-invites-view' as path_to_my_invites %}
 {% url 'profiles:invite-profiles-view' as path_to_invites %}
@@ -38,7 +38,7 @@
     
   <div class="ui container"  >
     <!-- Second Link to home-Screen -->
-    <a href="{{path_to_posts}}" class="{% if request.path == path_to_posts %}active{% endif %} item">
+    <a href="{{path_to_news_papers}}" class="{% if request.path == path_to_news_papers %}active{% endif %} item">
         <i class="fas fa-home"></i> 
     </a>
     <!-- Link to Friends-Page -->
