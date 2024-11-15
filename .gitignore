@@ -27,6 +27,7 @@ static_cdn/static_root/posts-emoji-picker.js
 static_cdn/static_root/style.css
 
 # automatic mac files
+**/.DS_Store
 .DS_Store
 env/.DS_Store
 env/lib/.DS_Store
