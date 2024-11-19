@@ -5,12 +5,79 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from advertisements.models import Advertisement
-from api.forms import APIPostModelForm, APIProfileModelForm, APIAdvertisementModelForm
+from api.forms import APIPostModelForm, APIProfileModelForm, APIAdvertisementModelForm, APIArticleModelForm
 from configuration.models import get_the_config
 from posts.models import Post, PlannedReaction
+from articles.models import Article, NewsPaper
+
 from profiles.models import Profile, Relationship
 
 from django.contrib.auth.models import User
+
+
+@csrf_exempt
+def create_delete_article(request):
+    # if not verify_token(request):
+    #     return HttpResponse(content="401 Unauthorized", status=401) auskommentiert bis Fehler gefunden wurde
+
+    # Nur POST und DELETE Methoden zulassen
+    if request.method != "POST" and request.method != "DELETE":
+        return HttpResponse(content="405 Method Not Allowed", status=405)
+
+    if request.method == "POST":
+        # Parameter aus der Anfrage holen
+        title = request.GET.get("title", "")
+        content = request.GET.get("content", "")
+        news_paper_id = request.GET.get("news_paper_id", "")
+
+        # Überprüfen, ob die benötigten Parameter vorhanden sind
+        if not title or not content or not news_paper_id:
+            return HttpResponse(content="400 - title, content, and news_paper_id are mandatory", status=400)
+
+        try:
+            # `news_paper_id` in einen Integer konvertieren
+            news_paper_id = int(news_paper_id)
+        except ValueError:
+            return HttpResponse(content="400 - news_paper_id must be an integer", status=400)
+
+        # # Überprüfen, ob ein Bild hochgeladen wurde
+        # if request.FILES.get("image", None) is None:
+        #     return HttpResponse(content="400 - image is mandatory", status=400)
+
+        form = APIArticleModelForm(request.POST, request.FILES)
+        if not form.is_valid():
+            return HttpResponse(content="400 Bad request - form is invalid", status=400)
+
+        # Artikel erstellen
+        article = form.save(commit=False)
+        article.title = title
+        article.content = content
+        article.news_paper_id = news_paper_id
+        article.image = request.FILES["image"]
+        article.save()
+
+        article_id = article.id
+
+        print(f"[API] Created article {article_id}")
+
+        return json_response({
+            "articleId": article_id
+        })
+
+    elif request.method == "DELETE":
+        try:
+            article_id = int(request.GET.get("articleId", ""))
+        except ValueError:
+            return HttpResponse(content="400 - articleId must be integer", status=400)
+
+        article = Article.objects.filter(id=article_id).first()
+
+        if article is None:
+            return HttpResponse(content="404 Not Found", status=404)
+
+        article.delete()
+        print(f"[API] Deleted article {article_id}")
+        return HttpResponse(status=200)
 
 
 @csrf_exempt

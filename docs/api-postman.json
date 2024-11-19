@@ -1,10 +1,110 @@
 {
   "info": {
     "_postman_id": "719ec33f-0113-4915-a66b-ebc1b97e9d4d",
-    "name": "Fakebook Management API",
+    "name": "Mirronline Management API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
+        {
+          "name": "http://127.0.0.1:8000/api/article",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "description": "The image of the article.",
+                  "src": "/path/to/your/image.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/article?title=Breaking+News&content=This+is+the+article+content&news_paper_id=123",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "article"],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Breaking News",
+                  "description": "The title of the article."
+                },
+                {
+                  "key": "content",
+                  "value": "This is the article content",
+                  "description": "The content of the article."
+                },
+                {
+                  "key": "news_paper_id",
+                  "value": "123",
+                  "description": "The ID of the associated newspaper."
+                }
+              ]
+            },
+            "description": "Creates a new article with title, content, image, and newspaper ID."
+          },
+          "response": []
+        },
+        {
+          "name": "http://127.0.0.1:8000/api/article",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/article?articleId=42",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "article"],
+              "query": [
+                {
+                  "key": "articleId",
+                  "value": "42",
+                  "description": "The ID of the article to be deleted."
+                }
+              ]
+            },
+            "description": "Deletes an existing article by its ID."
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "apikey",
+        "apikey": [
+          {
+            "key": "value",
+            "value": "KUnVaB3VViHaRT4A",
+            "type": "string"
+          },
+          {
+            "key": "key",
+            "value": "Token",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [""]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [""]
+          }
+        }
+      ]
+    },
     {
       "name": "http://127.0.0.1:8000/api/user",
       "protocolProfileBehavior": {

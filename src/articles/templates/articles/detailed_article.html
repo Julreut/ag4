@@ -1,32 +1,38 @@
-{% extends 'base.html' %} {% load i18n %} {% block title %} {{ article.title }}
-{% endblock title %} {% block content %}
+{% extends 'base.html' %}
+{% block title %}
+{{ article.title }}
+{% endblock title %}
+
+{% block content %}
 <div class="article-container">
-  <h1 class="article-title">{{ article.title }}</h1>
+  {% if article %}
+    <h1 class="article-title">{{ article.title }}</h1>
 
-  <div class="article-meta">
-    <span>Published on: {{ article.published_date }}</span>
-    <span> | </span>
-    <span>Author: {{ article.author }}</span>
-  </div>
+    <div class="article-meta">
+      <span>Published on: {{ article.created_at|date:"F j, Y" }}</span>
+    </div>
 
-  {% if article.image %}
-  <div class="article-image">
-    <img
-      src="{{ article.image.url }}"
-      alt="{{ article.title }}"
-      class="img-fluid"
-    />
-  </div>
+    {% if article.image %}
+    <div class="article-image">
+      <img
+        src="{{ article.image.url }}"
+        alt="{{ article.title }}"
+        class="img-fluid"
+      />
+    </div>
+    {% endif %}
+
+    <div class="article-content">
+      <p>{{ article.content|linebreaks }}</p>
+    </div>
+
+    <div class="article-footer">
+      <a href="{% url 'articles:detailed-article' article.slug %}" class="ui button">Read More</a>
+      <a href="{% url 'articles:all-articles' %}" class="ui button">Back to Articles</a>
+      </a>
+    </div>
+  {% else %}
+    <p>Sorry, this article does not exist.</p>
   {% endif %}
-
-  <div class="article-content">
-    <p>{{ article.content|linebreaks }}</p>
-  </div>
-
-  <div class="article-footer">
-    <a href="{% url 'articles:all-articles' %}" class="btn btn-secondary"
-      >Back to Articles</a
-    >
-  </div>
 </div>
 {% endblock content %}

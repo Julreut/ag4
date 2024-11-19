@@ -1,52 +1,45 @@
 from django.db import models
 from django.shortcuts import reverse
 import datetime
+import itertools
 from django.utils import timezone
 from profiles.models import Profile
+from django.core.validators import FileExtensionValidator
+from django.utils.text import slugify
+
+
 
 # Create your models here.
 
 class Article(models.Model):
-    id = models.IntegerField(primary_key=True)
+    # id = models.IntegerField(primary_key=True)
     news_paper_id = models.IntegerField()
     title = models.CharField(max_length=255)
     content = models.TextField()
-    image = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True)  # Slug-Feld hinzugefügt
+    image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False)
     # num_clicked = models.IntegerField(default=0)
     # user_clicked = models.ManyToManyField(Profile, blank=True, related_name='clicked')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Slug nur generieren, wenn es noch leer ist
+            base_slug = slugify(self.title)
+            slug = base_slug
+            for i in itertools.count(1):  # Konflikte mit anderen Slugs vermeiden
+                if not Article.objects.filter(slug=slug).exists():
+                    break
+                slug = f"{base_slug}-{i}"
+            self.slug = slug
+        super().save(*args, **kwargs)  # Standard-Save-Methode
+        
     def __str__(self):
         return self.title
     
     def get_absolute_url(self):
-        return reverse("articles:detailed-article", kwargs={"slug": self.title})
-    
-    @classmethod
-    def get_dummy_articles(cls):
-        from io import BytesIO
-        from PIL import Image
-        from django.core.files.base import ContentFile
-        import random
-        
-        dummy_articles = []
-        for i in range(1, 6):
-            article = cls(
-                id=i,
-                title=f"Dummy Article {i}",
-                content=f"This is the content of dummy article {i}.",
-                created_at=timezone.now() - datetime.timedelta(days=random.randint(1, 10)),
-                updated_at=timezone.now(),
-                image="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/live-breaking-news-design-template-8c0dbab5f447f2e1e39e0d19d90a5ec7_screen.jpg?ts=1689444194"
-            )
-            
-            
-            dummy_articles.append(article)
+        return reverse("detailed-article", kwargs={"slug": self.slug})
 
-        # Only use for preview, as it's in-memory and not actually saved to the DB
-        return dummy_articles          
-    
 
 class NewsPaper(models.Model):
     id = models.IntegerField(primary_key=True)

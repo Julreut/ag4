@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import reverse
+from django.shortcuts import reverse, get_object_or_404
 from .models import Article, NewsPaper
 from profiles.models import Profile
 
@@ -18,29 +18,23 @@ def get_newspapers(request):
     return render(request, 'articles/news_papers.html', context)
 
 ## Article definitions
-
 @login_required
-def get_articles(request):
-    articles = Article.get_dummy_articles()
-
-    context = {
-        'articles': articles
-    }
+def article_list(request):
+    articles = Article.objects.all()
+    context = {'articles': articles}
     return render(request, 'articles/all_articles.html', context)
 
 #track article interactions
 
 @login_required
-def detailed_article(request, **initkwargs):
-    slug = initkwargs.get('slug')
-    print(slug)
+def detailed_article(request, slug):
+    # Abrufen des spezifischen Artikels anhand des Slugs
+    article = get_object_or_404(Article, slug=slug)
 
     context = {
-        'title': slug,
-        'content': 'This is the content of the first article'
+        'article': article
     }
     return render(request, 'articles/detailed_article.html', context)
-
 
 #track newspaper interactions
 # @login_required
