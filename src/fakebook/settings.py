@@ -186,7 +186,10 @@ LANGUAGE_CODE = 'en'
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_project')]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static_project'),
+    "static_cdn/static_root/admin/css",
+]
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "static_root")
 

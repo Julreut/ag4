@@ -1,33 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
 {% block title %}
 Articles
 {% endblock title %}
 
 {% block content %}
-<div class="ui">
-    <h1>Articles</h1>
+<div class="ui articles-container">
+  <h1>Articles</h1>
 
-    {% if articles %}
-        <div class="ui divided items">
-            {% for article in articles %}
-                <div class="item">
-                    <img class="ui avatar image" src="{{ article.image.url }}" alt="{{ article.title }}">
-                    <div class="content">
-                        <a class="header">{{ article.title }}</a>
-                        <div class="meta">
-                            <span>Published on: {{ article.created_at|date:"F j, Y" }}</span>
-                        </div>
-                        <div class="description">
-                            <p>{{ article.content|truncatewords:20 }}</p>
-                        </div>
-                        <div class="extra">
-                            <a href="{% url 'articles:detailed-article' article.slug %}" class="ui button">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+  {% if articles %}
+    <!-- Grid für die Artikelübersicht -->
+    <div class="articles-grid">
+      {% for article in articles %}
+        <div class="article-card">
+          <!-- Bild des Artikels -->
+          <img class="article-image" src="{{ article.image.url }}" alt="{{ article.title }}">
+          
+          <!-- Inhalt des Artikels -->
+          <div class="article-content">
+            <h2 class="article-title">{{ article.title }}</h2>
+            <div class="article-meta">
+              <span>Published on: {{ article.created_at|date:"F j, Y" }}</span>
+            </div>
+            <p class="article-description">{{ article.content|truncatewords:20 }}</p>
+            <a href="{% url 'articles:detailed-article' article.slug %}" class="ui button read-more">Read More</a>
+          </div>
         </div>
-    {% else %}
-        <p>No articles available.</p>
-    {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- Nachricht bei fehlenden Artikeln -->
+    <p>No articles available.</p>
+  {% endif %}
 </div>
 {% endblock content %}

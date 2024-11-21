@@ -1,38 +1,28 @@
 {% extends 'base.html' %}
+
 {% block title %}
 {{ article.title }}
 {% endblock title %}
 
 {% block content %}
-<div class="article-container">
-  {% if article %}
-    <h1 class="article-title">{{ article.title }}</h1>
-
-    <div class="article-meta">
-      <span>Published on: {{ article.created_at|date:"F j, Y" }}</span>
-    </div>
-
-    {% if article.image %}
+<div class="styled-article-container">
+  <!-- Header mit Bild, Titel und Metadaten -->
+  <div class="article-header">
     <div class="article-image">
-      <img
-        src="{{ article.image.url }}"
-        alt="{{ article.title }}"
-        class="img-fluid"
-      />
+      <img src="{{ article.image.url }}" alt="{{ article.title }}" />
     </div>
-    {% endif %}
+    <h1 class="article-title">{{ article.title }}</h1>
+    <p class="article-meta">Published on: {{ article.created_at|date:"F j, Y" }}</p>
+  </div>
 
-    <div class="article-content">
-      <p>{{ article.content|linebreaks }}</p>
-    </div>
+  <!-- Hauptinhalt des Artikels -->
+  <div class="article-content">
+    <p>{{ article.content|linebreaks }}</p>
+  </div>
 
-    <div class="article-footer">
-      <a href="{% url 'articles:detailed-article' article.slug %}" class="ui button">Read More</a>
-      <a href="{% url 'articles:all-articles' %}" class="ui button">Back to Articles</a>
-      </a>
-    </div>
-  {% else %}
-    <p>Sorry, this article does not exist.</p>
-  {% endif %}
+  <!-- Footer mit Zurück-Button -->
+  <div class="article-footer">
+    <a href="{% url 'articles:all-articles' %}" class="back-to-articles">Back to Articles</a>
+  </div>
 </div>
 {% endblock content %}
