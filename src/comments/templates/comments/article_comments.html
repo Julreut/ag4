@@ -1,102 +1,96 @@
 {% extends "base.html" %}
 
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h1>Kommentare für "{{ article.title }}"</h1>
-    <a href="{% url 'articles:detailed-article' article.slug %}">← Zurück zum Artikel</a>
+<div class="comment-system">
+    <div class="container">
+        <h2>Kommentare für "{{ article.title }}"</h2>
+        <a href="{% url 'articles:detailed-article' article.slug %}" class="text-primary">← Zurück zum Artikel</a>
 
-    <hr>
+        <hr>
 
-    <h3>Schreibe einen Kommentar:</h3>
-    <form method="post">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit" name="submit_comment_form" class="btn btn-primary">Kommentieren</button>
-    </form>
+        <div>
+            <h4>Schreibe einen Kommentar:</h4>
+            <form method="post">
+                {% csrf_token %}
+                <textarea name="content" rows="2" placeholder="Add a comment..."></textarea>
+                <button type="submit" name="submit_comment_form">Senden</button>
+            </form>
+        </div>
 
-    <hr>
+        <hr>
 
-    <h3>Alle Kommentare:</h3>
-    {% if comments.exists %}
-        <ul class="comment-list">
-            {% for comment in comments %}
-                <li class="comment-item">
+        <div class="comment-section">
+            <h4>Alle Kommentare:</h4>
+            {% if comments.exists %}
+                {% for comment in comments %}
+                <div class="comment-item">
                     <div class="comment-header">
-                        <strong>{{ comment.author.user.username }}</strong>
-                        <small class="text-muted">am {{ comment.created|date:"d.m.Y H:i" }}</small>
+                        {{ comment.author.user.username }}
+                        <small>{{ comment.created|date:"d.m.Y H:i" }}</small>
                     </div>
                     <div class="comment-body">
                         {{ comment.content }}
                     </div>
                     <div class="comment-actions">
-                        <!-- Like Button -->
-                        <form method="post" action="{% url 'comments:like-comment-view' %}" class="d-inline">
+                        <!-- Like -->
+                        <form method="post" action="{% url 'comments:like-comment-view' %}">
                             {% csrf_token %}
                             <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" class="btn btn-outline-success btn-sm">
-                                👍 {{ comment.liked.count }}
-                            </button>
+                            <button type="submit">👍 {{ comment.liked.count }}</button>
                         </form>
-
-                        <!-- Dislike Button -->
-                        <form method="post" action="{% url 'comments:dislike-comment-view' %}" class="d-inline">
+                        <!-- Dislike -->
+                        <form method="post" action="{% url 'comments:dislike-comment-view' %}">
                             {% csrf_token %}
                             <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" class="btn btn-outline-danger btn-sm">
-                                👎 {{ comment.disliked.count }}
-                            </button>
+                            <button type="submit">👎 {{ comment.disliked.count }}</button>
                         </form>
-
-                        <!-- Antworten Button -->
-                        <button class="btn btn-link btn-sm" onclick="toggleReplyForm('{{ comment.id }}')">
-                            Antworten
-                        </button>
+                        <!-- Reply -->
+                        <button onclick="toggleReplyForm('{{ comment.id }}')">Antworten</button>
                     </div>
-
-                    <!-- Antwortformular -->
+                    <!-- Reply Form -->
                     <div id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;">
-                        <form method="post" class="mt-2">
+                        <form method="post">
                             {% csrf_token %}
-                            {{ secondary_comment_form.as_p }}
+                            <textarea name="content" rows="1" placeholder="Write a reply..."></textarea>
                             <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" name="submit_secondary_comment_form" class="btn btn-secondary btn-sm">
-                                Antwort senden
-                            </button>
+                            <button type="submit" name="submit_secondary_comment_form">Senden</button>
                         </form>
                     </div>
-
-                    <!-- Antworten anzeigen -->
+                    <!-- Replies -->
                     {% if comment.replies.all %}
-                        <ul class="reply-list">
-                            {% for reply in comment.replies.all %}
-                                <li class="reply-item">
-                                    <div class="reply-header">
-                                        <strong>{{ reply.author.user.username }}</strong>
-                                        <small class="text-muted">am {{ reply.created|date:"d.m.Y H:i" }}</small>
-                                    </div>
-                                    <div class="reply-body">
-                                        {{ reply.content }}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                    <div class="reply-list">
+                        {% for reply in comment.replies.all %}
+                        <div class="reply-item">
+                            <div class="comment-header">
+                                {{ reply.author.user.username }}
+                                <small>{{ reply.created|date:"d.m.Y H:i" }}</small>
+                            </div>
+                            <div class="comment-body">
+                                {{ reply.content }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                     {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Es gibt noch keine Kommentare für diesen Artikel.</p>
-    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Es gibt noch keine Kommentare für diesen Artikel.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 <script>
     function toggleReplyForm(commentId) {
         const form = document.getElementById(`reply-form-${commentId}`);
-        if (form.style.display === "none") {
-            form.style.display = "block";
-        } else {
-            form.style.display = "none";
-        }
+        form.style.display = form.style.display === "none" ? "block" : "none";
     }
 </script>
 {% endblock %}
