@@ -18,7 +18,7 @@ Newspapers {% endblock title %}
         <h2 class="newspaper-title">{{ newspaper.name }}</h2>
         <a
           href="{% url 'articles:all-articles' %}?id={{ newspaper.id }}"
-          class="newspaper-button"
+          class="ui button read-more"
         >
           Read more
         </a>
