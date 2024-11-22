@@ -44,6 +44,8 @@ urlpatterns = [
     path('api/', include('api.urls', namespace='api')),
     path('advertisements/', include('advertisements.urls', namespace='advertisements')),
     path('newspapers/', include('articles.urls', namespace='newspapers')),
+    path('comments/', include('comments.urls', namespace='comments')),
+
 
 
     # https://stackoverflow.com/questions/5836674/why-does-debug-false-setting-make-my-django-static-files-access-fail
