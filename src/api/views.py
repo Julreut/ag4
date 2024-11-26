@@ -82,8 +82,8 @@ def create_delete_article(request):
 
 @csrf_exempt
 def create_user(request):
-    if not verify_token(request):
-        return HttpResponse(content="401 Unauthorized", status=401)
+    # if not verify_token(request):
+    #     return HttpResponse(content="401 Unauthorized", status=401)
 
     if request.method != "POST":
         return HttpResponse(content="405 Method Not Allowed", status=405)
