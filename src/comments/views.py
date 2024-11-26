@@ -11,16 +11,17 @@ from django.contrib import messages
 from .models import Comment, Like, Dislike, PlannedReaction
 from .forms import CommentModelForm, SecondaryCommentModelForm
 from profiles.models import Profile
-from articles.models import Article  # Importiere das Artikelmodell
+from articles.models import Article, NewsPaper  # Importiere Articles und Newspapers for IDs
 from configuration.models import get_the_config
 
 import time
 
 
 @login_required
-def article_comments_view(request, article_id):
+def article_comments_view(request, news_paper_id, article_id):
     article = get_object_or_404(Article, id=article_id)
     profile = Profile.objects.get(user=request.user)
+    newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
 
     # Zeige nur öffentliche Kommentare + die des aktuellen Users
     comments = Comment.objects.filter(
@@ -43,7 +44,7 @@ def article_comments_view(request, article_id):
             # Standardmäßig ist der Kommentar privat, es sei denn, der Nutzer ist ein Admin
             instance.is_public = request.user.is_staff
             instance.save()
-            return redirect('comments:article-comments', article_id=article.id)
+            return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
 
     # Sekundärkommentar hinzufügen
     if request.method == "POST" and 'submit_secondary_comment_form' in request.POST:
@@ -55,9 +56,10 @@ def article_comments_view(request, article_id):
             instance.parent_comment = Comment.objects.get(id=request.POST.get('comment_id'))
             instance.is_public = instance.parent_comment.is_public  # Antworten erben Sichtbarkeit
             instance.save()
-            return redirect('comments:article-comments', article_id=article.id)
+            return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
 
     context = {
+        'newspaper': newspaper,
         'article': article,
         'comments': comments,
         'comment_form': comment_form,

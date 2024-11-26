@@ -39,8 +39,7 @@ class Article(models.Model):
     
     def get_absolute_url(self):
         return reverse("detailed-article", kwargs={"slug": self.slug})
-
-
+    
 class NewsPaper(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -48,9 +47,8 @@ class NewsPaper(models.Model):
     # num_clicked = models.IntegerField(default=0)
     # user_clicked = models.ManyToManyField(Profile, blank=True, related_name='clicked')
 
-    def id(self):
+    def get_id(self):
         return self.id
-    
+
     def get_absolute_url(self):
-        return reverse("", kwargs={"id": self.id})
-    
+        return reverse("all-articles", kwargs={"news_paper_id": self.id})

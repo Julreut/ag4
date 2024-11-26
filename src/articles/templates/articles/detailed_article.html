@@ -22,8 +22,10 @@
 
   <!-- Footer mit Zurück-Button -->
   <div class="article-footer">
-    <a href="{% url 'articles:all-articles' %}" class="ui button read-more">Back to Articles</a>
-    <a href="{% url 'comments:article-comments' article.id %}">Kommentare ansehen ({{ article.comments.count }})</a>
+    <a href="{% url 'articles:all-articles' news_paper_id=newspaper.id %}">Back to all articles</a>
+    <a href="{% url 'comments:article-comments' news_paper_id=newspaper.id article_id=article.id %}">
+        Kommentare ansehen ({{ article.comments.count }})
+    </a>
   </div>
 </div>
 {% endblock content %}

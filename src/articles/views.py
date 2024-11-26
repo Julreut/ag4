@@ -9,9 +9,10 @@ from profiles.models import Profile
 ## Newspaper definitions
 @login_required
 def get_newspapers(request):
-    news1 = NewsPaper(id=1, name="Linke Zeitung", image="https://picsum.photos/id/24/200")
-    news2 = NewsPaper(id=2, name="Rechte Zeitung", image="https://picsum.photos/id/3/200")
-    news_papers = [news1, news2]
+    # news1 = NewsPaper(id=1, name="Linke Zeitung", image="https://picsum.photos/id/24/200")
+    # news2 = NewsPaper(id=2, name="Rechte Zeitung", image="https://picsum.photos/id/3/200")
+    # news_papers = [news1, news2]
+    news_papers = NewsPaper.objects.all()
     context = {
         'news_papers': news_papers #must use a string
     }
@@ -19,20 +20,27 @@ def get_newspapers(request):
 
 ## Article definitions
 @login_required
-def article_list(request):
-    articles = Article.objects.all()
-    context = {'articles': articles}
+def article_list(request, news_paper_id):
+    # Filtere die Artikel basierend auf der Zeitung
+    articles = Article.objects.filter(news_paper_id=news_paper_id)
+    # Füge die entsprechende Zeitung in den Kontext hinzu
+    newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
+    context = {'articles': articles, 'newspaper': newspaper}
     return render(request, 'articles/all_articles.html', context)
+
 
 #track article interactions
 
 @login_required
-def detailed_article(request, slug):
+def detailed_article(request, news_paper_id, slug):
+    # Hole die Zeitung und prüfe, ob sie existiert
+    newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     # Abrufen des spezifischen Artikels anhand des Slugs
-    article = get_object_or_404(Article, slug=slug)
+    article = get_object_or_404(Article, slug=slug, news_paper_id=news_paper_id)
 
     context = {
-        'article': article
+        'article': article, 
+        'newspaper': newspaper,
     }
     return render(request, 'articles/detailed_article.html', context)
 

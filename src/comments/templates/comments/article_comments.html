@@ -10,7 +10,7 @@
 <div class="comment-system">
     <div class="container">
         <h2>Kommentare für "{{ article.title }}"</h2>
-        <a href="{% url 'articles:detailed-article' article.slug %}" class="text-primary">← Zurück zum Artikel</a>
+        <a href="{% url 'articles:detailed-article'  news_paper_id=newspaper.id slug=article.slug %}" class="text-primary">← Zurück zum Artikel</a>
 
         <hr>
 

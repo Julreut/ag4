@@ -25,7 +25,9 @@ Articles
               <span>Published on: {{ article.created_at|date:"F j, Y" }}</span>
             </div>
             <p class="article-description">{{ article.content|truncatewords:20 }}</p>
-            <a href="{% url 'articles:detailed-article' article.slug %}" class="ui button read-more">Read More</a>
+            <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="ui button read-more">
+              Read more
+            </a>
           </div>
         </div>
       {% endfor %}

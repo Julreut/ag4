@@ -10,7 +10,7 @@ from .views import (
 app_name = 'comments'
 
 urlpatterns = [
-    path('article/<int:article_id>/', article_comments_view, name='article-comments'),  # Neue Route
+    path('article/<int:news_paper_id>/<int:article_id>/', article_comments_view, name='article-comments'),  # Neue Route
     path('liked/', like_unlike_comment, name='like-comment-view'),
     path('disliked/', dislike_undislike_comment, name='dislike-comment-view'),
     path('<pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),

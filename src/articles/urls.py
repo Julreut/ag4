@@ -5,6 +5,6 @@ app_name ='articles'
 
 urlpatterns = [
     path('', get_newspapers, name='news-papers'),
-    path('article_list/', article_list, name='all-articles'),
-    path('<slug:slug>/', detailed_article, name='detailed-article'),
+    path('article_list/<int:news_paper_id>/', article_list, name='all-articles'),
+   path('<int:news_paper_id>/<slug:slug>/', detailed_article, name='detailed-article'),
 ]
