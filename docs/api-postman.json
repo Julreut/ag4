@@ -5,6 +5,86 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
+{
+  "name": "Create Comment",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "http://127.0.0.1:8000/api/profile/comment/?profile_id=1&article_id=42&content=This%20is%20a%20sample%20comment&parent_comment_id=10&public=true&condition_id=10",
+      "protocol": "http",
+      "host": ["127.0.0.1"],
+      "port": "8000",
+      "path": ["api", "profile", "comment"],
+      "query": [
+        {
+          "key": "profile_id",
+          "value": "1",
+          "description": "ID of the author (profile)."
+        },
+        {
+          "key": "article_id",
+          "value": "1",
+          "description": "ID of the article."
+        },
+        {
+          "key": "content",
+          "value": "This is a sample comment.",
+          "description": "The content of the comment."
+        },
+        {
+          "key": "parent_comment_id",
+          "value": "14",
+          "description": "ID of the parent comment for replies (optional)."
+        },
+        {
+          "key": "public",
+          "value": "true",
+          "description": "Is the comment visible for all users?"
+        },
+        {
+          "key": "condition_id",
+          "value": "10",
+          "description": "Experimental condition (optional)."
+        }
+      ]
+    },
+    "description": "Creates a new comment for an article."
+  },
+  "response": []
+},
+    {
+      "name": "Delete Comment",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/profile/comment/?comment_id=123",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "profile", "comment"],
+          "query": [
+            {
+              "key": "comment_id",
+              "value": "123"
+            }
+          ]
+        },
+        "description": "Deletes an existing comment by ID."
+      },
+      "response": []
+    },
         {
           "name": "http://127.0.0.1:8000/api/article",
           "request": {

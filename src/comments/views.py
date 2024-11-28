@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -23,14 +23,22 @@ def article_comments_view(request, news_paper_id, article_id):
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
 
-    # Zeige nur öffentliche Kommentare + die des aktuellen Users
+    # Hauptkommentare und ihre sekundären Kommentare abrufen
     comments = Comment.objects.filter(
         article=article,
         parent_comment=None,
     ).filter(
         Q(is_public=True) | Q(author=profile)
-    ).order_by("-created")
-    
+    ).order_by("-created").prefetch_related(
+        Prefetch(
+            'replies',  # Sekundäre Kommentare über das rückwärts gerichtete ForeignKey-Attribut
+            queryset=Comment.objects.filter(
+                Q(is_public=True) | Q(author=profile)
+            ).order_by("created"),  # Antworten chronologisch sortieren
+            to_attr='loaded_replies'  # Zugriff auf die Antworten über `.replies`
+        )
+    )
+
     comment_form = CommentModelForm()
     secondary_comment_form = SecondaryCommentModelForm()
 
@@ -66,7 +74,6 @@ def article_comments_view(request, news_paper_id, article_id):
         'secondary_comment_form': secondary_comment_form,
     }
     return render(request, 'comments/article_comments.html', context)
-
 
 @login_required
 def like_unlike_comment(request):

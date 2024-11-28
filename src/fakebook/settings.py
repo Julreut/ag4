@@ -135,6 +135,9 @@ DATABASES = {
     }
 }
 
+## URLS
+APPEND_SLASH = True  # Standardmäßig aktiviert
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 

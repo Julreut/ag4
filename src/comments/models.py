@@ -8,6 +8,8 @@ class Comment(models.Model):
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    public = models.BooleanField(default=True)  # Gibt an, ob der Kommentar öffentlich ist
+    condition_id = models.IntegerField(null=True, blank=True)  # Versuchsbedingungs-ID
     parent_comment = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
     )

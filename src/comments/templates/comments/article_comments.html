@@ -10,7 +10,7 @@
 <div class="comment-system">
     <div class="container">
         <h2>Kommentare für "{{ article.title }}"</h2>
-        <a href="{% url 'articles:detailed-article'  news_paper_id=newspaper.id slug=article.slug %}" class="text-primary">← Zurück zum Artikel</a>
+        <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="text-primary">← Zurück zum Artikel</a>
 
         <hr>
 
@@ -51,7 +51,7 @@
                             <button type="submit">👎 {{ comment.disliked.count }}</button>
                         </form>
                         <!-- Reply -->
-                        <button onclick="toggleReplyForm('{{ comment.id }}')">Antworten</button>
+                        <button onclick="toggleReplyForm('{{ comment.id }}')" class="ui primary button" >Antworten</button>
                     </div>
                     <!-- Reply Form -->
                     <div id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;">
@@ -62,10 +62,10 @@
                             <button type="submit" name="submit_secondary_comment_form">Senden</button>
                         </form>
                     </div>
-                    <!-- Replies -->
-                    {% if comment.replies.all %}
+                    <!-- loaded_replies -->
+                    {% if comment.loaded_replies %}
                     <div class="reply-list">
-                        {% for reply in comment.replies.all %}
+                        {% for reply in comment.loaded_replies %}
                         <div class="reply-item">
                             <div class="comment-header">
                                 {{ reply.author.user.username }}

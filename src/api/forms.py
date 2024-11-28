@@ -30,3 +30,10 @@ class APIArticleModelForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ('image',)
+
+class APICommentModelForm(forms.ModelForm):
+    image = forms.ImageField(label='', required=True)
+    
+    class Meta:
+        model = Article
+        fields = ('image',)

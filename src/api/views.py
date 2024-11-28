@@ -1,20 +1,78 @@
 import datetime
 import json
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 from advertisements.models import Advertisement
 from api.forms import APIPostModelForm, APIProfileModelForm, APIAdvertisementModelForm, APIArticleModelForm
 from configuration.models import get_the_config
 from posts.models import Post, PlannedReaction
 from articles.models import Article, NewsPaper
+from comments.models import Comment
+from profiles.models import Profile
 
 from profiles.models import Profile, Relationship
 
 from django.contrib.auth.models import User
 
 
+@csrf_exempt
+def create_delete_comment(request):
+    if request.method == "POST":
+        return handle_create_comment(request)
+    elif request.method == "DELETE":
+        return handle_delete_comment(request)
+    else:
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+
+def handle_create_comment(request):
+    # Extrahiere Daten aus den Query-Parametern
+    profile_id = request.GET.get("profile_id")
+    article_id = request.GET.get("article_id")
+    content = request.GET.get("content")
+    parent_comment_id = request.GET.get("parent_comment_id")
+
+    # Überprüfe, ob alle erforderlichen Felder vorhanden sind
+    if not all([profile_id, article_id, content]):
+        return JsonResponse({"error": "Missing required fields: profile_id, article_id, content"}, status=400)
+
+    try:
+        # Hole die Profile- und Artikel-Objekte
+        profile = get_object_or_404(Profile, id=profile_id)
+        article = get_object_or_404(Article, id=article_id)
+        # Optional: Hole den übergeordneten Kommentar
+        parent_comment = Comment.objects.filter(id=parent_comment_id).first() if parent_comment_id else None
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=404)
+
+    # Erstelle einen neuen Kommentar
+    comment = Comment.objects.create(
+        author=profile,
+        article=article,
+        content=content,
+        parent_comment=parent_comment,
+    )
+    return JsonResponse({"message": "Comment created successfully", "comment_id": comment.id}, status=201)
+
+
+def handle_delete_comment(request):
+    # Extrahiere die Kommentar-ID aus den Query-Parametern
+    comment_id = request.GET.get("comment_id")
+    if not comment_id:
+        return JsonResponse({"error": "Missing comment_id"}, status=400)
+
+    try:
+        # Versuche den Kommentar zu löschen
+        comment = get_object_or_404(Comment, id=comment_id)
+        comment.delete()
+        return JsonResponse({"message": "Comment deleted successfully"}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=404)
+    
+    
 @csrf_exempt
 def create_delete_article(request):
     # if not verify_token(request):
