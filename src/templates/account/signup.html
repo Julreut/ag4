@@ -9,40 +9,81 @@
     <link rel="stylesheet" type="text/css" href={% static 'login-signup-custom-style.css' %}>
 
     <style>
-
-    label {
-        display: none;
-    }
-
+        input[name="email"] {
+            display: none !important;
+        }
+        label[for="id_email"] {
+            display: none !important;
+        }
     </style>
-
 {% endblock %}
 
 {% block content %}
 
 <div class="ui grid" style="display: block">
   <div id="title-header">
-    <h1>Fakebook</h1>
+    <h1>Mirror Online</h1>
     <h3>Account Creation</h3>
   </div>
 
   <div id="register-form-panel" class="column elevated-panel">
     <form class="signup ui form" id="signup_form" method="post" action="{% url 'account_signup' %}">
       {% csrf_token %}
-      {{ form.as_p }}
+            
+      <!-- Username field with disclaimer -->
+      <div class="field">
+          {{ form.username }}
+          {% if form.username.errors %}
+              <ul class="errorlist">
+                  {% for error in form.username.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+          <small style="color: green; display: flex; align-items: center; margin-top: 3px;">
+              <i class="info circle icon" style="margin-right: 5px; color: green;"></i>
+              Bitte wählen Sie einen anonymen Benutzernamen, der keine Rückschlüsse auf Ihre Identität zulässt.
+          </small>
+      </div>
+
+      <div class="field">
+          {{ form.password1 }}
+          {% if form.password1.errors %}
+              <ul class="errorlist">
+                  {% for error in form.password1.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      </div>
+      <div class="field">
+          {{ form.password2 }}
+          {% if form.password2.errors %}
+              <ul class="errorlist">
+                  {% for error in form.password2.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      </div>
+
+      <!-- Redirect field -->
       {% if redirect_field_value %}
       <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
       {% endif %}
+
+      <!-- Submit button -->
       <button type="submit" class="ui primary button primary-button">{% trans "Sign Up" %}</button>
     </form>
 
     <div class="separator"></div>
 
-    <a class="button secondaryAction centered" href="{{ login_url }}" style="width: 100%">
-      <button id="login-dialog-button" class="ui button secondary secondary-button">{% trans "Already have an account?" %}</button>
-    </a><br>
+    <!-- Login button -->
+    <a href="{{ login_url }}" style="display: block; width: 100%; text-align: center; text-decoration: none;">
+      <span class="ui button secondary secondary-button">{% trans "Already have an account?" %}</span>
+    </a>
+    <br>
   </div>
 </div>
-
 
 {% endblock %}

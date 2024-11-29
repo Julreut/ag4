@@ -32,7 +32,7 @@ DEBUG = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
 if DEBUG:
     print("Enabling debug mode")
 
-ALLOWED_HOSTS = ["fakebook.projects.bayern", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -68,13 +68,15 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 #LOGIN_URL = '/admin/'
-LOGIN_REDIRECT_URL = '/posts'
+LOGIN_REDIRECT_URL = '/newspapers'
 
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_UNIQUE = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_ADAPTER = "fakebook.adapter.NoSignUpAccountAdapter"
+ACCOUNT_FORMS = {
+    'signup': 'fakebook.forms.CustomSignupForm',  # Passe `your_app` an den Namen deiner App an
+}
+ACCOUNT_AUTHENTICATION_METHOD = "username"  # Nur Username für Authentifizierung
+ACCOUNT_EMAIL_REQUIRED = False  # Email wird nicht benötigt
+ACCOUNT_USERNAME_REQUIRED = True  # Username bleibt Pflichtfeld
+ACCOUNT_EMAIL_VERIFICATION = "optional"  # Email-Verifikation deaktivieren
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
@@ -145,15 +147,16 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # # {
+    # #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
+    # not needed
 ]
 
 # Channels
