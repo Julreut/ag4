@@ -4,13 +4,9 @@ import string
 from django.db import models
 
 class Configuration(models.Model):
-    chat_enabled = models.BooleanField(default=True)
-    chat_friends_only = models.BooleanField(default=False)
-    posts_friends_only = models.BooleanField(default=False)
-    comments_friends_only = models.BooleanField(default=False)
-    profiles_friends_only = models.BooleanField(default=False)
     comments_enabled = models.BooleanField(default=True)
-    relationship_management_enabled = models.BooleanField(default=True)
+    comments_interaction = models.BooleanField(default=False)
+    like_dislike_enabled = models.BooleanField(default=True)
     registration_enabled = models.BooleanField(default=True)
     management_token = models.CharField(default="changeme", max_length=100)
 

@@ -38,7 +38,8 @@ class Article(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        return reverse("detailed-article", kwargs={"slug": self.slug})
+        return reverse('articles:detailed-article', kwargs={'news_paper_id': self.news_paper_id, 'slug': self.slug})
+
     
 class NewsPaper(models.Model):
     id = models.IntegerField(primary_key=True)

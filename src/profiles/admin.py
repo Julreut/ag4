@@ -17,14 +17,14 @@ class ProfileAdmin(admin.ModelAdmin):
 
     download_csv.short_description = "Download CSV file"
     
-#admin.site.register(Relationship)
-@admin.register(Relationship)
-class RelationshipAdmin(admin.ModelAdmin):
-    actions = ['download_csv']
-    list_display = ['id', 'status', 'updated', 'created', 'receiver_id', 'sender_id']
+# #admin.site.register(Relationship)
+# @admin.register(Relationship)
+# class RelationshipAdmin(admin.ModelAdmin):
+#     actions = ['download_csv']
+#     list_display = ['id', 'status', 'updated', 'created', 'receiver_id', 'sender_id']
 
-    def download_csv(self, request, queryset):
-        response = get_csv(self.list_display, queryset, 'relationships.csv')
-        return response
+#     def download_csv(self, request, queryset):
+#         response = get_csv(self.list_display, queryset, 'relationships.csv')
+#         return response
 
-    download_csv.short_description = "Download CSV file"
+#     download_csv.short_description = "Download CSV file"
