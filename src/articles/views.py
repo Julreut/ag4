@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import reverse, get_object_or_404
 from .models import Article, NewsPaper
 from profiles.models import Profile
+from django.db.models import Q
 
 # Create your views here.
 
@@ -37,10 +38,15 @@ def detailed_article(request, news_paper_id, slug):
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     # Abrufen des spezifischen Artikels anhand des Slugs
     article = get_object_or_404(Article, slug=slug, news_paper_id=news_paper_id)
+    profile = Profile.objects.get(user=request.user)
+
+    public_comments_count = article.comments.filter(Q(is_public=True) | Q(author=profile)).count()
+
 
     context = {
         'article': article, 
         'newspaper': newspaper,
+        'public_comments_count': public_comments_count,
     }
     return render(request, 'articles/detailed_article.html', context)
 
