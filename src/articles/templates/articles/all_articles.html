@@ -7,6 +7,7 @@ Articles
 {% endblock title %}
 
 {% block content %}
+<a href="{% url 'articles:news-papers' %}" class="back-link">← Zurück zur Zeitungsauswahl</a>
 <div class="ui articles-container">
   <h1>Articles</h1>
 
@@ -40,8 +41,8 @@ Articles
 
 {% comment %} Footer {% endcomment %}
 
-<div class="article-footer">
+{% comment %} <div class="article-footer">
     <a href="{% url 'articles:news-papers' %}" class="ui secondary basic button">Back to Newspaper Overview</a>
-</div>
+</div> {% endcomment %}
 
 {% endblock content %}

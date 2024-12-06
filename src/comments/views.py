@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, DeleteView
 from django.contrib import messages
 
+from django.http import HttpResponseBadRequest
+
 from .models import Comment, Like, Dislike, PlannedReaction
 from .forms import CommentModelForm, SecondaryCommentModelForm
 from profiles.models import Profile
@@ -49,10 +51,11 @@ def article_comments_view(request, news_paper_id, article_id):
             instance = comment_form.save(commit=False)
             instance.author = profile
             instance.article = article
-            # Standardmäßig ist der Kommentar privat, es sei denn, der Nutzer ist ein Admin
-            instance.is_public = request.user.is_staff
+            instance.title = comment_form.cleaned_data['title']  # Titel aus dem Formular
+            instance.is_public = request.user.is_staff  # Admin-Kommentare sind direkt öffentlich
             instance.save()
             return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
+
 
     # Sekundärkommentar hinzufügen
     if request.method == "POST" and 'submit_secondary_comment_form' in request.POST:
@@ -62,9 +65,11 @@ def article_comments_view(request, news_paper_id, article_id):
             instance.author = profile
             instance.article = article
             instance.parent_comment = Comment.objects.get(id=request.POST.get('comment_id'))
-            instance.is_public = instance.parent_comment.is_public  # Antworten erben Sichtbarkeit
+            instance.title = secondary_comment_form.cleaned_data['title']  # Titel aus dem Formular
+            instance.is_public = instance.parent_comment.is_public  # Sichtbarkeit erben
             instance.save()
             return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
+
 
     context = {
         'newspaper': newspaper,
@@ -74,6 +79,43 @@ def article_comments_view(request, news_paper_id, article_id):
         'secondary_comment_form': secondary_comment_form,
     }
     return render(request, 'comments/article_comments.html', context)
+
+@login_required
+def detailed_comment_view(request, news_paper_id, article_id, comment_id):
+    # Kommentar abrufen oder 404 zurückgeben, wenn nicht vorhanden
+    comment = get_object_or_404(Comment, id=comment_id)
+    article = get_object_or_404(Article, id=article_id)
+    profile = Profile.objects.get(user=request.user)
+    newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
+
+    # Verarbeiten von sekundären Kommentaren (Antworten)
+    if request.method == "POST" and 'submit_secondary_comment_form' in request.POST:
+        form = SecondaryCommentModelForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.author = profile  # Der aktuelle Benutzer als Autor
+            reply.article = article  # Zugehöriger Artikel
+            reply.parent_comment = comment  # Setze den aktuellen Kommentar als Elternkommentar
+            reply.is_public = request.user.is_staff or comment.is_public  # Sichtbarkeit erben
+            reply.save()
+
+            # Erfolgreiches Speichern: Weiterleitung zurück zu dieser View
+            return redirect('comments:detailed-comment', comment_id=comment_id, news_paper_id=newspaper.id, article_id=article.id)
+        else:
+            # Falls das Formular ungültig ist, Fehler debuggen
+            print("Form errors:", form.errors)
+            return HttpResponseBadRequest("Invalid form submission.")
+
+    # Kontext für das Template bereitstellen
+    context = {
+        'comment': comment,  # Der aktuelle Kommentar
+        'article': article,  # Zugehöriger Artikel
+        'newspaper': newspaper,  # Zugehörige Zeitung
+        'secondary_comment_form': SecondaryCommentModelForm(),  # Neues Formular für Antworten
+    }
+
+    return render(request, 'comments/detailed_comment.html', context)
+
 
 @login_required
 def like_unlike_comment(request):
@@ -102,6 +144,8 @@ def toggle_like(profile, comment):
         comment.liked.remove(profile)
     else:
         comment.liked.add(profile)
+        if profile in comment.disliked.all():
+            comment.disliked.remove(profile)
 
 
 def toggle_dislike(profile, comment):
@@ -109,6 +153,8 @@ def toggle_dislike(profile, comment):
         comment.disliked.remove(profile)
     else:
         comment.disliked.add(profile)
+        if profile in comment.liked.all():
+            comment.liked.remove(profile)
 
     dislike, created = Dislike.objects.get_or_create(user=profile, comment=comment)
     dislike.value = 'Dislike' if created or dislike.value == 'Undislike' else 'Undislike'

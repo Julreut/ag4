@@ -21,7 +21,7 @@ admin.site.unregister(SocialToken)
 
 @admin.register(Configuration)
 class ConfigurationAdmin(admin.ModelAdmin):
-    list_display = ["change_configuration", "comments_interaction", "comments_interaction", "like_dislike_enabled", "registration_enabled", "management_token"]
+    list_display = ["change_configuration", "comments_interaction", "comments_interaction", "like_dislike_enabled", "relationship_management_enabled", "registration_enabled", "management_token"]
 
     def change_configuration(self, configuration):
         return "change configuration"

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="detailed-comment">
+    <div class="container">
+        <!-- Back to Comments Button -->
+        <a href="{% url 'comments:article-comments' news_paper_id=newspaper.id article_id=article.id %}" class="back-link">← Zurück zu den Kommentaren</a>
+
+        <!-- Main Comment Section -->
+        <div class="comment-card detailed-view">
+            <div class="comment-header">
+            <strong class="comment-author">
+                by <a href="{% url 'profiles:profile-detail-view' comment.author.user.username %}">
+                    {{ comment.author.user.username }}
+                </a>
+            </strong>
+                <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small>
+            </div>
+            <hr class="divider">
+            <div class="comment-body">
+                <strong class="comment-title">{{ comment.title }}</strong>
+                <p>{{ comment.content }}</p>
+            </div>
+
+            <!-- Like/Dislike Buttons -->
+            <div class="comment-actions">
+                <form method="post" action="{% url 'comments:like-comment-view' %}" class="like-dislike-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                    <button type="submit" class="ui icon button">
+                        <i class="thumbs up outline icon"></i>
+                    </button>
+                    <span>{{ comment.liked.count }}</span>
+                </form>
+                <form method="post" action="{% url 'comments:dislike-comment-view' %}" class="like-dislike-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                    <button type="submit" class="ui icon button">
+                        <i class="thumbs down outline icon"></i>
+                    </button>
+                    <span>{{ comment.disliked.count }}</span>
+                </form>
+            </div>
+
+        <!-- Replies Section -->
+        <div class="reply-section">
+            <p>
+            <h4 class="section-title">Antworten:</h4>
+            {% if comment.replies.all %}
+                <div class="grid-container">
+                    {% for reply in comment.replies.all %}
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <strong class="comment-author">{{ reply.author.user.username }}</strong>
+                            <small class="comment-date">{{ reply.created|date:"d.m.Y H:i" }}</small>
+                        </div>
+                        <div class="comment-body">
+                            <h6 class="comment-title">{{ reply.title }}</h6>
+                            <p>{{ reply.content }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-comments">Es gibt noch keine Antworten.</p>
+            {% endif %}
+        </div>
+
+        <!-- Reply Form -->
+        <p>
+        <div class="reply-form-section">
+            <h4 class="section-title">Eigene Antwort hinzufügen:</h4>
+            <form method="post" class="reply-form">
+                {% csrf_token %}
+                <input type="text" name="title" id="reply-title" placeholder="Titel für die Antwort eingeben" class="form-input" required>
+                <textarea name="content" id="reply-content" rows="3" placeholder="Antwort schreiben..." class="form-textarea" required></textarea>
+                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                <button type="submit" name="submit_secondary_comment_form" class="submit-btn">Antwort senden</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

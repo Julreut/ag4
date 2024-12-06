@@ -4,93 +4,65 @@
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 <div class="comment-system">
     <div class="container">
-        <h2>Kommentare für "{{ article.title }}"</h2>
-        <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="text-primary">← Zurück zum Artikel</a>
-
-        <hr>
-
-        <div>
-            <h4>Schreibe einen Kommentar:</h4>
-            <form method="post">
-                {% csrf_token %}
-                <textarea name="content" rows="2" placeholder="Add a comment..."></textarea>
-                <button type="submit" name="submit_comment_form">Senden</button>
-            </form>
-        </div>
-
-        <hr>
+        <h2 class="article-title">Kommentare für "{{ article.title }}"</h2>
+        <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="back-link">← Zurück zum Artikel</a>
 
         <div class="comment-section">
-            <h4>Alle Kommentare:</h4>
+            <h4 class="section-title">Alle Kommentare:</h4>
             {% if comments.exists %}
-                {% for comment in comments %}
-                <div class="comment-item">
-                    <div class="comment-header">
-                        {{ comment.author.user.username }}
-                        <small>{{ comment.created|date:"d.m.Y H:i" }}</small>
-                    </div>
-                    <div class="comment-body">
-                        {{ comment.content }}
-                    </div>
-                    <div class="comment-actions">
-                        <!-- Like -->
-                        <form method="post" action="{% url 'comments:like-comment-view' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit">👍 {{ comment.liked.count }}</button>
-                        </form>
-                        <!-- Dislike -->
-                        <form method="post" action="{% url 'comments:dislike-comment-view' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit">👎 {{ comment.disliked.count }}</button>
-                        </form>
-                        <!-- Reply -->
-                        <button onclick="toggleReplyForm('{{ comment.id }}')" class="ui primary button" >Antworten</button>
-                    </div>
-                    <!-- Reply Form -->
-                    <div id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;">
-                        <form method="post">
-                            {% csrf_token %}
-                            <textarea name="content" rows="1" placeholder="Write a reply..."></textarea>
-                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" name="submit_secondary_comment_form">Senden</button>
-                        </form>
-                    </div>
-                    <!-- loaded_replies -->
-                    {% if comment.loaded_replies %}
-                    <div class="reply-list">
-                        {% for reply in comment.loaded_replies %}
-                        <div class="reply-item">
-                            <div class="comment-header">
-                                {{ reply.author.user.username }}
-                                <small>{{ reply.created|date:"d.m.Y H:i" }}</small>
-                            </div>
-                            <div class="comment-body">
-                                {{ reply.content }}
-                            </div>
+                <div class="grid-container">
+                    {% for comment in comments %}
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <h3 class="comment-title">{{ comment.title }}</h3>
+                            <strong class="comment-author"> by {{ comment.author.user.username }}</strong>
+                            {% comment %} <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small> {% endcomment %}
                         </div>
-                        {% endfor %}
+                        <div class="comment-body">
+                            <p>{{ comment.content|truncatechars:200 }}</p>
+                        </div>
+                        <div class="comment-actions view-only">
+                            <div class="like-dislike-form">
+                                <form method="post" action="{% url 'comments:like-comment-view' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                    <button type="submit" class="ui icon button">
+                                        <i class="thumbs up outline icon"></i>
+                                    </button>
+                                    <span>{{ comment.liked.count }}</span>
+                                </form>
+                                <form method="post" action="{% url 'comments:dislike-comment-view' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                    <button type="submit" class="ui icon button">
+                                        <i class="thumbs down outline icon"></i>
+                                    </button>
+                                    <span>{{ comment.disliked.count }}</span>
+                                </form>
+                            </div>
+                            <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" class="read-more-btn">Mehr lesen & interagieren</a>
+                        </div>
                     </div>
-                    {% endif %}
+                    {% endfor %}
                 </div>
-                {% endfor %}
             {% else %}
-                <p>Es gibt noch keine Kommentare für diesen Artikel.</p>
+                <p class="no-comments">Es gibt noch keine Kommentare für diesen Artikel.</p>
             {% endif %}
+            <hr class="divider">
+            <h4 class="section-title">Schreibe einen Kommentar:</h4>
+            <form method="post" class="comment-form">
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Titel eingeben..." class="form-input" required>
+                <textarea name="content" rows="3" placeholder="Kommentar hinzufügen..." class="form-textarea" required></textarea>
+                <button type="submit" name="submit_comment_form" class="submit-btn">Senden</button>
+            </form>
         </div>
     </div>
 </div>
-
-<script>
-    function toggleReplyForm(commentId) {
-        const form = document.getElementById(`reply-form-${commentId}`);
-        form.style.display = form.style.display === "none" ? "block" : "none";
-    }
-</script>
 {% endblock %}

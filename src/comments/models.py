@@ -5,6 +5,7 @@ from articles.models import Article
 class Comment(models.Model):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="comments")
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")  # Beziehung zum Artikel
+    title = models.CharField(max_length=255, default="Default Title")
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -19,7 +20,9 @@ class Comment(models.Model):
     disliked = models.ManyToManyField(Profile, related_name="disliked_comments_set", blank=True)
 
     def __str__(self):
-        return f"{self.author.user.username}: {self.content[:20]}"
+        # Kürze den Inhalt auf maximal 50 Zeichen
+        content_preview = self.content[:50] + ("..." if len(self.content) > 50 else "")
+        return f"{self.title} by {self.author} - {content_preview}"
 
     class Meta:
         ordering = ['-created']
