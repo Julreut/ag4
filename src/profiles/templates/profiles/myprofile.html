@@ -9,95 +9,91 @@ my profile
 <div class="ui modal mymodal">
     <i class="close icon"></i>
     <div class="header">
-      {% trans 'profile-update-title' %}
+        {% trans 'profile-update-title' %}
     </div>
     <div class="image content">
-      <div class="ui medium image">
-        <img src="{{profile.avatar.url}}">
-      </div>
-      <div class="description">
-        <div class="ui header">{% trans 'profile-update-dialog-title' %}</div>
-            <form id="profile-update-form" action="" method="POST" class="ui form" enctype='multipart/form-data'>
+        <div class="ui small image">
+            <img src="{{ profile.avatar.url }}" alt="Profilbild">
+        </div>
+        <div class="description">
+            <div class="ui header">{% trans 'profile-update-dialog-title' %}</div>
+            <form id="profile-update-form" action="" method="POST" class="ui form" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{form.as_p}}
+                {{ form.as_p }}
             </form>
-      </div>
+        </div>
     </div>
     <div class="actions">
-      <button type='submit' form="profile-update-form" class="ui positive right labeled icon button">
-        {% trans 'profile-update-button' %}
-        <i class="checkmark icon"></i>
-      </button>
+        <button type="submit" form="profile-update-form" class="ui positive right labeled icon button">
+            {% trans 'profile-update-button' %}
+            <i class="checkmark icon"></i>
+        </button>
     </div>
-  </div>
+</div>
 
-
-
-  <div class="ui segment">
+<!-- MAIN PROFILE SECTION -->
+<div class="ui segment">
     {% if confirm %}
         <div class="ui green message">{% trans 'profile-updated' %}</div>
     {% endif %}
-    <h3>{% trans 'my-profile' %} {{request.user}}</h3>
+    <h3>{% trans 'my-profile' %} {{ request.user }}</h3>
     <div class="ui grid">
-        <div class='row'>
-            <div class='six wide column'>
-                <img class="ui medium rounded image" src={{profile.avatar.url}}>
-                <div class="row mt-5">
-                    <button class='ui secondary button' id='modal-btn'>{% trans 'myprofile-view-update-button' %}</button>
-                </div>
+        <div class="row">
+            <div class="six wide column">
+                <img class="ui small rounded image" src="{{ profile.avatar.url }}" alt="Profilbild">
             </div>
             <div class="ten wide column">
                 <table class="ui table">
                     <tbody>
                         <tr>
                             <td>{% trans 'username' %}</td>
-                            <td>{{profile.user}}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans 'first-name' %}</td>
-                            <td>{{profile.first_name}}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans 'last-name' %}</td>
-                            <td>{{profile.last_name}}</td>
+                            <td>{{ profile.user.username }}</td>
                         </tr>
                         <tr>
                             <td>{% trans 'my-profile-biography' %}</td>
-                            <td>{{profile.bio}}</td>
+                            <td>{{ profile.bio }}</td>
                         </tr>
-                        <tr>
-                            <td>{% trans 'my-profile-number-of-friends' %}</td>
-                            <td>{{profile.get_friends_no}}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans 'my-profil-friends-list' %}</td>
-                            <td>
-                                <ul>
-                                    {% for friend in profile.get_friends %}
-                                        <li>{{friend}}</li>
-                                    {% endfor %}
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{% trans 'my-profile-posts' %}</td>
-                            <td>{{profile.get_posts_no}}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans 'my-profile-likes-given' %}</td>
-                            <td>{{profile.get_likes_given_no}}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans 'my-profile-likes-received' %}</td>
-                            <td>{{profile.get_likes_received_no}}</td>
-                        </tr>
-
-                        
                     </tbody>
                 </table>
+                <div class="row mt-5">
+                    <button class="ui secondary button" id="modal-btn">{% trans 'myprofile-view-update-button' %}</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- COMMENTS SECTION -->
+<div class="ui segment">
+    <h3>{% trans 'my-comments' %}</h3>
+    {% if comments %}
+        <div class="ui feed">
+            {% for comment in comments %}
+                <div class="event">
+                    <div class="content">
+                        <div class="summary">
+                            <strong>{{ comment.title }}</strong>
+                            <div class="date">
+                                {{ comment.created|date:"d.m.Y H:i" }}
+                            </div>
+                        </div>
+                        <div class="extra text">
+                            {{ comment.content }}
+                        </div>
+                        <div class="meta">
+                            <a href="{{ comment.article.get_absolute_url }}" class="ui button">
+                                {% trans 'Go to article' %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="ui message">
+            {% trans 'no-comments-message' %}
+        </div>
+    {% endif %}
+</div>
 {% endblock content %}

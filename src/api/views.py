@@ -4,16 +4,17 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 
 from advertisements.models import Advertisement
-from api.forms import APIPostModelForm, APIProfileModelForm, APIAdvertisementModelForm, APIArticleModelForm
+from api.forms import APIProfileModelForm, APIArticleModelForm
 from configuration.models import get_the_config
 from posts.models import Post, PlannedReaction
-from articles.models import Article, NewsPaper
+from articles.models import Article
 from comments.models import Comment
 from profiles.models import Profile
 
-from profiles.models import Profile, Relationship
+from profiles.models import Profile
 
 from django.contrib.auth.models import User
 
@@ -75,38 +76,35 @@ def handle_delete_comment(request):
     
 @csrf_exempt
 def create_delete_article(request):
-    # if not verify_token(request):
-    #     return HttpResponse(content="401 Unauthorized", status=401) auskommentiert bis Fehler gefunden wurde
-
-    # Nur POST und DELETE Methoden zulassen
+    # Allow only POST and DELETE methods
     if request.method != "POST" and request.method != "DELETE":
         return HttpResponse(content="405 Method Not Allowed", status=405)
 
     if request.method == "POST":
-        # Parameter aus der Anfrage holen
-        title = request.GET.get("title", "")
-        content = request.GET.get("content", "")
-        news_paper_id = request.GET.get("news_paper_id", "")
+        # Retrieve parameters from request.POST
+        title = request.POST.get("title", "").strip()
+        content = request.POST.get("content", "").strip()
+        news_paper_id = request.POST.get("news_paper_id", "").strip()
 
-        # Überprüfen, ob die benötigten Parameter vorhanden sind
+        # Check if mandatory parameters are provided
         if not title or not content or not news_paper_id:
             return HttpResponse(content="400 - title, content, and news_paper_id are mandatory", status=400)
 
         try:
-            # `news_paper_id` in einen Integer konvertieren
+            # Convert `news_paper_id` to integer
             news_paper_id = int(news_paper_id)
         except ValueError:
             return HttpResponse(content="400 - news_paper_id must be an integer", status=400)
 
-        # # Überprüfen, ob ein Bild hochgeladen wurde
-        # if request.FILES.get("image", None) is None:
-        #     return HttpResponse(content="400 - image is mandatory", status=400)
+        # Check if an image is uploaded
+        if not request.FILES.get("image"):
+            return HttpResponse(content="400 - image is mandatory", status=400)
 
         form = APIArticleModelForm(request.POST, request.FILES)
         if not form.is_valid():
             return HttpResponse(content="400 Bad request - form is invalid", status=400)
 
-        # Artikel erstellen
+        # Create and save the article
         article = form.save(commit=False)
         article.title = title
         article.content = content
@@ -123,8 +121,9 @@ def create_delete_article(request):
         })
 
     elif request.method == "DELETE":
+        # Retrieve `articleId` from request.GET
         try:
-            article_id = int(request.GET.get("articleId", ""))
+            article_id = int(request.GET.get("articleId", "").strip())
         except ValueError:
             return HttpResponse(content="400 - articleId must be integer", status=400)
 
@@ -140,99 +139,64 @@ def create_delete_article(request):
 
 @csrf_exempt
 def create_user(request):
-    # if not verify_token(request):
-    #     return HttpResponse(content="401 Unauthorized", status=401)
-
     if request.method != "POST":
         return HttpResponse(content="405 Method Not Allowed", status=405)
 
-    username = request.GET.get("username", "")
-    password = request.GET.get("password", "")
-    email = request.GET.get("email", "")
-    first_name = request.GET.get("firstName", "")
-    last_name = request.GET.get("lastName", "")
-    bio = request.GET.get("bio", "")
-    country = request.GET.get("country", "")
+    # Daten aus der Anfrage abrufen
+    username = request.GET.get("username", "").strip()
+    password = request.GET.get("password", "").strip()
+    email = request.GET.get("email", "").strip()
+    bio = request.GET.get("bio", "").strip()
+    condition_id = request.GET.get("condition_id", None)  # Condition ID abrufen
+
 
     if username == "" or password == "" or email == "":
-        return HttpResponse(content="400 Bad request", status=400)
+        return HttpResponse(content="400 Bad request - Missing username, password, or email", status=400)
 
+    # Überprüfen, ob Benutzername oder E-Mail bereits existieren
     if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-        return HttpResponse(content="409 Conflict - username or email already in use", status=409)
-
-
-    user = User.objects.create_user(username=username, email=email, password=password)
-    # profile is automatically created by signal
-    profile = Profile.objects.filter(user=user).first()
-
-    if first_name != "":
-        # user.first_name = first_name
-        profile.first_name = first_name
-    if last_name != "":
-        # user.last_name = last_name
-        profile.last_name = last_name
-    if bio != "":
-        profile.bio = bio
-    if country != "":
-        profile.country = country
-
-    if request.FILES.get("avatar", None) is not None:
-        form = APIProfileModelForm(request.POST, request.FILES)
-        if not form.is_valid():
-            return HttpResponse(content="400 Bad request - form is invalid", status=400)
-        temp_profile = form.save(commit=False)
-        profile.avatar = temp_profile.avatar
-
-    user.save()
-    profile.save()
-
-    print(f"[API] Created user {username}")
-
-    return json_response({
-        "userId": user.id,
-        "profileId": profile.id
-    })
-
-@csrf_exempt
-def modify_relationship(request):
-    if not verify_token(request):
-        return HttpResponse(content="401 Unauthorized", status=401)
-
-    if request.method != "POST" and request.method != "DELETE":
-        return HttpResponse(content="405 Method Not Allowed", status=405)
-
+        return HttpResponse(content="409 Conflict - Username or email already in use", status=409)
 
     try:
-        profile_id_1 = int(request.GET.get("profileId1", ""))
-        profile_id_2 = int(request.GET.get("profileId2", ""))
-    except ValueError:
-        return HttpResponse(content="400 - Arguments must be integers", status=400)
+        with transaction.atomic():  # Nutze eine Transaktion für konsistente Daten
+            # Benutzer erstellen
+            user = User.objects.create_user(username=username, email=email, password=password)
 
-    profile1 = Profile.objects.filter(id=profile_id_1).first()
-    profile2 = Profile.objects.filter(id=profile_id_2).first()
+            # Profil automatisch durch Signal erstellt, hier Profil anpassen
+            profile = Profile.objects.filter(user=user).first()
 
-    if profile1 is None or profile2 is None:
-        return HttpResponse(content="404 Not Found", status=404)
+            # Falls eine Bio übergeben wurde, hinzufügen
+            if bio:
+                profile.bio = bio
+            
+            # condition id
+            if condition_id is not None:
+                try:
+                    profile.condition_id = int(condition_id)  # Konvertiere in Integer
+                except ValueError:
+                    return HttpResponse(content="400 Bad request - Invalid condition_id", status=400)
 
-    if request.method == "POST":
-        relationship = Relationship.objects.filter(sender=profile2, receiver=profile1).first()
-        if relationship is None:
-            relationship, created = Relationship.objects.get_or_create(sender=profile1, receiver=profile2)
-        relationship.status = "accepted"
-        relationship.save()
+            # Avatar hochladen, falls übergeben
+            if request.FILES.get("avatar", None) is not None:
+                form = APIProfileModelForm(request.POST, request.FILES)
+                if not form.is_valid():
+                    return HttpResponse(content="400 Bad request - Invalid avatar form", status=400)
+                temp_profile = form.save(commit=False)
+                profile.avatar = temp_profile.avatar
 
-        print(f"[API] Created relationship between {profile1.user.username} and {profile2.user.username}")
+            # Profil speichern
+            profile.save()
 
-    elif request.method == "DELETE":
-        relationship = Relationship.objects.filter(sender__in=[profile1, profile2], receiver__in=[profile1, profile2]).first()
-        if relationship is None:
-            return HttpResponse(content="404 Not Found", status=404)
-        relationship.delete()
+            print(f"[API] Created user {username}")
 
-        print(f"[API] Deleted relationship between {profile1.user.username} and {profile2.user.username}")
+            return JsonResponse({
+                "userId": user.id,
+                "profileId": profile.id,
+            })
 
-    return HttpResponse(status=200)
-
+    except Exception as e:
+        print(f"Error creating user: {str(e)}")
+        return HttpResponse(content="500 Internal Server Error", status=500)
 
 @csrf_exempt
 def create_delete_post(request):
@@ -287,55 +251,6 @@ def create_delete_post(request):
         post.delete()
         print(f"[API] Deleted post {post_id}")
         return HttpResponse(status=200)
-
-
-@csrf_exempt
-def create_delete_advertisement(request):
-    if not verify_token(request):
-        return HttpResponse(content="401 Unauthorized", status=401)
-
-    if request.method != "POST" and request.method != "DELETE":
-        return HttpResponse(content="405 Method Not Allowed", status=405)
-
-    if request.method == "POST":
-        text = request.GET.get("text", "")
-        url = request.GET.get("url", "")
-
-        if request.FILES.get("image", None) is None:
-            return HttpResponse(content="400 - image is mandatory", status=400)
-
-        form = APIAdvertisementModelForm(request.POST, request.FILES)
-        if not form.is_valid():
-            return HttpResponse(content="400 Bad request - form is invalid", status=400)
-
-        advertisement = form.save(commit=False)
-        advertisement.text = text
-        advertisement.url = url
-        advertisement.save()
-
-        ad_id = advertisement.id
-
-        print(f"[API] Created advertisement {ad_id}")
-
-        return json_response({
-            "adId": ad_id
-        })
-
-    elif request.method == "DELETE":
-        try:
-            ad_id = int(request.GET.get("adId", ""))
-        except ValueError:
-            return HttpResponse(content="400 - adId must be integer", status=400)
-
-        ad = Advertisement.objects.filter(id=ad_id).first()
-
-        if ad is None:
-            return HttpResponse(content="404 Not Found", status=404)
-
-        ad.delete()
-        print(f"[API] Deleted advertisement {ad_id}")
-        return HttpResponse(status=200)
-
 
 @csrf_exempt
 def modify_reaction(request):

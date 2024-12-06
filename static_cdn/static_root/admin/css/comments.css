@@ -26,6 +26,7 @@ body {
     text-decoration: none;
     margin-bottom: 20px;
     display: inline-block;
+    text-decoration: underline;
 }
 
 .back-link:hover {
@@ -72,7 +73,19 @@ body {
     font-weight: 600;
     color: #1e1e1e;
 }
+.comment-author a {
+    text-decoration: underline;
+    /* Unterstreicht den Link */
+    color: inherit;
+    /* Optional: Beibehaltung der Textfarbe */
+}
 
+.comment-author a:hover {
+    color: blue;
+    /* Optional: Farbe ändern beim Hover */
+    text-decoration: underline;
+    /* Beibehaltung der Unterstreichung */
+}
 .comment-date {
     font-size: 10px;
     color: #888;

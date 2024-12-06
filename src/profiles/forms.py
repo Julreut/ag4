@@ -1,14 +1,18 @@
 from django import forms
 from .models import Profile
-
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy as _  # Verwendung von `as _` für Konsistenz
 
 class ProfileModelForm(forms.ModelForm):
-    first_name = forms.CharField(label=ugettext_lazy("first-name"), widget=forms.TextInput())
-    last_name = forms.CharField(label=ugettext_lazy("last-name"), widget=forms.TextInput())
-    bio = forms.CharField(label=ugettext_lazy("my-profile-biography"), widget=forms.Textarea(), required=False)
+    bio = forms.CharField(
+        label=_("My Profile Biography"),
+        widget=forms.Textarea(),
+        required=False
+    )
+    avatar = forms.ImageField(
+        label=_("Profile Picture"),
+        required=False
+    )
 
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'bio', 'avatar')
-
+        fields = ('bio', 'avatar')  

@@ -21,8 +21,11 @@
                     <div class="comment-card">
                         <div class="comment-header">
                             <h3 class="comment-title">{{ comment.title }}</h3>
-                            <strong class="comment-author"> by {{ comment.author.user.username }}</strong>
-                            {% comment %} <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small> {% endcomment %}
+                            <strong class="comment-author">
+                                by <a href="{% url 'profiles:profile-detail-view' comment.author.user.username %}">
+                                    {{ comment.author.user.username }}
+                                </a>                            
+                                {% comment %} <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small> {% endcomment %}
                         </div>
                         <div class="comment-body">
                             <p>{{ comment.content|truncatechars:200 }}</p>

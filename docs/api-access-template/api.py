@@ -38,10 +38,18 @@ class ApiAccessor:
         return response
 
 
-
-    def create_user(self, username: str, password: str, email: str, display_name: str) -> int:
-        response = self.request("POST", "/user", username=username, password=password, email=email, firstName=display_name)
+    def create_user(self, username: str, password: str, email: str, bio: str = "", condition_id: int = None) -> int:
+        response = self.request(
+            "POST", 
+            "/user", 
+            username=username, 
+            password=password, 
+            email=email, 
+            bio=bio, 
+            condition_id=condition_id
+        )
         return response.json()["profileId"]
+
 
 
     def create_relationship(self, profile_id_1: int, profile_id_2: int) -> None:
