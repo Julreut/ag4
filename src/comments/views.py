@@ -18,9 +18,9 @@ from configuration.models import get_the_config
 
 import time
 
-
 @login_required
 def article_comments_view(request, news_paper_id, article_id):
+    print(request.user.is_staff)
     article = get_object_or_404(Article, id=article_id)
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
@@ -66,7 +66,7 @@ def article_comments_view(request, news_paper_id, article_id):
             instance.article = article
             instance.parent_comment = Comment.objects.get(id=request.POST.get('comment_id'))
             instance.title = secondary_comment_form.cleaned_data['title']  # Titel aus dem Formular
-            instance.is_public = instance.parent_comment.is_public  # Sichtbarkeit erben
+            instance.is_public = False 
             instance.save()
             return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
 
@@ -87,6 +87,7 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
     article = get_object_or_404(Article, id=article_id)
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
+    replies = comment.replies.filter(Q(is_public=True) | Q(author=profile))
 
     # Verarbeiten von sekundären Kommentaren (Antworten)
     if request.method == "POST" and 'submit_secondary_comment_form' in request.POST:
@@ -96,7 +97,7 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
             reply.author = profile  # Der aktuelle Benutzer als Autor
             reply.article = article  # Zugehöriger Artikel
             reply.parent_comment = comment  # Setze den aktuellen Kommentar als Elternkommentar
-            reply.is_public = request.user.is_staff or comment.is_public  # Sichtbarkeit erben
+            reply.is_public = request.user.is_staff
             reply.save()
 
             # Erfolgreiches Speichern: Weiterleitung zurück zu dieser View
@@ -106,9 +107,9 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
             print("Form errors:", form.errors)
             return HttpResponseBadRequest("Invalid form submission.")
 
-    # Kontext für das Template bereitstellen
     context = {
         'comment': comment,  # Der aktuelle Kommentar
+        'replies': replies,
         'article': article,  # Zugehöriger Artikel
         'newspaper': newspaper,  # Zugehörige Zeitung
         'secondary_comment_form': SecondaryCommentModelForm(),  # Neues Formular für Antworten

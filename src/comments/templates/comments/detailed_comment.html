@@ -53,9 +53,9 @@
         <div class="reply-section">
             <p>
             <h4 class="section-title">Antworten:</h4>
-            {% if comment.replies.all %}
+            {% if replies %}
                 <div class="grid-container">
-                    {% for reply in comment.replies.all %}
+                    {% for reply in replies %}
                     <div class="comment-card">
                         <div class="comment-header">
                             <strong class="comment-author">{{ reply.author.user.username }}</strong>
