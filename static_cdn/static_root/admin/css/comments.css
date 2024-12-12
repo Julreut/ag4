@@ -158,15 +158,6 @@ body {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.read-more-btn {
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.read-more-btn:hover {
-    text-decoration: underline;
-}
-
 /* Form Styles */
 .comment-form {
     display: flex;

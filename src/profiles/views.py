@@ -48,18 +48,6 @@ def my_profile_view(request, slug=None):
     }
     return render(request, 'profiles/myprofile.html', context)
 
-@login_required
-def profiles_list_view(request):
-    user = request.user
-    profiles = Profile.objects.exclude(user=user)
-
-    context = {
-        'profiles': profiles,
-    }
-
-    return render(request, 'profiles/profile_list.html', context)
-
-
 class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'profiles/detail.html'

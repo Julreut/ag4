@@ -43,19 +43,20 @@
                             <div class="event">
                                 <div class="content">
                                     <div class="summary">
-                                        <strong>{{ comment.title }}</strong>
+                                        <strong>{{ comment.title|default:"{% trans 'Ohne Titel' %}" }}</strong>
                                         <div class="date">
                                             {{ comment.created|date:"d.m.Y H:i" }}
                                         </div>
                                     </div>
                                     <div class="extra text">
-                                        {{ comment.content }}
+                                        {{ comment.content|linebreaks }}
                                     </div>
-                                     <div class="meta">
-                                        <a href="{{ comment.article.get_absolute_url }}" class="ui button">
-                                            {% trans 'Go to article' %}
+                                    <div class="meta">
+                                        <a href="{{ comment.get_absolute_url }}" class="ui button">
+                                            {% trans 'Zum Kommentar' %}
                                         </a>
                                     </div>
+                                </div>
                             </div>
                             <div class="ui divider"></div>
                         {% endfor %}

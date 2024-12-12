@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import (
     my_profile_view,
-    profiles_list_view,
     ProfileDetailView,
     ProfileListView,
 )

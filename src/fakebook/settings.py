@@ -73,6 +73,7 @@ SITE_ID = 1
 
 #LOGIN_URL = '/admin/'
 LOGIN_REDIRECT_URL = '/questions/redirect_to_questions/'
+LOGOUT_REDIRECT_URL = '/questions/end/'
 
 ACCOUNT_FORMS = {
     'signup': 'fakebook.forms.CustomSignupForm',  # Passe `your_app` an den Namen deiner App an
@@ -148,19 +149,12 @@ APPEND_SLASH = True  # Standardmäßig aktiviert
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 2,  #mind 2 Zeichen
+        },
     },
-    # # {
-    # #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
-    # not needed
 ]
 
 # Channels

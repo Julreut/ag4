@@ -4,7 +4,6 @@
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -49,7 +48,8 @@
                                     <span>{{ comment.disliked.count }}</span>
                                 </form>
                             </div>
-                            <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" class="read-more-btn">Mehr lesen & interagieren</a>
+                            <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" 
+                            class="ui button read-more">Mehr lesen & interagieren</a>
                         </div>
                     </div>
                     {% endfor %}

@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 from profiles.models import Profile
 from articles.models import Article
 
@@ -26,8 +28,18 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created']
-
-        
+    
+    def get_absolute_url(self):
+        return reverse(
+            "comments:detailed-comment", 
+            kwargs={
+                "news_paper_id": self.article.news_paper_id,
+                "article_id": self.article.id,
+                "comment_id": self.id
+            }
+        )
+    
+    
 class PlannedReaction(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="planned_reaction_set")
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="planned_reactions")
