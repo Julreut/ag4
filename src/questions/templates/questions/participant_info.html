@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <!-- Semantic UI CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'experiment.css' %}">
+    
+    <title>{{ heading }}</title>
+</head>
+<body>
+    <div class="experiment-wrapper">
+        <div class="experiment-container">
+            <h1 class="ui dividing header">{{ participant_info_header | safe  }}</h1>
+            <p class="description.participant.info">{{ participant_info_message | safe }}</p>
+            {% comment %} |safe Ergaenzung, da hmtl code übergeben werden kann {% endcomment %}
+            <a href="{% url 'questions:consent_form' %}" class="ui primary button experiment-button">
+                Weiter
+            </a>
+        </div>
+    </div>
+</body>
+</html>

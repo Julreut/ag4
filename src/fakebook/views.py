@@ -23,7 +23,7 @@ def home_view(request):
     }
 
     # return render(request, 'main/home.html', context)
-    return redirect('articles:news-papers')
+    return redirect('questions:experiment_start')
 
 @user_passes_test(lambda u: u.is_superuser)
 def user_creation_view(request):
