@@ -115,6 +115,7 @@ def consent_form(request):
         if consent_given == 'yes':
             # Save user consent to the database
             # Consent.objects.create(user=request.user, consent_given=True)
+
             return HttpResponseRedirect(reverse('questions:redirect_to_questions'))  # Redirect to the experiment start page (login)
         elif consent_given == 'no':
             return redirect('questions:not_eligible')
@@ -147,5 +148,6 @@ def custom_login_view(request):
     # Pass a boolean value to the context
     is_registration_disabled = True  # or some logic to determine this
     return render(request, 'account/login.html', {'form': form, 'is_registration_disabled': is_registration_disabled})
+
     # disable_custom = request.GET.get('disable_custom', 'false').lower() == 'true'
     # return redirect('accounts:login')
