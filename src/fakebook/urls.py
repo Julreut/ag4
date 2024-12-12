@@ -45,6 +45,7 @@ urlpatterns = [
     path('advertisements/', include('advertisements.urls', namespace='advertisements')),
     path('newspapers/', include('articles.urls', namespace='newspapers')),
     path('comments/', include('comments.urls', namespace='comments')),
+    path('questions/', include('questions.urls', namespace='questions')),
 
 
 
@@ -52,6 +53,9 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     # re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serve static and media files in debug mode
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

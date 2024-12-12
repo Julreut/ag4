@@ -35,6 +35,8 @@ if DEBUG:
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    # 'django_extensions',
 
     'allauth',
     'allauth.account',
@@ -56,6 +59,7 @@ INSTALLED_APPS = [
 
     'comments',
     'articles',
+    'questions',
 
     'channels',
     'chat',
@@ -68,7 +72,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 #LOGIN_URL = '/admin/'
-LOGIN_REDIRECT_URL = '/newspapers'
+LOGIN_REDIRECT_URL = '/questions/redirect_to_questions/'
 
 ACCOUNT_FORMS = {
     'signup': 'fakebook.forms.CustomSignupForm',  # Passe `your_app` an den Namen deiner App an
@@ -92,6 +96,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'fakebook.urls'
 
