@@ -140,8 +140,15 @@
     <br style="display: none">
     <a style="display: none" class="button secondaryAction centered" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
     <br style="display: none">
-
-    {% if not is_registration_enabled %}
+    {% if is_registration_disabled %}
+    <a href="{% url 'questions:experiment_start' %}">
+        <button class="ui button centered">
+            {% trans "Go back" %}
+        </button>
+    </a>
+    {% endif %}
+    
+    {% if not is_registration_disabled %}
         <div id="registration-separator" class="separator"></div>
 
         <a id="register-dialog-button-link" class="button secondaryAction centered" href="{{ signup_url }}" style="width: 100%">
