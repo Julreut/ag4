@@ -4,7 +4,7 @@ from .views import (
     CommentUpdateView,
     like_unlike_comment,
     dislike_undislike_comment,
-    article_comments_view,  # Neue View für die Artikel-Kommentarseite
+    article_comments_view,
     detailed_comment_view,
 )
 

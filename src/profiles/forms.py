@@ -1,6 +1,6 @@
 from django import forms
 from .models import Profile
-from django.utils.translation import ugettext_lazy as _  # Verwendung von `as _` für Konsistenz
+from django.utils.translation import gettext_lazy as _  # Verwendung von `as _` für Konsistenz
 
 class ProfileModelForm(forms.ModelForm):
     bio = forms.CharField(

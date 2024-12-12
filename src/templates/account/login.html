@@ -141,11 +141,13 @@
     <a style="display: none" class="button secondaryAction centered" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
     <br style="display: none">
 
-    <div id="registration-separator" class="separator"></div>
+    {% if not is_registration_enabled %}
+        <div id="registration-separator" class="separator"></div>
 
-    <a id="register-dialog-button-link" class="button secondaryAction centered" href="{{ signup_url }}" style="width: 100%">
-        <button id="register-dialog-button" class="ui button secondary secondary-button">{% trans "Create Account" %}</button>
-    </a><br>
+        <a id="register-dialog-button-link" class="button secondaryAction centered" href="{{ signup_url }}" style="width: 100%">
+            <button id="register-dialog-button" class="ui button secondary secondary-button">{% trans "Create Account" %}</button>
+        </a><br>
+    {% endif %}
   </div>
 </div>
 

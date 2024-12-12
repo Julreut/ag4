@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Questions{% endblock title %}
+
+{% block content %}
+<div class="ui container">
+    <h1 class="ui header">{{ label|title }} Questions</h1>
+    <form class="ui form" method="post">
+        {% csrf_token %}
+
+        {% for question in questions %}
+        <div class="field">
+            <label for="question_{{ question.id }}">{{ question.question_text }}</label>
+            {% if question.question_type == 'dropdown' %}
+                <select name="question_{{ question.id }}" id="question_{{ question.id }}" class="ui dropdown" required>
+                    <option value="">Select an option</option>
+                    {% for choice in question.get_choices %}
+                        <option value="{{ choice }}">{{ choice }}</option>
+                    {% endfor %}
+                </select>
+            {% elif question.question_type == 'likert' or question.question_type == 'single_choice' %}
+                <div class="ui grouped fields">
+                    {% for choice in question.get_choices %}
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="question_{{ question.id }}" value="{{ choice }}" required>
+                            <label>{{ choice }}</label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif question.question_type == 'multiple_choice' %}
+                <div class="ui grouped fields">
+                    {% for choice in question.get_choices %}
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="question_{{ question.id }}" value="{{ choice }}">
+                            <label>{{ choice }}</label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif question.question_type == 'numeric' %}
+                <input type="number" name="question_{{ question.id }}" min="{{ question.min_value }}" max="{{ question.max_value }}" required>
+            {% elif question.question_type == 'open_text' %}
+                <textarea name="question_{{ question.id }}" rows="3"></textarea>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="ui primary button">Submit</button>
+    </form>
+</div>
+{% endblock content %}
