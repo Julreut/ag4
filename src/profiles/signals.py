@@ -1,12 +1,18 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from .models import Profile
+from .models import Profile  # Profile ist in der gleichen App
+from questions.models import Consent  # Importiere Consent aus der richtigen App
 
 @receiver(post_save, sender=User)
-def post_save_create_profile(sender, instance, created, **kwargs):
+def post_save_create_profile_and_consent(sender, instance, created, **kwargs):
     if created:
+        # Erstelle das Profile
         Profile.objects.create(user=instance)
+        
+        # Erstelle den Consent (aus der App 'questions')
+        Consent.objects.create(user=instance, consent_given=True)
+
 
 # @receiver(post_save, sender=Relationship)
 # def post_save_add_to_friends(sender, instance, created, **kwargs):
