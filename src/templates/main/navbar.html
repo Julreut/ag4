@@ -3,6 +3,7 @@
 {% url 'home-view' as path_to_home %}
 {% url 'articles:news-papers' as path_to_news_papers %}
 {% url 'profiles:my-profile-view' as path_to_my_profile %}
+{% url 'questions:experiment_end' as experiment_end %}
 
 <div class="ui secondary menu nav">
   {% if not request.user.is_authenticated %}
@@ -27,6 +28,14 @@
     </a> {% endcomment %}
   
     <div class="right menu">
+
+      <!-- Timer -->
+      {% if request.session.login_time %}
+      <div class="ui item" id="timer">
+        Remaining Time: <span id="timer-countdown">Calculating...</span>
+
+      </div>
+      {% endif %}
       <!-- Path to Profile -->
       <a href="{{ path_to_my_profile }}" class="{% if request.path == path_to_my_profile %}active{% endif %} item">
           <img src="{{ picture.url }}" class="ui avatar image">&nbsp;
@@ -42,3 +51,42 @@
   </div>
   {% endif %}
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const timerElement = document.getElementById('timer-countdown');
+    const maxDuration = {{ MAX_SESSION_DURATION|default:3600 }};  // Maximale Sitzungszeit
+    const loginTimeRaw = "{{ request.session.login_time|default:''|escapejs }}";  // Login-Zeit aus Session
+    const loginTime = new Date(loginTimeRaw);
+
+    // Debugging in der Konsole
+    console.log("Login Time (Raw):", loginTimeRaw);
+    console.log("Parsed Login Time:", loginTime);
+
+    if (isNaN(loginTime.getTime())) {
+      console.error("Invalid login time:", loginTimeRaw);
+      timerElement.textContent = "Error: Invalid login time.";
+      return;
+    }
+
+    const endTime = loginTime.getTime() + (maxDuration * 1000);  // Endzeit in Millisekunden
+
+    function updateTimer() {
+      const now = new Date().getTime();
+      const remaining = endTime - now;
+
+      if (remaining > 0) {
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+        timerElement.textContent = `${minutes}m ${seconds}s`;
+      } else {
+        timerElement.textContent = "Time's up!";
+        window.location.href = "{{ experiment_end }}";  // Leitet zum Ende weiter
+      }
+    }
+
+    setInterval(updateTimer, 1000);  // Aktualisiert jede Sekunde
+    updateTimer();  // Initialer Aufruf
+  });
+</script>
+

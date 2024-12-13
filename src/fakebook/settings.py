@@ -96,8 +96,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'fakebook.middleware.AutoLogoutMiddleware',
 ]
 
+MAX_SESSION_DURATION = 3600  # 1 Stunde in Sekunden
 
 ROOT_URLCONF = 'fakebook.urls'
 
@@ -113,6 +115,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'profiles.context_processors.profile_pic',
+                'questions.context_processors.global_settings',
+                'questions.context_processors.session_config'
             ],
         },
     },

@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from .models import Profile  # Profile ist in der gleichen App
 from questions.models import Consent  # Importiere Consent aus der richtigen App
+from django.contrib.auth.signals import user_logged_in
+from django.utils.timezone import now
+
 
 @receiver(post_save, sender=User)
 def post_save_create_profile_and_consent(sender, instance, created, **kwargs):
@@ -12,6 +15,12 @@ def post_save_create_profile_and_consent(sender, instance, created, **kwargs):
         
         # Erstelle den Consent (aus der App 'questions')
         Consent.objects.create(user=instance, consent_given=True)
+
+def set_login_time(sender, request, user, **kwargs):
+    print(f"User {user} logged in at {now().isoformat()}")  # Debugging-Ausgabe
+    request.session['login_time'] = now().isoformat()
+
+user_logged_in.connect(set_login_time)
 
 
 # @receiver(post_save, sender=Relationship)

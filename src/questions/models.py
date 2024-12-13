@@ -107,3 +107,13 @@ class Consent(models.Model):
 
     def __str__(self):
         return f"Consent by {self.user.username} at {self.timestamp}"
+    
+    
+class SessionConfig(models.Model):
+    max_duration = models.PositiveIntegerField(
+        default=3600,  # Standard: 1 Stunde
+        help_text="Maximale Zeit in Sekunden, bevor der Benutzer automatisch ausgeloggt wird."
+    )
+
+    def __str__(self):
+        return f"SessionConfig: {self.max_duration} Sekunden"
