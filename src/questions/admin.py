@@ -59,4 +59,5 @@ class TextAdmin(admin.ModelAdmin):
 
 @admin.register(SessionConfig)
 class SessionConfigAdmin(admin.ModelAdmin):
-    list_display = ('max_duration',)
+    list_display = ('max_duration','is_timer_enabled')
+    fields =('max_duration','is_timer_enabled') # Customize the detail view order
