@@ -34,6 +34,10 @@ def question_list(request, label):
     ).values_list('question_id', flat=True)
     unanswered_questions = questions.exclude(id__in=answered_questions)
 
+    for question in unanswered_questions:
+        if question.question_type == 'slider' and question.min_value is not None and question.max_value is not None:
+            question.mid_value = (question.min_value + question.max_value) // 2
+
     # POST-Request (Antworten speichern)
     if request.method == 'POST':
         for question in unanswered_questions:
@@ -52,6 +56,68 @@ def question_list(request, label):
                     Answer.objects.create(
                         question=question, user=request.user, answer_text=answer_text
                     )
+                
+            elif question.question_type == 'slider':
+                answer_value = request.POST.get(field_name)
+                if question.required and not answer_value:
+                    messages.error(request, f"Bitte beantworten Sie die Frage: {question.question_text}")
+                    return render(request, 'questions/question_list.html', {'questions': unanswered_questions, 'label': label})
+                Answer.objects.create(question=question, user=request.user, answer_text=answer_value)
+
+            elif question.question_type == 'multiple_likert':
+                for sub_question in question.get_sub_questions():
+                    sub_field_name = f'{field_name}_{sub_question}'
+                    answer_value = request.POST.get(sub_field_name)
+                    if question.required and not answer_value:
+                        messages.error(request, f"Bitte beantworten Sie die Frage: {sub_question}")
+                        return render(request, 'questions/question_list.html', {'questions': unanswered_questions, 'label': label})
+                    
+                    Answer.objects.create(
+                        question=question,
+                        user=request.user,
+                        sub_question=f"Zeile_{sub_question}",
+                        answer_text=answer_value
+                    )
+
+            elif question.question_type == 'fancy_combination':
+                for sub_question in question.get_sub_questions():
+                    for column in ['left', 'right']:
+                        sub_field_name = f'{field_name}_{sub_question}_{column}'
+                        answer_value = request.POST.get(sub_field_name)
+                        if question.required and not answer_value:
+                            messages.error(request, f"Bitte beantworten Sie die Frage: {sub_question} ({column})")
+                            return render(request, 'questions/question_list.html', {'questions': unanswered_questions, 'label': label})
+                        
+            elif question.question_type == 'ampel_rating':
+                # Alle Antworten für die Frage sammeln
+                answers = []
+                for index, pair in enumerate(question.get_subchoice_pairs()):
+                    field_name = f"question_{question.id}_{index + 1}"  # parentloop.counter startet bei 1!
+                    print(field_name)
+                    answer_value = request.POST.get(field_name)
+                    print(f"Erwarteter Feldname: {field_name}, Wert: {answer_value}")
+
+
+                    # Validierung: Pflichtfeld prüfen
+                    if question.required and not answer_value:
+                        messages.error(
+                            request, 
+                            f"Bitte beantworten Sie die Zeile '{pair[0]}' in der Frage: {question.question_text}"
+                        )
+                        return render(request, 'questions/question_list.html', {'questions': unanswered_questions, 'label': label})
+
+                    # Antwort erstellen und speichern (innerhalb der Schleife)
+                    Answer.objects.create(
+                        question=question,
+                        user=request.user,
+                        sub_question=f"Zeile_{index + 1}",
+                        answer_text=answer_value
+                    )
+
+                # Optional: Debug-Ausgabe
+                print("Antworten erfolgreich gespeichert:", answers)
+
+                                
             else:
                 answer_text = request.POST.get(field_name, '')
                 if question.required and not answer_text:
@@ -85,9 +151,27 @@ def question_list(request, label):
             return redirect('articles:news-papers')
         elif label == 'after':
             return redirect('questions:experiment_end')
+        
+    ##Helping functions:
+
+    questions_with_pairs = [
+        {'question': q, 'subchoice_pairs': q.get_subchoice_pairs(), 'choices': q.get_choices()}
+        for q in questions
+    ]
+    range_11 = range(11)  # Generate a range from 0 to 10
+
+    #Context
+
+    context = {
+    'questions': unanswered_questions,
+    'label': label,
+    'range_11': range_11,
+    'questions_with_pairs': questions_with_pairs
+}
 
     # Offene Fragen anzeigen
-    return render(request, 'questions/question_list.html', {'questions': unanswered_questions, 'label': label})
+    return render(request, 'questions/question_list.html', context)
+
 
 ##Start View
 def experiment_start(request):

@@ -83,3 +83,39 @@ button {
 button:hover {
     background-color: #003f7d;
 }
+
+/* Slider */
+
+input[type="range"] {
+    -webkit-appearance: none; 
+    width: 100%;
+    background: #ddd;
+    height: 6px;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    /* Slider thumb color */
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+output {
+    font-weight: bold;
+    font-size: 1em;
+}

@@ -10,42 +10,77 @@ class Question(models.Model):
         ('single_choice', 'Single Choice'),
         ('numeric', 'Numeric Scale'),
         ('open_text', 'Open Text'),
+        ('slider', 'Slider'),
+        ('multiple_likert', 'Multiple Likert'),
+        ('fancy_combination', 'Fancy Combination'),
+        ('ampel_rating', 'Ampel Rating')
     ]
-
+    name = models.TextField(
+        blank=True,
+        help_text="Hier bitte den Item-Name festlegen (fuer die Datenauswertung)."
+    )
+    question_type = models.CharField(
+            max_length=20,
+            choices=QUESTION_TYPES,
+            help_text="Hier bitte den Fragen-Typ festlegen."
+        )
     label = models.CharField(
         max_length=10,
         choices=[('before', 'Before'), ('after', 'After')],
         help_text="Gibt an, ob die Frage vor oder nach dem Experiment gestellt wird."
     )
-    question_text = models.TextField(help_text="Der Text der Frage.")
-    question_type = models.CharField(
-        max_length=20,
-        choices=QUESTION_TYPES,
-        help_text="Der Typ der Frage."
-    )
+    question_text = models.TextField(help_text="Welche Frage soll in diesem Item gestellt werden?")
+
     choices = models.TextField(
         blank=True,
-        help_text="Komma-separierte Auswahlmöglichkeiten für Fragen mit vordefinierten Antworten (z.B. Dropdown, Likert-Skala)."
+        help_text="Für alle Fragen mit vordefinierten Antworten: Semikolon-separierte Auswahlmöglichkeiten."
+    )
+    sub_questions = models.TextField(
+        blank=True,
+        help_text="Für Multiple Likert und Fancy Combination: Semikolon-separierte Sub-Fragen."
+    )
+    sub_choices = models.TextField(
+        blank=True,
+        help_text="Zeilenweise Aussagen für die Matrix-Frage, Semikolon-separierte Sub-Choices."
     )
     min_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Minimaler Wert für numerische Fragen."
+        help_text="Für Numeric Scale: Minimaler Wert."
     )
     max_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Maximaler Wert für numerische Fragen."
+        help_text="Für Numeric Scale: Maximaler Wert."
     )
     required = models.BooleanField(
         default=True,
-        help_text="Ob die Frage beantwortet werden muss."
+        help_text="Pflichtfrage?"
     )
 
     def get_choices(self):
         """Gibt eine Liste der Auswahlmöglichkeiten zurück."""
         if self.choices:
-            return [choice.strip() for choice in self.choices.split(',')]
+            return [choice.strip() for choice in self.choices.split(';')]
         return []
+    
+    def get_sub_questions(self):
+        """Gibt eine Liste der Sub-Fragen zurück."""
+        if self.sub_questions:
+            return [sub.strip() for sub in self.sub_questions.split(';')]
+        return []
+    
+    def get_subchoices(self):
+        if self.sub_choices:
+            return [sub.strip() for sub in self.sub_choices.split(';')]
+        return []
+    
+    # Subchoices ausgeben
 
+    def get_subchoice_pairs(self):
+        """Teilt die Subchoices in Paare (linke und rechte Labels)."""
+        subchoices = self.get_subchoices()
+        return list(zip(subchoices[::2], subchoices[1::2]))
+
+    
     def clean(self):
         """Validierung des Modells."""
         if self.question_type in ['dropdown', 'likert', 'multiple_choice', 'single_choice']:
@@ -63,12 +98,18 @@ class Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     answer_text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    sub_question = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Optional: Sub-question identifier for formats like Multiple Likert or Fancy Combination."
+    )
 
     class Meta:
-        unique_together = ('question', 'user')
+        unique_together = ('question', 'user',  'sub_question')
 
     def __str__(self):
-        return f"Antwort von {self.user.username} auf '{self.question.question_text[:50]}'"
+        return f"{self.user.username} - {self.question.question_text} - {self.sub_question or 'Main'}"
 
 class Text(models.Model):
     IDENTIFIER_CHOICES = [

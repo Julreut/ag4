@@ -151,3 +151,72 @@
 .ui.primary.button.start-button:hover {
     background-color: #0056b3;
 }
+
+/* TEST */
+
+.scale-question .radiobutton {
+    font-size: 1.5em !important
+}
+
+.scale-question .radiobutton label:before {
+    border-radius: 0.25em !important;
+    border-color: #aaa !important;
+    border-bottom-width: 3px
+}
+
+.scale-question .radiobutton input:checked+label:before {
+    background: #fff !important
+}
+
+.scale-question .radiobutton input:checked+label:after {
+    color: #333 !important;
+    text-shadow: none !important
+}
+
+.scale-question .radiobutton:nth-child(2) label:before {
+    border-bottom-color: #b22222 !important
+}
+
+.scale-question .radiobutton:nth-child(3) label:before,
+.scale-question .radiobutton:nth-child(4) label:before,
+.scale-question .radiobutton:nth-child(5) label:before,
+.scale-question .radiobutton:nth-child(6) label:before,
+.scale-question .radiobutton:nth-child(7) label:before,
+.scale-question .radiobutton:nth-child(8) label:before {
+    border-bottom-color: #b22222 !important
+}
+
+.scale-question .radiobutton:nth-child(9) label:before,
+.scale-question .radiobutton:nth-child(10) label:before {
+    border-bottom-color: #ffd700 !important
+}
+
+.scale-question .radiobutton:nth-child(11) label:before,
+.scale-question .radiobutton:nth-child(12) label:before {
+    border-bottom-color: #32cd32 !important
+}
+
+.scale-question.radios .custom-label-lower-left .bubble {
+    color: #b22222 !important;
+    border: 0;
+    background: transparent;
+    box-shadow: none !important;
+    font-weight: 700
+}
+
+.scale-question.radios .custom-label-lower-right .bubble {
+    color: #32cd32 !important;
+    border: 0;
+    background: transparent;
+    box-shadow: none !important;
+    font-weight: 700
+}
+
+.scale-question.radios .custom-label-lower-left .bubble:before,
+.scale-question.radios .custom-label-lower-left .bubble:after,
+.scale-question.radios .custom-label-lower-right .bubble:before,
+.scale-question.radios .custom-label-lower-right .bubble:after {
+    display: none
+}
+
+</style>

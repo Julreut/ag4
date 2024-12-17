@@ -4,37 +4,36 @@ from .models import Question, Text, SessionConfig
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('question_text', 'question_type', 'label', 'required')
-    list_filter = ('question_type', 'label', 'required')
+    list_display = ('label', 'question_text', 'question_type', 'required')
     search_fields = ('question_text',)
+    list_filter = ('label', 'question_type', 'required')
+    ordering = ('label', 'question_type')
+    fields = (
+        'name',
+        'question_type',
+        'required',
+        'label', 
+        'question_text', 
+        'choices', 
+        'sub_questions',
+        'sub_choices',
+        'min_value', 
+        'max_value'
 
-    fieldsets = (
-        (None, {
-            'fields': ('label', 'question_text', 'question_type', 'required')
-        }),
-        ('Zusätzliche Optionen', {
-            'fields': ('choices', 'min_value', 'max_value'),
-            'description': 'Diese Felder werden je nach Fragetyp benötigt.'
-        }),
-    )
+    )  # Customize the detail view order
 
-    def get_readonly_fields(self, request, obj=None):
-        """Fragetyp nach Erstellung nicht mehr änderbar."""
-        if obj:
-            return ['question_type']
-        return []
+    def get_queryset(self, request):
+        # Allow admin to filter questions based on label and type
+        queryset = super().get_queryset(request)
+        return queryset
 
-    def get_fields(self, request, obj=None):
-        """Angezeigte Felder dynamisch anpassen."""
-        fields = super().get_fields(request, obj)
-        if obj:
-            if obj.question_type in ['dropdown', 'likert', 'multiple_choice', 'single_choice']:
-                return ('label', 'question_text', 'question_type', 'required', 'choices')
-            elif obj.question_type == 'numeric':
-                return ('label', 'question_text', 'question_type', 'required', 'min_value', 'max_value')
-            else:
-                return ('label', 'question_text', 'question_type', 'required')
-        return fields
+    def save_model(self, request, obj, form, change):
+        # Log changes for better debugging
+        if change:
+            print(f"Updated question: {obj}")
+        else:
+            print(f"Created new question: {obj}")
+        super().save_model(request, obj, form, change)
 
 # Admin configuration for Text model
 from django.contrib import admin

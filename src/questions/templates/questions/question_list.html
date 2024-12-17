@@ -45,7 +45,162 @@
                 <input type="number" name="question_{{ question.id }}" min="{{ question.min_value }}" max="{{ question.max_value }}" required>
             {% elif question.question_type == 'open_text' %}
                 <textarea name="question_{{ question.id }}" rows="3"></textarea>
-            {% endif %}
+            {% elif question.question_type == 'multiple_likert' %}
+                <div class="ui segment">
+                    <label>{{ question.question_text }}</label>
+                    <table class="ui celled table">
+                        <thead>
+                            <tr>
+                                <th>Sub-Question</th>
+                                {% for choice in question.get_choices %}
+                                <th>{{ choice }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sub_question in question.get_sub_questions %}
+                            <tr>
+                                <td>{{ sub_question }}</td>
+                                {% for choice in question.get_choices %}
+                                <td>
+                                    <div class="ui radio checkbox">
+                                        <input type="radio" name="question_{{ question.id }}_{{ sub_question }}" value="{{ choice }}" required>
+                                        <label></label>
+                                    </div>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% elif question.question_type == 'slider' %}
+                <div class="field">
+                    <label>{{ question.question_text }}</label>
+                    <div style="position: relative; width: 100%; margin: 20px 0;">
+                        <!-- Slider -->
+                        <input
+                            type="range"
+                            name="question_{{ question.id }}"
+                            min="-100"
+                            max="100"
+                            step="1"
+                            value="0"
+                            oninput="this.nextElementSibling.value = this.value"
+                            style="width: 100%;"
+                        />
+                        <output style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%);">0</output>
+                    </div>
+                    <!-- Labels -->
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9em;">
+
+                        <span>{{question.get_choices|first}}</span> 
+                        <span>{{question.get_choices.2}}</span>
+                        <span>{{question.get_choices|last}}</span>
+                        {% comment %} trans TODO {% endcomment %}
+                    </div>
+                </div>
+
+            {% elif question.question_type == 'ampel_rating' %}
+                <div class="field scale-question radios">
+                    <label>{{ question.question_text }}</label>
+
+                    {% if question.get_subchoice_pairs %}
+                        <!-- Subchoices vorhanden: Tabelle anzeigen -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <tbody>
+                                {% for pair in question.get_subchoice_pairs %}
+                                <tr>
+                                    <!-- Linke Subchoice-Beschriftung -->
+                                    <td style="text-align: left; font-weight: bold; padding: 8px; width: 20%;">
+                                        {{ pair.0 }}
+                                    </td>
+
+                                    <!-- Skala (Choices) -->
+                                    <td style="text-align: center; padding: 8px;">
+                                        <div style="display: flex; justify-content: center;">
+                                            {% for i in range_11 %}
+                                            <div class="radiobutton" style="margin: 0 5px;">
+                                                <input
+                                                    type="radio"
+                                                    id="rating_{{ question.id }}_{{ forloop.parentloop.counter }}_{{ i }}"
+                                                    name="question_{{ question.id }}_{{ forloop.parentloop.counter }}"
+                                                    value="{{ i }}"
+                                                    required
+                                                />
+                                                <label for="rating_{{ question.id }}_{{ forloop.parentloop.counter }}_{{ i }}">
+                                                    {{ i }}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+
+                                    <!-- Rechte Subchoice-Beschriftung -->
+                                    <td style="text-align: right; font-weight: bold; padding: 8px; width: 20%;">
+                                        {{ pair.1 }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <!-- Keine Subchoices: Original-Ampel-Skala anzeigen -->
+                        <div style="display: flex; justify-content: center; margin: 20px 0;">
+                            {% for i in range_11 %}
+                            <div class="radiobutton" style="margin: 0 5px;">
+                                <input
+                                    type="radio"
+                                    id="rating_{{ question.id }}_{{ i }}"
+                                    name="question_{{ question.id }}"
+                                    value="{{ i }}"
+                                    required
+                                />
+                                <label for="rating_{{ question.id }}_{{ i }}">
+                                    {{ i }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9em; font-weight: 700;">
+                            <span class="custom-label-lower-left bubble">{{ question.get_choices|first }}</span>
+                            <span class="custom-label-lower-right bubble">{{ question.get_choices|last }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+
+            {% elif question.question_type == 'fancy_combination' %}
+                <div class="ui segment">
+                    <label>{{ question.question_text }}</label>
+                    <table class="ui celled table">
+                        <thead>
+                            <tr>
+                                <th>Sub-Question</th>
+                                <th>Left</th>
+                                <th>Right</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sub_question in question.get_sub_questions %}
+                            <tr>
+                                <td>{{ sub_question }}</td>
+                                <td>
+                                    <input type="number" name="question_{{ question.id }}_{{ sub_question }}_left" min="{{ question.min_value }}" max="{{ question.max_value }}">
+                                </td>
+                                <td>
+                                    <input type="number" name="question_{{ question.id }}_{{ sub_question }}_right" min="{{ question.min_value }}" max="{{ question.max_value }}">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+        {% endif %}
         </div>
         {% endfor %}
 

@@ -28,6 +28,7 @@
     }
 
     #register-dialog-button {
+        
 
     }
     #register-dialog-button:hover {
@@ -104,6 +105,26 @@
         border-radius: 50%;
     }
 
+    /* LOGIN */
+    /* Container für Hinweis und Button */
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        padding: 0;              /* Entferne unnötiges Padding */
+        max-width: 350px;        /* Container kompakter machen */
+        text-align: center;
+    }
+
+    /* Hinweis */
+    .hinweis {
+        color: green;
+        margin-bottom: 5px;        /* Gleichmäßige Abstände oben und unten */
+        font-size: 0.9rem;
+        text-align: center;
+    }
     </style>
 {% endblock %}
 
@@ -150,10 +171,15 @@
     
     {% if not is_registration_disabled %}
         <div id="registration-separator" class="separator"></div>
-
+        <div class="container">
+            <small class="hinweis">
+                Zum ersten Mal hier? Erstellen Sie jetzt einen Account:
+            </small>
+          {% comment %} TRANS TODO {% endcomment %}
         <a id="register-dialog-button-link" class="button secondaryAction centered" href="{{ signup_url }}" style="width: 100%">
             <button id="register-dialog-button" class="ui button secondary secondary-button">{% trans "Create Account" %}</button>
         </a><br>
+    </div>
     {% endif %}
   </div>
 </div>

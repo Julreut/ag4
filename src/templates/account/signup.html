@@ -15,6 +15,13 @@
         label[for="id_email"] {
             display: none !important;
         }
+        /* Hinweis */
+        .hinweis {
+            color: green;
+            margin-bottom: 5px;        /* Gleichmäßige Abstände oben und unten */
+            font-size: 0.9rem;
+            text-align: center;
+        }
     </style>
 {% endblock %}
 
@@ -40,9 +47,9 @@
                   {% endfor %}
               </ul>
           {% endif %}
-          <small style="color: green; display: flex; align-items: center; margin-top: 3px;">
+          <small class="hinweis">
               <i class="info circle icon" style="margin-right: 5px; color: green;"></i>
-              Bitte wählen Sie einen anonymen Benutzernamen, der keine Rückschlüsse auf Ihre Identität zulässt.
+            Bitte wählen Sie einen anonymen Benutzernamen, der keine Rückschlüsse auf Ihre Identität zulässt.
           </small>
       </div>
 
