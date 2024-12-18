@@ -96,7 +96,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'fakebook.middleware.AutoLogoutMiddleware',
+    'fakebook.middleware.NewspaperTimerMiddleware',
 ]
 
 MAX_SESSION_DURATION = 3600  # 1 Stunde in Sekunden

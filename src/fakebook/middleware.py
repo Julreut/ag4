@@ -1,39 +1,75 @@
 from datetime import timedelta, datetime
 from django.utils.timezone import now
-from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.urls import reverse, Resolver404
 from questions.models import SessionConfig
+import logging
 
-class AutoLogoutMiddleware:
+logger = logging.getLogger(__name__)
+
+class NewspaperTimerMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
+        self.excluded_paths = None  # Initialize as None
 
     def __call__(self, request):
+        if self.excluded_paths is None:
+            # Initialize excluded_paths here to ensure URL patterns are loaded
+            try:
+                self.excluded_paths = [
+                    reverse('questions:questions_after'),
+                    reverse('questions:questions_after').rstrip('/'),
+                ]
+                logger.debug(f"Excluded paths set to: {self.excluded_paths}")
+            except Resolver404:
+                # Handle the case where URL reversing fails
+                self.excluded_paths = []
+                logger.error("Failed to reverse 'questions:questions_after'. Excluded paths set to empty list.")
+
         if request.user.is_authenticated:
-            # Konfiguration aus der Datenbank laden
+            # Check if the current path is excluded
+            if request.path in self.excluded_paths:
+                logger.debug(f"Path {request.path} is excluded from redirection.")
+                return self.get_response(request)
+
+            # Check if the request comes from a previous timer redirect
+            redirected_from_timer = request.GET.get('redirected_from_timer') == 'true'
+            if redirected_from_timer:
+                logger.debug(f"Request redirected from timer: {request.path}")
+                return self.get_response(request)
+
+            # Load configuration from the database
             config = SessionConfig.objects.first()
+            if not config or not config.is_timer_enabled:
+                logger.debug("Timer is not enabled in the configuration.")
+                return self.get_response(request)
 
-            # Timer aktivieren, wenn is_timer_enabled = True
-            if config and config.is_timer_enabled:
-                max_session_duration = config.max_duration if config else 3600
+            max_session_duration = config.max_duration if config.max_duration else 3600
 
-                # Wenn "/newspapers/" besucht wird, Startzeit einmal setzen
-                if request.path == '/newspapers/':
-                    if 'newspaper_entry_time' not in request.session:
-                        request.session['newspaper_entry_time'] = now().isoformat()
+            # Set entry time for '/newspapers/' path if not already set
+            if request.path == reverse('articles:news-papers') and 'newspaper_entry_time' not in request.session:
+                request.session['newspaper_entry_time'] = now().isoformat()
+                logger.debug(f"Newspaper entry time set: {request.session['newspaper_entry_time']}")
 
-                # Timer prüfen, wenn die Startzeit gesetzt wurde
-                newspaper_entry_time = request.session.get('newspaper_entry_time')
-                if newspaper_entry_time:
+            # Check the timer and redirect if the duration exceeds the max limit
+            newspaper_entry_time = request.session.get('newspaper_entry_time')
+            if newspaper_entry_time:
+                try:
                     newspaper_entry_time = datetime.fromisoformat(newspaper_entry_time)
-                    if now() - newspaper_entry_time > timedelta(seconds=max_session_duration):
-                        # Logout und Weiterleitung zur Endseite
-                        logout(request)
-                        return redirect('/questions/end')
-            else:
-                # Wenn der Timer deaktiviert ist, Eintrag entfernen
-                if 'newspaper_entry_time' in request.session:
+                except ValueError:
+                    logger.error("Invalid newspaper_entry_time format.")
                     del request.session['newspaper_entry_time']
+                    return self.get_response(request)
 
+                elapsed_time = now() - newspaper_entry_time
+                logger.debug(f"Elapsed time: {elapsed_time}")
+
+                if elapsed_time > timedelta(seconds=max_session_duration):
+                    logger.debug("Timer exceeded max session duration. Redirecting to /questions/after/")
+                    # Clear session entry time to prevent re-evaluation after redirect
+                    del request.session['newspaper_entry_time']
+                    return redirect(f"{reverse('questions:questions_after')}?redirected_from_timer=true")
+
+        # Continue processing the request
         response = self.get_response(request)
         return response

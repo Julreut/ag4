@@ -4,6 +4,7 @@
 {% url 'articles:news-papers' as path_to_news_papers %}
 {% url 'profiles:my-profile-view' as path_to_my_profile %}
 {% url 'questions:experiment_end' as experiment_end %}
+{% url 'questions:questions_after' as questions_after %}
 
 <div class="ui secondary menu nav">
   {% if not request.user.is_authenticated %}
@@ -43,9 +44,15 @@
       </a>
 
       <!-- Logout -->
+      <a href="{{ questions_after }}" class="ui item">
+        <i class="fas fa-sign-out-alt"></i>&nbsp;
+        After Questions 
+      </a>
+
+            <!-- Logout -->
       <a href="{% url 'account_logout' %}" class="ui item">
         <i class="fas fa-sign-out-alt"></i>&nbsp;
-        End Experiment
+        Cancel (Quit Experiment) 
       </a>
     </div> 
   </div>
@@ -60,7 +67,7 @@
     const loginTime = new Date(loginTimeRaw);
 
     if (!loginTimeRaw || isNaN(loginTime.getTime())) {
-      console.error("Timer inactive: No valid entry time found.");
+      console.error("Timer inactive: No valid entry time found. Raw value:", loginTimeRaw);
       return;
     }
 
@@ -76,7 +83,7 @@
         timerElement.textContent = `${minutes}m ${seconds}s`;
       } else {
         timerElement.textContent = "Time's up!";
-        window.location.href = "{% url 'questions:experiment_end' %}";
+        window.location.href = "/questions/after/?redirected_from_timer=true";
       }
     }
 

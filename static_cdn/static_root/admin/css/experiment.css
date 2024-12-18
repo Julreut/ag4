@@ -17,6 +17,7 @@
     /* Restrict the height to 80% of the viewport */
     overflow-y: auto;
     /* Enable vertical scrolling */
+    justify-content: center;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;

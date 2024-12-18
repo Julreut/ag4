@@ -16,6 +16,20 @@
         <div class="experiment-container">
             <h1 class="ui dividing header">{{ end_experiment_header }}</h1>
             <h3 class="ui header">{{ end_experiment_message }}</h3>
+
+            {% if not user.is_authenticated %}
+                <div class="ui positive message">
+                    <p>Successfully logged out, die Seite kann nun geschlossen werden.</p>
+                </div>
+            {% else %}
+                <form method="post" action="{% url 'account_logout' %}">
+                    {% csrf_token %}
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                    {% endif %}
+                    <button type="submit" class="ui button red">Log Out</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 </body>
