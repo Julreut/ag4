@@ -5,7 +5,6 @@ from django.core.exceptions import ValidationError
 class Question(models.Model):
     QUESTION_TYPES = [
         ('dropdown', 'Dropdown'),
-        ('likert', 'Likert Scale'),
         ('multiple_choice', 'Multiple Choice'),
         ('single_choice', 'Single Choice'),
         ('numeric', 'Numeric Scale'),
@@ -45,12 +44,21 @@ class Question(models.Model):
     )
     min_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Für Numeric Scale: Minimaler Wert."
+        help_text="Für Numeric Scale und Slider: Minimaler Wert."
     )
     max_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Für Numeric Scale: Maximaler Wert."
+        help_text="Für Numeric Scale und Slider: Maximaler Wert."
     )
+    step_value = models.IntegerField(
+        blank=True, null=True,
+        help_text="Für Slider: Stepgröße."
+    )
+    start_value = models.IntegerField(
+        blank=True, null=True,
+        help_text="Für Slider: Startwert."
+    )
+    
     required = models.BooleanField(
         default=True,
         help_text="Pflichtfrage?"

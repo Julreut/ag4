@@ -10,6 +10,15 @@
     <link rel="stylesheet" type="text/css" href="{% static 'experiment.css' %}">
 
     <title>{{ end_experiment_header }}</title>
+    <style>
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* Optional: Anpassung der Höhe */
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="experiment-wrapper">
@@ -22,13 +31,15 @@
                     <p>Successfully logged out, die Seite kann nun geschlossen werden.</p>
                 </div>
             {% else %}
-                <form method="post" action="{% url 'account_logout' %}">
-                    {% csrf_token %}
-                    {% if redirect_field_value %}
-                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-                    {% endif %}
-                    <button type="submit" class="ui button red">Log Out</button>
-                </form>
+                <div class="flex-center">
+                    <form method="post" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                        {% endif %}
+                        <button type="submit" class="ui button red">Log Out</button>
+                    </form>
+                </div>
             {% endif %}
         </div>
     </div>

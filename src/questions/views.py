@@ -217,6 +217,7 @@ def not_eligible(request):
     })
 
 def experiment_end(request):
+    
     # Fetch visible text content without language dependency
     end_header = Text.objects.filter(visibility=True, identifier__startswith="end_experiment_header_").first()
     end_message = Text.objects.filter(visibility=True, identifier__startswith="end_experiment_message_").first()

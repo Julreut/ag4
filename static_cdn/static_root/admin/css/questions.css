@@ -31,9 +31,21 @@ form {
 /* Eingabeelemente */
 label {
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 8px;
     font-weight: bold;
+}
+
+.large-label {
+    font-size: 18px;
+    /* Passe die Größe nach Bedarf an */
+    /* Weitere Stiländerungen */
+}
+
+.small-label {
+    font-size: 10px;
+    /* Passe die Größe nach Bedarf an */
+    /* Weitere Stiländerungen */
 }
 
 select,
@@ -87,7 +99,7 @@ button:hover {
 /* Slider */
 
 input[type="range"] {
-    -webkit-appearance: none; 
+    -webkit-appearance: none;
     width: 100%;
     background: #ddd;
     height: 6px;
@@ -118,4 +130,17 @@ input[type="range"]::-moz-range-thumb {
 output {
     font-weight: bold;
     font-size: 1em;
+}
+
+/* Navigation Buttons */
+.ui.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#submit-btn {
+    background-color: #0056b3;
+    color: white;
 }
