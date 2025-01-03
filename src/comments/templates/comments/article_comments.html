@@ -21,7 +21,7 @@
                         <div class="comment-header">
                             <h3 class="comment-title">{{ comment.title }}</h3>
                             <strong class="comment-author">
-                                by <a href="{% url 'profiles:profile-detail-view' comment.author.user.username %}">
+                                by <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
                                     {{ comment.author.user.username }}
                                 </a>                            
                                 {% comment %} <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small> {% endcomment %}
@@ -69,3 +69,30 @@
     </div>
 </div>
 {% endblock %}
+
+
+{% comment %} LOG ENTRY {% endcomment %}
+
+<script>
+    let startTime = Date.now();  // Startzeitpunkt erfassen
+
+    // Event: Wenn die Seite verlassen wird
+    window.addEventListener("beforeunload", function() {
+        let duration = Date.now() - startTime;  // Verweildauer in Millisekunden berechnen
+
+        // Daten an die Backend-API senden
+        fetch("{% url 'analytics:log_time_spent' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                page_type: "comments",
+                id: {{ article.id }},  // Artikel-ID dynamisch einfügen
+                duration_ms: duration  // Verweildauer in Millisekunden
+            })
+        });
+    });
+</script>
+

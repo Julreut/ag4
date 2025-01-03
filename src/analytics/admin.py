@@ -40,3 +40,4 @@ class TrackedPostViewAdmin(admin.ModelAdmin):
         return post_view.post.content
 
     download_csv.short_description = "Download CSV file"
+    

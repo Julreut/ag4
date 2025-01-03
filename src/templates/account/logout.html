@@ -2,12 +2,14 @@
 
 {% load i18n %}
 
-{% block head_title %}{Experiment Abbrechen}{% endblock %}
+{% block title %} Abbruch {% endblock %}
 
 {% block content %}
-<h1>{% trans "Sign Out" %}</h1>
+<h1>Experiment abbrechen</h1>
 
 <p>{% trans 'Are you sure you want to abort the experiment?' %}</p>
+<p>Hinweis: Ihr Account und Ihre Daten werden nicht in der Datenerhebung betrachtet. Diese Aktion kann nicht rückgängig gemacht werden.</p>
+
 
 <form method="post" action="{% url 'account_logout' %}">
   {% csrf_token %}

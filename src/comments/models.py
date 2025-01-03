@@ -13,6 +13,7 @@ class Comment(models.Model):
     updated = models.DateTimeField(auto_now=True)
     public = models.BooleanField(default=True)  # Gibt an, ob der Kommentar öffentlich ist
     condition_id = models.IntegerField(null=True, blank=True)  # Versuchsbedingungs-ID
+    is_secondary = models.BooleanField(default=False)  # Gibt an, ob der Kommentar ein Sekundärkommentar ist
     parent_comment = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
     )

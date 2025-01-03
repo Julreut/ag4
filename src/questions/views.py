@@ -4,6 +4,11 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .models import Question, Answer, Text, Consent
 from django.contrib.auth.forms import AuthenticationForm
+from analytics.models import UserEventLog, create_event_log
+
+import json
+
+
 
 
 @login_required
@@ -27,6 +32,13 @@ from django.contrib import messages
 
 @login_required
 def question_list(request, label):
+    # Log: Beginn des Fragebogens
+    create_event_log(
+        user=request.user,
+        event_type=f"{label}_questions_started",
+        event_data={"label": label}  # JSON in String umwandeln
+    )
+
     # Alle Fragen und beantwortete Fragen filtern
     questions = Question.objects.filter(label=label)
     answered_questions = Answer.objects.filter(
@@ -140,6 +152,14 @@ def question_list(request, label):
 
         # Weiterleitung nach Beantwortung aller `before`-Fragen
         if not unanswered_questions.exists():
+
+            # Log: Fragebogen abgeschlossen
+            create_event_log(
+                user=request.user,
+                event_type=f"{label}_questions_completed",
+                event_data={"label": label}
+            )
+
             if label == 'before':
                 return redirect('articles:news-papers')  # Newspaper-Seite
             elif label == 'after':
@@ -228,6 +248,7 @@ def experiment_end(request):
     })
 
 from allauth.account.forms import LoginForm
+
 def custom_login_view(request):
     form = LoginForm(request.POST or None)
     # Pass a boolean value to the context

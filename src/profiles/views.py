@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404
+
 from posts.models import Post
 from .models import Profile
 from .forms import ProfileModelForm
@@ -15,6 +17,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Profile
 from comments.models import Comment  # Importiere das Comment-Modell
 from .forms import ProfileModelForm
+
+from analytics.models import create_event_log
 
 @login_required
 def my_profile_view(request, slug=None):
@@ -39,6 +43,13 @@ def my_profile_view(request, slug=None):
     else:
         comments = Comment.objects.filter(author=profile, is_public=True)
 
+    ##LOG ENTRY
+    create_event_log(
+        user=request.user,
+        event_type="page_view",
+        event_data={"page_type": "my_profile_view", "user": profile.user.username}
+    )
+
     # Kontextdaten
     context = {
         'profile': profile,
@@ -51,23 +62,30 @@ def my_profile_view(request, slug=None):
 class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'profiles/detail.html'
+    context_object_name = 'profile'
 
-    def get_object(self, slug=None):
+    def get_object(self):
         slug = self.kwargs.get('slug')
-        profile = get_object_or_404(Profile, slug=slug)
-        return profile
+        try:
+            # Gracefully handle missing profile
+            return Profile.objects.get(slug=slug)
+        except Profile.DoesNotExist:
+            raise Http404("Profile not found.")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         profile = self.get_object()
-        # Füge die gewünschten Daten zum Kontext hinzu
+        
+        # Add desired data to the context
         context["username"] = profile.user.username
         context["bio"] = profile.bio
-        # Kommentare filtern: Alle Kommentare für den Profilbesitzer, nur öffentliche für andere
+        
+        # Filter comments based on the user viewing the profile
         if self.request.user == profile.user:
-            context["comments"] = Comment.objects.filter(author=profile)  # Filtere nach dem User
+            context["comments"] = Comment.objects.filter(author=profile)
         else:
-            context["comments"] = Comment.objects.filter(author=profile, is_public=True)  # Nur öffentliche Kommentare
+            context["comments"] = Comment.objects.filter(author=profile, is_public=True)
+        
         return context
 
 class ProfileListView(LoginRequiredMixin, ListView):

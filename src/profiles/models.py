@@ -13,8 +13,6 @@ class Profile(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     condition_id = models.IntegerField(null=True, blank=True)  # Versuchsbedingungs-ID
 
-
-
     def __str__(self):
         return f"{self.user.username}"
 
@@ -22,7 +20,7 @@ class Profile(models.Model):
         return reverse("profiles:profile-detail-view", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
-        # Automatically generate slug if not present
+        # Automatically generate or normalize slug
         if not self.slug:
             base_slug = slugify(self.user.username)
             slug = base_slug
@@ -30,4 +28,7 @@ class Profile(models.Model):
             while Profile.objects.filter(slug=slug).exists():
                 slug = f"{base_slug}-{get_random_string()}"
             self.slug = slug
+        else:
+            # Ensure existing slug is always in lowercase
+            self.slug = slugify(self.slug)
         super().save(*args, **kwargs)

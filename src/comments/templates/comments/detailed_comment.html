@@ -17,7 +17,7 @@
         <div class="comment-card detailed-view">
             <div class="comment-header">
             <strong class="comment-author">
-                by <a href="{% url 'profiles:profile-detail-view' comment.author.user.username %}">
+                by <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
                     {{ comment.author.user.username }}
                 </a>
             </strong>

@@ -46,3 +46,29 @@ Articles
 </div> {% endcomment %}
 
 {% endblock content %}
+
+{% comment %} LOG ENTRY {% endcomment %}
+{% comment %} Zeit-Tracking für die Verweildauer auf der Seite {% endcomment %}
+<script>
+    let startTime = Date.now();  // Startzeitpunkt erfassen
+
+    // Event: Wenn die Seite verlassen wird
+    window.addEventListener("beforeunload", function() {
+        let duration = Date.now() - startTime;  // Verweildauer in Millisekunden berechnen
+
+        // Daten an die Backend-API senden
+        fetch("{% url 'analytics:log_time_spent' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                page_type: "all_articles",
+                id: {{ newspaper.id }},  // Zeitung-ID dynamisch einfügen
+                duration_ms: duration    // Verweildauer in Millisekunden
+            })
+        });
+    });
+</script>
+
