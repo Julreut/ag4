@@ -17,6 +17,7 @@ src/templates/**/*.txt.py
 static_cdn/static_root/admin/**/*.txt.py
 
 # collected static files (automatically copied on docker build)
+static_cdn/static_root
 static_cdn/static_root/analytics/
 static_cdn/static_root/chat/
 static_cdn/static_root/favicon.ico
