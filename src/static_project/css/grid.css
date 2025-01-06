@@ -1,0 +1,47 @@
+/* Container für die Zeitungsübersicht */
+.newspaper-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Stil für jedes Zeitungs-Element */
+.newspaper-item {
+    flex: 1 1 300px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+/* Hover-Effekt */
+.newspaper-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Stil für das Bild */
+.image-container {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Stil für den Inhalt */
+.content {
+    text-align: center;
+    margin-top: 10px;
+}

@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 
-from posts.models import Post
 from .models import Profile
 from .forms import ProfileModelForm
 from django.views.generic import ListView, DetailView

@@ -17,9 +17,10 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import home_view, user_creation_view, create_user, download_view, download_xlsx, download_database, download_pictures, is_registration_enabled
+from .views import home_view, user_creation_view, create_user, download_view, download_xlsx, download_database, download_pictures, is_registration_enabled, placeholder_view
 
 from django.views.static import serve
+
 
 
 urlpatterns = [
@@ -38,16 +39,11 @@ urlpatterns = [
     path('is_registration_enabled/', is_registration_enabled, name='is_registration_enabled'),
     path('accounts/', include('allauth.urls')),
     path('profiles/', include('profiles.urls', namespace='profiles')),
-    path('posts/', include('posts.urls', namespace='posts')),
-    path('chat/', include('chat.urls', namespace='chat')),
     path('analytics/', include('analytics.urls', namespace='analytics')),
     path('api/', include('api.urls', namespace='api')),
-    path('advertisements/', include('advertisements.urls', namespace='advertisements')),
     path('newspapers/', include('articles.urls', namespace='newspapers')),
     path('comments/', include('comments.urls', namespace='comments')),
     path('questions/', include('questions.urls', namespace='questions')),
-
-
 
 
     # https://stackoverflow.com/questions/5836674/why-does-debug-false-setting-make-my-django-static-files-access-fail

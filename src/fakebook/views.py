@@ -11,6 +11,9 @@ from django.contrib import messages
 
 from profiles.models import Profile
 
+from django.http import HttpResponseNotFound
+
+
 import json
 
 def home_view(request):
@@ -115,3 +118,7 @@ def is_registration_enabled(request):
 
 def json_response(data):
     return HttpResponse(content=json.dumps(data), content_type="application/json", status=200)
+
+
+def placeholder_view(request):
+    return HttpResponseNotFound("This endpoint is not implemented.")

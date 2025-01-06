@@ -53,16 +53,12 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
 
-    'posts',
     'profiles',
-    'advertisements',
 
     'comments',
     'articles',
     'questions',
 
-    'channels',
-    'chat',
     'analytics',
 
     'configuration',
@@ -161,13 +157,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Channels
-# TODO: inefficient, redis would be better
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -197,8 +186,7 @@ LANGUAGE_CODE = 'en'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static_project'),
-    "static_cdn/static_root/admin/css",
+    os.path.join(BASE_DIR, 'static_project/css'),
 ]
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "static_root")

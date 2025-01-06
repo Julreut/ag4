@@ -8,7 +8,6 @@ class Configuration(models.Model):
     comments_interaction = models.BooleanField(default=False)
     like_dislike_enabled = models.BooleanField(default=True)
     registration_enabled = models.BooleanField(default=True)
-    relationship_management_enabled = models.BooleanField(default=True)
     management_token = models.CharField(default="changeme", max_length=100)
 
     def regenerate_mgmt_token(self):

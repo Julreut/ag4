@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('profiles', '0003_auto_20220329_0050'),
-        ('posts', '0004_auto_20220314_0013'),
     ]
 
     operations = [

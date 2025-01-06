@@ -23,14 +23,6 @@ all profiles
                         <a href={{obj.get_absolute_url}}><button class="ui primary button mb-5 w-big">{% trans 'see-profile-button' %}</button></a>
                         <br>
                         
-                        {% if obj.user not in rel_receiver and obj.user not in rel_sender and relationship_management_enabled %}
-                            <form action="{% url 'profiles:send-invite' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="profile_pk" value={{obj.pk}}>
-                                <button type="submit" class="ui positive basic button mb-5 w-big"><i class="plus square icon"></i>{% trans 'add-to-friends' %}</button>
-                            </form>
-                         {% endif %}
-
                         {% if obj.user in rel_receiver and request.user not in obj.friends.all %}
                             <button class="ui disabled button mb-5 w-big"><i class="user icon"></i>{% trans 'friend-req-awaiting' %}</button>
                         {% endif %}
@@ -40,13 +32,7 @@ all profiles
                         {% endif %}
 
                         {% if request.user in obj.friends.all %}
-                        {% if relationship_management_enabled %}
-                        <form action="{% url 'profiles:remove-friend' %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="profile_pk" value={{obj.pk}}>
-                            <button type="submit" class="ui negative basic button mb-5 w-big"><i class="minus square icon"></i>{% trans 'remove-from-friends' %}</button>
-                        </form>
-                        {% endif %}
+
                         {% if chat_enabled %}
                             <button type="submit" onclick="chatWithUserRequested({{ obj.pk }})" class="ui positive basic button mb-5 w-big"><i class="square icon"></i>Chat</button>
                         {% endif %}

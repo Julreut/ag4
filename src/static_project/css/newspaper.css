@@ -1,0 +1,46 @@
+.newspaper-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.newspaper-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.newspaper-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.image-container {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.newspaper-content {
+    text-align: center;
+}
+
+.newspaper-title {
+    font-size: 1.2em;
+    color: #333;
+    margin: 0 0 5px;
+}
+
+.newspaper-meta {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 10px;
+}

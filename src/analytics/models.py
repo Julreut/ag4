@@ -1,7 +1,7 @@
 from django.db import models
 
 from profiles.models import Profile
-from posts.models import Post
+# from posts.models import Post
 from django.contrib.auth.models import User
 
 
@@ -17,16 +17,10 @@ class UserEventLog(models.Model):
     ##possible: auto_now_add=True
 
 
-class TrackedSession(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="tracked_sessions")
-    first_seen = models.DateTimeField(auto_now_add=True)
-    last_seen = models.DateTimeField(auto_now_add=True)
-
-class TrackedPostView(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="tracked_post_views")
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="tracked_views")
-    total_time_ms = models.BigIntegerField(default=0)
-
+# class TrackedSession(models.Model):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="tracked_sessions")
+#     first_seen = models.DateTimeField(auto_now_add=True)
+#     last_seen = models.DateTimeField(auto_now_add=True)
 
 def create_event_log(user, event_type, event_data):
     """

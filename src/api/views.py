@@ -6,10 +6,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
-from advertisements.models import Advertisement
+# from advertisements.models import Advertisement
 from api.forms import APIProfileModelForm, APIArticleModelForm
 from configuration.models import get_the_config
-from posts.models import Post, PlannedReaction
+# from posts.models import Post, PlannedReaction
 from articles.models import Article
 from comments.models import Comment
 from profiles.models import Profile
@@ -197,140 +197,6 @@ def create_user(request):
     except Exception as e:
         print(f"Error creating user: {str(e)}")
         return HttpResponse(content="500 Internal Server Error", status=500)
-
-@csrf_exempt
-def create_delete_post(request):
-    if not verify_token(request):
-        return HttpResponse(content="401 Unauthorized", status=401)
-
-    if request.method != "POST" and request.method != "DELETE":
-        return HttpResponse(content="405 Method Not Allowed", status=405)
-
-    if request.method == "POST":
-        try:
-            author_id = int(request.GET.get("profileId", ""))
-            created_string = request.GET.get("created", "")
-            if created_string != "":
-                created = datetime.datetime.fromtimestamp(float(created_string))
-            else:
-                created = datetime.datetime.now()
-        except ValueError:
-            return HttpResponse(content="400 Bad request - Invalid parameters", status=400)
-
-        content = request.GET.get("content", "")
-
-        author = Profile.objects.filter(id=author_id).first()
-
-
-        if author is None:
-            return HttpResponse(content="404 Not Found", status=404)
-
-        post = Post.objects.create(author=author, created=created, content=content)
-        post.save()
-
-        post_id = post.id
-
-        print(f"[API] Created post {post_id}")
-
-        return json_response({
-            "postId": post_id
-        })
-
-
-    elif request.method == "DELETE":
-        try:
-            post_id = int(request.GET.get("postId", ""))
-        except ValueError:
-            return HttpResponse(content="400 - postId must be integer", status=400)
-
-        post = Post.objects.filter(id=post_id).first()
-
-        if post is None:
-            return HttpResponse(content="404 Not Found", status=404)
-
-        post.delete()
-        print(f"[API] Deleted post {post_id}")
-        return HttpResponse(status=200)
-
-@csrf_exempt
-def modify_reaction(request):
-    if not verify_token(request):
-        return HttpResponse(content="401 Unauthorized", status=401)
-
-    if request.method != "POST" and request.method != "DELETE":
-        return HttpResponse(content="405 Method Not Allowed", status=405)
-
-    if request.method == "POST":
-        try:
-            author_profile_id = int(request.GET.get("profileId", ""))
-            time_delta = int(request.GET.get("timeDelta", "0"))
-        except ValueError:
-            return HttpResponse(content="400 - profileId and timeDelta must be integer", status=400)
-
-        author_profile = Profile.objects.filter(id=author_profile_id).first()
-        if author_profile is None:
-            return HttpResponse(content="404 Not Found - author profile not found", status=404)
-
-        reaction_type = request.GET.get("type", "")
-        if not reaction_type in ["Like", "Dislike"]:
-            return HttpResponse(content="400 - type must be in ['Like', 'Dislike']", status=400)
-
-        post_id_string = request.GET.get("postId", "")
-
-        if post_id_string != "":
-            try:
-                post_id = int(post_id_string)
-            except ValueError:
-                return HttpResponse(content="400 - postId must be integer", status=400)
-
-            post = Post.objects.filter(id=post_id).first()
-            if post is None:
-                return HttpResponse(content="404 Not Found - post not found", status=404)
-
-            planned_reaction = PlannedReaction.objects.create(user=author_profile, time_delta=time_delta,
-                                                              reaction_type=reaction_type, post=post)
-            planned_reaction_id = planned_reaction.id
-            print(f"[API] Created planned reaction {planned_reaction_id}")
-
-            return json_response({
-                "plannedReactionId": planned_reaction_id
-            })
-
-        else:
-            try:
-                target_profile_id = int(request.GET.get("targetProfileId", ""))
-                post_offset = int(request.GET.get("postOffset", ""))
-            except ValueError:
-                return HttpResponse(content="400 - targetProfileId and postOffset must be integer", status=400)
-
-            target_profile = Profile.objects.filter(id=target_profile_id).first()
-            if target_profile is None:
-                return HttpResponse(content="404 Not Found - target profile not found", status=404)
-
-            planned_reaction = PlannedReaction.objects.create(user=author_profile, time_delta=time_delta,
-                                                              reaction_type=reaction_type,
-                                                              target_profile=target_profile, post_offset=post_offset)
-            planned_reaction_id = planned_reaction.id
-            print(f"[API] Created planned reaction {planned_reaction_id}")
-
-            return json_response({
-                "plannedReactionId": planned_reaction_id
-            })
-
-    elif request.method == "DELETE":
-        try:
-            reaction_id = int(request.GET.get("reactionId", ""))
-        except ValueError:
-            return HttpResponse(content="400 - reactionId must be integer", status=400)
-
-        planned_reaction = PlannedReaction.objects.filter(id=reaction_id).first()
-
-        if planned_reaction is None:
-            return HttpResponse(content="404 Not Found", status=404)
-
-        planned_reaction.delete()
-        print(f"[API] Deleted reaction {reaction_id}")
-        return HttpResponse(status=200)
 
 
 def json_response(data):
