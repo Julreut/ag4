@@ -113,9 +113,9 @@
                         </div>
                         <!-- Labels -->
                         <div style="display: flex; justify-content: space-between; font-size: 0.9em;">
-                            <span>{{ question.get_choices|first }}</span> 
-                            <span>{{ question.get_choices|slice:":1"|last }}</span>
-                            <span>{{ question.get_choices|last }}</span>
+                            <span>{{ question.get_choices.0 }}</span> 
+                            <span>{{ question.get_choices.1 }}</span>
+                            <span>{{ question.get_choices.2 }}</span>
                         </div>
                     </div>
                 

@@ -34,20 +34,23 @@ Newspapers {% endblock title %}
 <script>
     let startTime = Date.now();
 
-    window.addEventListener("beforeunload", function() {
-        let duration = Date.now() - startTime;  // Zeit in Millisekunden
+      document.addEventListener("visibilitychange", function() {
+          if (document.visibilityState === "hidden") {
+              let duration = Date.now() - startTime;  // Zeit in Millisekunden
 
-        fetch("{% url 'analytics:log_time_spent' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: JSON.stringify({
-                page_type: "newspaper",
-                id: null,
-                duration_ms: duration
-            })
-        });
-    });
+              fetch("{% url 'analytics:log_time_spent' %}", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "X-CSRFToken": "{{ csrf_token }}"
+                  },
+                  body: JSON.stringify({
+                      page_type: "newspaper",
+                      id: null,
+                      duration_ms: duration
+                  })
+              }).catch(err => console.error("Error logging time spent:", err));
+          }
+      });
+
 </script>

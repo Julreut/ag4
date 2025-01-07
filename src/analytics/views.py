@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import create_event_log
+from .utils import create_event_log
 
 # Create your views here.
 
-## Backend view for json time tracking
+## Backend view for json time tracking KLAPPT NOCH NICHT
 import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required

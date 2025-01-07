@@ -16,7 +16,7 @@ from profiles.models import Profile
 from articles.models import Article, NewsPaper  # Importiere Articles und Newspapers for IDs
 from configuration.models import get_the_config
 
-from analytics.models import create_event_log
+from analytics.utils import create_event_log
 
 import time
 

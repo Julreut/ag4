@@ -32,7 +32,7 @@ class Question(models.Model):
 
     choices = models.TextField(
         blank=True,
-        help_text="Für alle Fragen mit vordefinierten Antworten: Semikolon-separierte Auswahlmöglichkeiten."
+        help_text="Für alle Fragen mit vordefinierten Antworten. Für Slider bitte genau drei Möglichkeiten passend zu den min und max values angeben: Semikolon-separierte Auswahlmöglichkeiten."
     )
     sub_questions = models.TextField(
         blank=True,

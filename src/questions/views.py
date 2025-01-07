@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .models import Question, Answer, Text, Consent
 from django.contrib.auth.forms import AuthenticationForm
-from analytics.models import UserEventLog, create_event_log
+from analytics.models import UserEventLog
+from analytics.utils import create_event_log
+
 
 import json
 
@@ -167,10 +169,19 @@ def question_list(request, label):
 
     # Alle Fragen beantwortet: Sofort weiterleiten
     if not unanswered_questions.exists():
+             
+    # Log: Fragebogen abgeschlossen
+        create_event_log(
+            user=request.user,
+            event_type=f"{label}_questions_completed",
+            event_data={"label": label}
+        )
+
         if label == 'before':
             return redirect('articles:news-papers')
         elif label == 'after':
             return redirect('questions:experiment_end')
+        
         
     ##Helping functions:
 

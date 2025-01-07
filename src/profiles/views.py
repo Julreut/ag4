@@ -17,7 +17,7 @@ from .models import Profile
 from comments.models import Comment  # Importiere das Comment-Modell
 from .forms import ProfileModelForm
 
-from analytics.models import create_event_log
+from analytics.utils import create_event_log
 
 @login_required
 def my_profile_view(request, slug=None):

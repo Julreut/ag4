@@ -9,7 +9,7 @@ from analytics.models import UserEventLog
 from django.contrib.auth.signals import user_logged_out
 
 import json
-from analytics.models import create_event_log
+from analytics.utils import create_event_log
 
 @receiver(post_save, sender=User)
 def post_save_create_profile_and_consent(sender, instance, created, **kwargs):

@@ -196,11 +196,9 @@ MEDIA_ROOT = os.path.join(DATA_DIRECTORY, "media")
 
 
 
-# Settings - TODO: load from environment
-ANALYTICS_UPDATE_PERIOD_MS = 3000
-ANALYTICS_SESSION_TIMEOUT_MS = 30000
-LAST_MESSAGE_CHAT_DRAWER_MAX_LENGTH = 18
-
+# # Settings - TODO: load from environment
+# ANALYTICS_UPDATE_PERIOD_MS = 3000
+# ANALYTICS_SESSION_TIMEOUT_MS = 30000
 
 # in case it doesn't exist copy template db in data.template/ to data/
 import shutil

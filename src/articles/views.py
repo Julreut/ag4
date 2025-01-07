@@ -4,7 +4,7 @@ from django.shortcuts import reverse, get_object_or_404
 from .models import Article, NewsPaper
 from profiles.models import Profile
 from django.db.models import Q
-from analytics.models import create_event_log
+from analytics.utils import create_event_log
 
 # Create your views here.
 

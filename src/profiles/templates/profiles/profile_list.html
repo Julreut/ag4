@@ -33,9 +33,6 @@ all profiles
 
                         {% if request.user in obj.friends.all %}
 
-                        {% if chat_enabled %}
-                            <button type="submit" onclick="chatWithUserRequested({{ obj.pk }})" class="ui positive basic button mb-5 w-big"><i class="square icon"></i>Chat</button>
-                        {% endif %}
                         {% endif %}
                     </div>
 
