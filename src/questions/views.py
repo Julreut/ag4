@@ -34,12 +34,6 @@ from django.contrib import messages
 
 @login_required
 def question_list(request, label):
-    # Log: Beginn des Fragebogens
-    create_event_log(
-        user=request.user,
-        event_type=f"{label}_questions_started",
-        event_data={"label": label}  # JSON in String umwandeln
-    )
 
     # Alle Fragen und beantwortete Fragen filtern
     questions = Question.objects.filter(label=label)
@@ -47,6 +41,16 @@ def question_list(request, label):
         user=request.user, question__label=label
     ).values_list('question_id', flat=True)
     unanswered_questions = questions.exclude(id__in=answered_questions)
+
+        # Log: Beginn des Fragebogens (nur wenn unbeantwortete Fragen existieren und noch kein Log existiert)
+    if unanswered_questions.exists() and not Answer.objects.filter(
+        user=request.user, question__label=label
+    ).exists():
+        create_event_log(
+            user=request.user,
+            event_type=f"{label}_questions_started",
+            event_data={"label": label}
+        )
 
     for question in unanswered_questions:
         if question.question_type == 'slider' and question.min_value is not None and question.max_value is not None:
@@ -155,13 +159,6 @@ def question_list(request, label):
         # Weiterleitung nach Beantwortung aller `before`-Fragen
         if not unanswered_questions.exists():
 
-            # Log: Fragebogen abgeschlossen
-            create_event_log(
-                user=request.user,
-                event_type=f"{label}_questions_completed",
-                event_data={"label": label}
-            )
-
             if label == 'before':
                 return redirect('articles:news-papers')  # Newspaper-Seite
             elif label == 'after':
@@ -169,13 +166,6 @@ def question_list(request, label):
 
     # Alle Fragen beantwortet: Sofort weiterleiten
     if not unanswered_questions.exists():
-             
-    # Log: Fragebogen abgeschlossen
-        create_event_log(
-            user=request.user,
-            event_type=f"{label}_questions_completed",
-            event_data={"label": label}
-        )
 
         if label == 'before':
             return redirect('articles:news-papers')
