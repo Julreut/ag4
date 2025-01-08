@@ -167,9 +167,13 @@ document.addEventListener("submit", function (event) {
     const replyTitle =
       document.getElementById("reply-title")?.value || "No title";
 
+    const replyText =
+        form.querySelector("textarea[name='content']")?.value ||"No content";
+
     logUserAction("write_reply_submitted", {
       comment_id: commentId,
       reply_title: replyTitle,
+      reply_text: replyText,
     });
   }
 });
