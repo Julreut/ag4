@@ -17,8 +17,6 @@ from .models import Profile
 from comments.models import Comment  # Importiere das Comment-Modell
 from .forms import ProfileModelForm
 
-from analytics.utils import create_event_log
-
 @login_required
 def my_profile_view(request, slug=None):
     # Hol das Profil basierend auf dem Slug oder das eigene Profil
@@ -41,13 +39,6 @@ def my_profile_view(request, slug=None):
         comments = Comment.objects.filter(author=profile)
     else:
         comments = Comment.objects.filter(author=profile, is_public=True)
-
-    ##LOG ENTRY
-    create_event_log(
-        user=request.user,
-        event_type="page_view",
-        event_data={"page_type": "my_profile_view", "user": profile.user.username}
-    )
 
     # Kontextdaten
     context = {

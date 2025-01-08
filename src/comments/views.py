@@ -16,8 +16,6 @@ from profiles.models import Profile
 from articles.models import Article, NewsPaper  # Importiere Articles und Newspapers for IDs
 from configuration.models import get_the_config
 
-from analytics.utils import create_event_log
-
 import time
 
 def save_comment(form, profile, article, parent_comment=None, is_public=False):
@@ -28,21 +26,6 @@ def save_comment(form, profile, article, parent_comment=None, is_public=False):
     instance.parent_comment = parent_comment
     instance.is_public = is_public
     instance.save()
-
-    # Event-Log erstellen
-    event_type = "sec_comment_posted" if parent_comment else "main_comment_posted"
-    create_event_log(
-        user=profile.user,
-        event_type=event_type,
-        event_data={
-            "article_id": article.id,
-            "comment_title": instance.title,
-            "comment_content": instance.content,
-            "parent_comment_id": parent_comment.id if parent_comment else None,
-            "is_secondary": parent_comment is not None
-        }
-    )
-
     return instance
 
 
@@ -51,14 +34,6 @@ def article_comments_view(request, news_paper_id, article_id):
     article = get_object_or_404(Article, id=article_id)
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
-
-    ##LOG ENTRY
-    create_event_log(
-        user=request.user,
-        event_type="page_view",
-        event_data={"page_type": "article_comments_view", "id": article.id}
-    )
-
     # Hauptkommentare und ihre sekundären Kommentare abrufen
     comments = Comment.objects.filter(
         article=article,
@@ -127,14 +102,6 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     replies = comment.replies.filter(Q(is_public=True) | Q(author=profile))
-
-    ##LOG ENTRY
-    create_event_log(
-        user=request.user,
-        event_type="page_view",
-        event_data={"page_type": "detailed_comment_view", "id": comment.id}
-    )
-
     # Sekundärkommentar hinzufügen
     if request.method == "POST" and 'submit_secondary_comment_form' in request.POST:
         form = SecondaryCommentModelForm(request.POST)
@@ -192,64 +159,23 @@ def toggle_like(profile, comment, request):
         # If already liked, remove like
         comment.liked.remove(profile)
         # Log event for unlike
-        create_event_log(
-            user=request.user,
-            event_type="comment_unliked",
-            event_data={
-                "comment_id": comment.id,
-                "comment_title": comment.title,
-                "author": comment.author.user.username
-            }
-        )
     else:
         # Add like
         comment.liked.add(profile)
         # Remove dislike if exists
         if profile in comment.disliked.all():
             comment.disliked.remove(profile)
-        # Log event for like
-        create_event_log(
-            user=request.user,
-            event_type="comment_liked",
-            event_data={
-                "comment_id": comment.id,
-                "comment_title": comment.title,
-                "author": comment.author.user.username
-            }
-        )
-
 
 def toggle_dislike(profile, comment, request):
     if profile in comment.disliked.all():
         # If already disliked, remove dislike
         comment.disliked.remove(profile)
-        # Log event for undislike
-        create_event_log(
-            user=request.user,
-            event_type="comment_undisliked",
-            event_data={
-                "comment_id": comment.id,
-                "comment_title": comment.title,
-                "author": comment.author.user.username
-            }
-        )
     else:
         # Add dislike
         comment.disliked.add(profile)
         # Remove like if exists
         if profile in comment.liked.all():
             comment.liked.remove(profile)
-        # Log event for dislike
-        create_event_log(
-            user=request.user,
-            event_type="comment_disliked",
-            event_data={
-                "comment_id": comment.id,
-                "comment_title": comment.title,
-                "author": comment.author.user.username
-            }
-        )
-
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     """Ermöglicht das Löschen eigener Kommentare."""

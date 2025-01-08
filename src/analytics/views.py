@@ -8,27 +8,21 @@ import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
-@login_required
-def log_time_spent(request):
+def log_user_action(request):
+    """
+    Loggt Javascript Benutzeraktionen wie 'Mehr lesen', 'Weniger lesen' oder 'Antwort schreiben'.
+    """
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            page_type = data.get("page_type")
-            page_id = data.get("id")
-            duration_ms = data.get("duration_ms")
-
-            # Log-Eintrag erstellen
-            create_event_log(
-                user=request.user,
-                event_type="time_spent",
-                event_data={
-                    "page_type": page_type,
-                    "id": page_id,
-                    "duration_ms": duration_ms
-                }
-            )
-            return JsonResponse({"status": "success"})
+            user = request.user
+            event_type = data.get("event_type")
+            event_data = data.get("event_data", {})
+            
+            # Event loggen
+            create_event_log(user, event_type, event_data)
+            
+            return JsonResponse({"message": "Event erfolgreich geloggt"}, status=200)
         except Exception as e:
-            print(f"Fehler beim Verarbeiten der Zeitdaten: {e}")
-            return JsonResponse({"status": "error", "message": str(e)}, status=400)
-    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)

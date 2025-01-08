@@ -38,7 +38,14 @@
     {% block scripts %}
     {% endblock scripts %}
 
+    <!-- Definition der Variablen -->
+    <script>
+      const logActionUrl = "{% url 'analytics:log_user_action' %}";
+      const csrfToken = "{{ csrf_token }}";
+    </script>
+
    <!--Custom js -->
+    <script type="text/javascript" src={% static 'log.js' %}></script>
     <script type="text/javascript" src={% static 'main.js' %}></script>
   </body>
 </html>

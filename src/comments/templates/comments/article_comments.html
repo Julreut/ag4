@@ -27,7 +27,7 @@
                                 {% comment %} <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small> {% endcomment %}
                         </div>
                         <div class="comment-body">
-                            <p>{{ comment.content|truncatechars:200 }}</p>
+                            <p>{{ comment.content|truncatechars:100 }}</p>
                         </div>
                         <div class="comment-actions view-only">
                             <div class="like-dislike-form">

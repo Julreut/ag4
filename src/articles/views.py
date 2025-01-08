@@ -4,21 +4,12 @@ from django.shortcuts import reverse, get_object_or_404
 from .models import Article, NewsPaper
 from profiles.models import Profile
 from django.db.models import Q
-from analytics.utils import create_event_log
 
 # Create your views here.
 
 ## Newspaper definitions
 @login_required
 def get_newspapers(request):
-
-    ##LOG ENTRY
-    create_event_log(
-        user=request.user,
-        event_type="page_view",
-        event_data={"page_type": "newspaper_overview", "id": None}
-    )
-
     news_papers = NewsPaper.objects.all()
     context = {
         'news_papers': news_papers #must use a string
@@ -28,14 +19,6 @@ def get_newspapers(request):
 ## Article definitions
 @login_required
 def article_list(request, news_paper_id):
-    
-    ##LOG ENTRY
-    create_event_log(
-        user=request.user,
-        event_type="page_view",
-        event_data={"page_type": "article_list", "id": news_paper_id}
-    )
-
     # Filtere die Artikel basierend auf der Zeitung
     articles = Article.objects.filter(news_paper_id=news_paper_id)
     # Füge die entsprechende Zeitung in den Kontext hinzu
@@ -55,15 +38,12 @@ def detailed_article(request, news_paper_id, slug):
     article = get_object_or_404(Article, slug=slug, news_paper_id=news_paper_id)
     profile = Profile.objects.get(user=request.user)
 
-    public_comments_count = article.comments.filter(Q(is_public=True) | Q(author=profile)).count()
+    public_comments_count = article.comments.filter(
+        parent_comment__isnull=True,
+    ).filter(
+        Q(is_public=True) | Q(author=profile)  # Öffentlich ODER vom spezifischen Benutzer
+    ).count()
 
-    ## LOG ENTRY
-    create_event_log(
-        user=request.user,
-        event_type="article_click",
-        event_data={"article_id": article.id}
-    )
-    
     context = {
         'article': article, 
         'newspaper': newspaper,

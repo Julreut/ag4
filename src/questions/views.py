@@ -7,11 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from analytics.models import UserEventLog
 from analytics.utils import create_event_log
 
-
 import json
-
-
-
 
 @login_required
 def redirect_to_questions(request):
@@ -41,16 +37,6 @@ def question_list(request, label):
         user=request.user, question__label=label
     ).values_list('question_id', flat=True)
     unanswered_questions = questions.exclude(id__in=answered_questions)
-
-        # Log: Beginn des Fragebogens (nur wenn unbeantwortete Fragen existieren und noch kein Log existiert)
-    if unanswered_questions.exists() and not Answer.objects.filter(
-        user=request.user, question__label=label
-    ).exists():
-        create_event_log(
-            user=request.user,
-            event_type=f"{label}_questions_started",
-            event_data={"label": label}
-        )
 
     for question in unanswered_questions:
         if question.question_type == 'slider' and question.min_value is not None and question.max_value is not None:

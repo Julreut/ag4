@@ -51,7 +51,6 @@
 
         <!-- Replies Section -->
         <div class="reply-section">
-            <p>
             <h4 class="section-title">Antworten:</h4>
             {% if replies %}
                 <div class="grid-container">
@@ -62,8 +61,26 @@
                             <small class="comment-date">{{ reply.created|date:"d.m.Y H:i" }}</small>
                         </div>
                         <div class="comment-body">
-                            <h6 class="comment-title">{{ reply.title }}</h6>
-                            <p>{{ reply.content }}</p>
+                            <!-- Titel der Antwort -->
+                            <strong class="comment-title" data-reply-title="{{ reply.title }}">{{ reply.title }}</strong>
+
+                            <!-- Kurzfassung des Inhalts -->
+                            <p id="content-{{ reply.id }}-short" data-reply-id="{{ reply.id }}">
+                                {{ reply.content|slice:":100" }}...
+                            </p>
+
+                            <!-- Vollständiger Inhalt -->
+                            <p id="content-{{ reply.id }}" style="display: none;" data-reply-id="{{ reply.id }}">
+                                {{ reply.content }}
+                            </p>
+
+                            <!-- "Mehr lesen"/"Weniger lesen"-Button -->
+                            <a href="javascript:void(0);" 
+                            class="ui button read-more" 
+                            data-reply-id="{{ reply.id }}" 
+                            data-reply-title="{{ reply.title }}">
+                                Mehr lesen
+                            </a>
                         </div>
                     </div>
                     {% endfor %}
@@ -73,18 +90,24 @@
             {% endif %}
         </div>
 
+
         <!-- Reply Form -->
         <p>
         <div class="reply-form-section">
             <h4 class="section-title">Eigene Antwort hinzufügen:</h4>
-            <form method="post" class="reply-form">
+            <!-- Show the reply form on button click -->
+            <button id="show-reply-form" data-comment-id="{{ comment.id }}" class="ui button">Antwort schreiben</button>
+            <form method="post" class="reply-form" id="reply-form" data-comment-id="{{ comment.id }}" style="display: none;">
                 {% csrf_token %}
                 <input type="text" name="title" id="reply-title" placeholder="Titel für die Antwort eingeben" class="form-input" required>
                 <textarea name="content" id="reply-content" rows="3" placeholder="Antwort schreiben..." class="form-textarea" required></textarea>
-                <input type="hidden" name="comment_id" value="{{ comment.id }}">
                 <button type="submit" name="submit_secondary_comment_form" class="submit-btn">Antwort senden</button>
             </form>
-        </div>
+        </div>  
+
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
 {% endblock %}
