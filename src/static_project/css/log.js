@@ -47,19 +47,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Klicks auf Links und Buttons loggen
 document.addEventListener("click", function (event) {
-  const target = event.target;
+  const target = event.target.closest("button"); // Sucht den nächstgelegenen Button (falls auf ein Icon geklickt wurde)
 
-  // Prüfen, ob der Klick auf einen Button oder Link erfolgt
-  if (target.tagName === "A" || target.tagName === "BUTTON") {
-    logUserAction("click", {
-      url: getPathFromUrl(target.href || window.location.href),
-      text: target.innerText || target.value || "No text",
-      tag: target.tagName,
-      id: target.id || "No ID",
-      class: target.className || "No class",
-    });
+  if (target) {
+    // Allgemeine Log-Daten
+    const logData = {
+      url: getPathFromUrl(target.href || window.location.href), // Aktuelle URL oder Ziel-URL
+      text: target.innerText || target.value || "No text", // Text des Buttons
+      tag: target.tagName, // Tag-Typ (z. B. BUTTON)
+      id: target.id || "No ID", // Button-ID
+      class: target.className || "No class", // Button-Klassen
+    };
+
+    // Zusätzliche Daten für Like/Dislike-Buttons
+    if (target.dataset.action) {
+      logData.action = target.dataset.action; // Aktion (like/unlike/dislike/undislike)
+    }
+    if (target.dataset.commentId) {
+      logData.comment_id = target.dataset.commentId; // Kommentar-ID
+    }
+    console.log(
+      "Button clicked:",
+      target.dataset.action,
+      target.dataset.commentId
+    );
+    // Log-Daten senden
+    logUserAction("click", logData);
   }
 });
+
 
 // Kommentar-Post-Aktionen loggen
 document.addEventListener("submit", function (event) {

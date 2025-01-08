@@ -101,7 +101,14 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
     article = get_object_or_404(Article, id=article_id)
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
+    
+    # Primärkommentar-Aktionen berechnen
+    comment.like_action = "unlike" if profile in comment.liked.all() else "like"
+    comment.dislike_action = "undislike" if profile in comment.disliked.all() else "dislike"
+
+    # Antworten-Aktionen berechnen
     replies = comment.replies.filter(Q(is_public=True) | Q(author=profile))
+
     # Sekundärkommentar hinzufügen
     if request.method == "POST" and 'submit_secondary_comment_form' in request.POST:
         form = SecondaryCommentModelForm(request.POST)
@@ -125,7 +132,7 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
         'newspaper': newspaper,
         'secondary_comment_form': SecondaryCommentModelForm(),
     }
-
+    # time.sleep(10) # good for debugging
     return render(request, 'comments/detailed_comment.html', context)
 
 @login_required
@@ -155,10 +162,11 @@ def dislike_undislike_comment(request):
 
 
 def toggle_like(profile, comment, request):
+    action = "like"  # Standardaktion ist "like"
     if profile in comment.liked.all():
         # If already liked, remove like
         comment.liked.remove(profile)
-        # Log event for unlike
+        action = "unlike"  # Aktion ändern
     else:
         # Add like
         comment.liked.add(profile)
@@ -166,16 +174,32 @@ def toggle_like(profile, comment, request):
         if profile in comment.disliked.all():
             comment.disliked.remove(profile)
 
+    # Speichern der Änderungen
+    comment.save()
+
+    # Rückgabe der Aktion an das Frontend
+    return action
+
+
 def toggle_dislike(profile, comment, request):
+    action = "dislike"  # Standardaktion ist "dislike"
     if profile in comment.disliked.all():
         # If already disliked, remove dislike
         comment.disliked.remove(profile)
+        action = "undislike"  # Aktion ändern
     else:
         # Add dislike
         comment.disliked.add(profile)
         # Remove like if exists
         if profile in comment.liked.all():
             comment.liked.remove(profile)
+
+    # Speichern der Änderungen
+    comment.save()
+
+    # Rückgabe der Aktion an das Frontend
+    return action
+
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     """Ermöglicht das Löschen eigener Kommentare."""

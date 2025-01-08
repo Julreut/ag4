@@ -19,6 +19,12 @@ def log_user_action(request):
             event_type = data.get("event_type")
             event_data = data.get("event_data", {})
             
+          # Zusätzliche Validierung für Like/Dislike
+            if event_type in ["click"] and "action" in event_data:
+                action = event_data.get("action")
+                if action not in ["like", "unlike", "dislike", "undislike"]:
+                    return render(request, "404.html", status=404)
+                
             # Event loggen
             create_event_log(user, event_type, event_data)
             

@@ -31,18 +31,30 @@
 
             <!-- Like/Dislike Buttons -->
             <div class="comment-actions">
+                <!-- Like Button -->
                 <form method="post" action="{% url 'comments:like-comment-view' %}" class="like-dislike-form">
                     {% csrf_token %}
                     <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                    <button type="submit" class="ui icon button">
+                    <button 
+                        type="submit" 
+                        class="ui icon button" 
+                        data-action="{{ comment.like_action }}" 
+                        
+                        data-comment-id="{{ comment.id }}">
                         <i class="thumbs up outline icon"></i>
                     </button>
                     <span>{{ comment.liked.count }}</span>
                 </form>
+
+                <!-- Dislike Button -->
                 <form method="post" action="{% url 'comments:dislike-comment-view' %}" class="like-dislike-form">
                     {% csrf_token %}
                     <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                    <button type="submit" class="ui icon button">
+                    <button 
+                        type="submit" 
+                        class="ui icon button" 
+                        data-action="{{ comment.dislike_action }}" 
+                        data-comment-id="{{ comment.id }}">
                         <i class="thumbs down outline icon"></i>
                     </button>
                     <span>{{ comment.disliked.count }}</span>
