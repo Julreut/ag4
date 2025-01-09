@@ -5,24 +5,74 @@ from .models import Article, NewsPaper
 from profiles.models import Profile
 from django.db.models import Q
 
+from analytics.models import UserContentPosition
+
+from django.contrib.contenttypes.models import ContentType
+import random
+
 # Create your views here.
 
-## Newspaper definitions
+### Get the newspapers
 @login_required
 def get_newspapers(request):
-    news_papers = NewsPaper.objects.all()
+    user = request.user
+    newspaper_type = ContentType.objects.get_for_model(NewsPaper)
+
+    # Prüfen, ob bereits eine Reihenfolge existiert
+    if not UserContentPosition.objects.filter(user=user, content_type=newspaper_type).exists():
+        # Randomisiere die Zeitungen
+        newspapers = list(NewsPaper.objects.all())
+        random.shuffle(newspapers)
+
+        # Speichere die Reihenfolge im UserContentPosition-Modell
+        for index, newspaper in enumerate(newspapers):
+            UserContentPosition.objects.create(
+                user=user,
+                content_type=newspaper_type,
+                object_id=newspaper.id,
+                position=index + 1
+            )
+
+    # Lade die gespeicherte Reihenfolge
+    newspaper_positions = UserContentPosition.objects.filter(user=user, content_type=newspaper_type).order_by('position')
+    newspapers = [pos.content_object for pos in newspaper_positions]
+
     context = {
-        'news_papers': news_papers #must use a string
+        'news_papers': newspapers
     }
     return render(request, 'articles/news_papers.html', context)
 
 ## Article definitions
 @login_required
 def article_list(request, news_paper_id):
-    # Filtere die Artikel basierend auf der Zeitung
-    articles = Article.objects.filter(news_paper_id=news_paper_id)
-    # Füge die entsprechende Zeitung in den Kontext hinzu
+    user = request.user
+    article_type = ContentType.objects.get_for_model(Article)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
+
+    # IDs aller Artikel der Zeitung abrufen
+    article_ids = Article.objects.filter(news_paper_id=news_paper_id).values_list('id', flat=True)
+
+    # Prüfen, ob bereits eine Reihenfolge existiert
+    if not UserContentPosition.objects.filter(user=user, content_type=article_type, object_id__in=article_ids).exists():
+        # Randomisiere die Artikel für diese Zeitung
+        articles = list(Article.objects.filter(news_paper_id=news_paper_id))
+        random.shuffle(articles)
+
+        # Speichere die Reihenfolge im UserContentPosition-Modell
+        for index, article in enumerate(articles):
+            UserContentPosition.objects.create(
+                user=user,
+                content_type=article_type,
+                object_id=article.id,
+                position=index + 1
+            )
+
+    # Lade die gespeicherte Reihenfolge
+    article_positions = UserContentPosition.objects.filter(
+        user=user, content_type=article_type, object_id__in=article_ids
+    ).order_by('position')
+    articles = [pos.content_object for pos in article_positions]
+
     context = {'articles': articles, 'newspaper': newspaper}
     return render(request, 'articles/all_articles.html', context)
 

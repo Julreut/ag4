@@ -10,4 +10,15 @@ class UserEventLog(models.Model):
     timestamp = models.DateTimeField() ##possible: auto_now_add=True
 
 
-   
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
+class UserContentPosition(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Versuchsperson
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)  # Typ: Article, NewsPaper, Comment
+    object_id = models.PositiveIntegerField()  # ID des zugehörigen Objekts (z.B. Artikel-ID)
+    content_object = GenericForeignKey('content_type', 'object_id')  # Verknüpfung zum echten Objekt
+    position = models.IntegerField()  # Die zufällige Position
+
+    class Meta:
+        unique_together = ('user', 'content_type', 'object_id')  # Eindeutige Zuordnung für jeden Benutzer und Inhalt
