@@ -18,6 +18,7 @@ class Comment(models.Model):
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
     )
     is_public = models.BooleanField(default=True)
+    tag = models.CharField(max_length=50, default='control')
 
     liked = models.ManyToManyField(Profile, related_name="liked_comments_set", blank=True)
     disliked = models.ManyToManyField(Profile, related_name="disliked_comments_set", blank=True)

@@ -1,6 +1,6 @@
 from django.db import models
-
 from django.contrib.auth.models import User
+
 
 
 class UserEventLog(models.Model):
@@ -22,3 +22,11 @@ class UserContentPosition(models.Model):
 
     class Meta:
         unique_together = ('user', 'content_type', 'object_id')  # Eindeutige Zuordnung für jeden Benutzer und Inhalt
+
+class ExperimentCondition(models.Model):
+    name = models.CharField(max_length=100)  # Name der Bedingung
+    description = models.TextField(blank=True)  # Beschreibung der Bedingung
+    tag = models.CharField(max_length=50)  # Tag zur Kennzeichnung (z.B. 'positive' oder 'negative')
+    
+    def __str__(self):
+        return self.name

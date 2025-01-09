@@ -1,15 +1,13 @@
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save
-from django.contrib.auth.models import User
 from django.dispatch import receiver
-from .models import Profile  # Profile ist in der gleichen App
-from questions.models import Consent  # Importiere Consent aus der richtigen App
-from django.contrib.auth.signals import user_logged_in
+from django.contrib.auth.models import User
 from django.utils.timezone import now
-from analytics.models import UserEventLog
-from django.contrib.auth.signals import user_logged_out
-
-import json
+from .models import Profile, ExperimentCondition
+from questions.models import Consent
 from analytics.utils import create_event_log
+import random
+
 
 @receiver(post_save, sender=User)
 def post_save_create_profile_and_consent(sender, instance, created, **kwargs):
@@ -27,19 +25,47 @@ def post_save_create_profile_and_consent(sender, instance, created, **kwargs):
             event_data={"username": instance.username}
         )
 
-def set_login_time(sender, request, user, **kwargs):
-    print(f"User {user} logged in at {now().isoformat()}")  # Debugging-Ausgabe
-    # Speichere Login-Zeit in die Session
+
+@receiver(user_logged_in)
+def assign_condition_on_login(sender, request, user, **kwargs):
+    # Hole das zugehörige Profile-Objekt
+    profile = Profile.objects.filter(user=user).first()
+
+    if profile and not profile.condition:  # Überprüfe, ob noch keine Bedingung zugewiesen wurde
+        conditions = ExperimentCondition.objects.all()
+        if conditions.exists():
+            assigned_condition = random.choice(conditions)  # Wähle zufällig eine Bedingung aus
+            profile.condition = assigned_condition
+            profile.save()
+
+        # Logge das Zuweisungsereignis
+        create_event_log(
+            user=user,
+            event_type="condition_assigned",
+            event_data={"condition": assigned_condition.name}
+        )
+
+    # Setze die Login-Zeit
     request.session['login_time'] = now().isoformat()
-    
+
     # Logge das Login-Event
     create_event_log(
         user=user,
         event_type="user_logged_in",
-        event_data={"ip_address": get_client_ip(request)} # JSON in String umwandeln
+        event_data={"ip_address": get_client_ip(request)}  # IP-Adresse des Nutzers
     )
 
-    # Hilfsfunktion, um die IP-Adresse des Nutzers zu bekommen
+@receiver(user_logged_out)
+def log_user_logout(sender, request, user, **kwargs):
+    # Logge das Logout-Ereignis
+    create_event_log(
+        user=request.user,
+        event_type="user_logged_out",
+        event_data={"logout_time": now().isoformat()}
+    )
+
+
+# Hilfsfunktion, um die IP-Adresse des Nutzers zu bekommen
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -47,14 +73,3 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
-
-
-user_logged_in.connect(set_login_time)
-
-@receiver(user_logged_out)
-def log_user_logout(sender, request, user, **kwargs):
-    create_event_log(
-        user=request.user,
-        event_type="user_logged_out",
-        event_data={"logout_time": now().isoformat()}
-    )

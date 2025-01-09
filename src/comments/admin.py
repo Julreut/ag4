@@ -1,12 +1,30 @@
 from django.contrib import admin
+from django import forms
+
 from .models import Comment, PlannedReaction, Like, Dislike
+from analytics.models import ExperimentCondition
+
+
+class CommentAdminForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Dynamische Dropdown-Werte aus der ExperimentCondition-Tabelle
+        self.fields['tag'].widget = forms.Select(
+            choices=[(condition.tag, condition.name) for condition in ExperimentCondition.objects.all()]
+        )
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'author', 'content', 'article', 'is_public', 'condition_id', 'created']  # 'condition_id' hinzugefügt
-    list_filter = ['is_public', 'article', 'condition_id', 'created']  # 'condition_id' und 'created' hinzugefügt
+    list_display = ['id', 'author', 'content', 'article', 'is_public', 'created']  # 'condition_id' hinzugefügt
+    list_filter = ['is_public', 'article','created']  # 'condition_id' und 'created' hinzugefügt
     search_fields = ['content', 'author__user__username']
-    actions = ['make_public', 'make_private', 'set_condition']
+    actions = ['make_public', 'make_private']
+    form = CommentAdminForm  # Verwende das benutzerdefinierte Formular
+
 
     def make_public(self, request, queryset):
         """
@@ -21,31 +39,6 @@ class CommentAdmin(admin.ModelAdmin):
         """
         updated = queryset.update(is_public=False)
         self.message_user(request, f"{updated} ausgewählte Kommentare wurden privat gemacht.")
-
-    def set_condition(self, request, queryset):
-        """
-        Set a specific 'condition_id' for selected comments.
-        Opens a confirmation page where the admin can set a condition ID.
-        """
-        from django.http import HttpResponseRedirect
-        from django.urls import path
-
-        class ConditionSetterForm(admin.helpers.ActionForm):
-            condition_id = admin.forms.IntegerField(label="Condition ID", required=True)
-
-        self.action_form = ConditionSetterForm
-
-        def apply_condition(modeladmin, request, queryset):
-            condition_id = request.POST.get('condition_id')
-            updated = queryset.update(condition_id=condition_id)
-            modeladmin.message_user(
-                request,
-                f"{updated} Kommentare wurden auf die Bedingungs-ID {condition_id} gesetzt."
-            )
-
-        return HttpResponseRedirect(request.get_full_path())
-
-    set_condition.short_description = "Set Condition ID for selected comments"
 
 
 @admin.register(PlannedReaction)
@@ -64,3 +57,4 @@ class LikeAdmin(admin.ModelAdmin):
 class DislikeAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'comment', 'value']
     list_filter = ['value']
+

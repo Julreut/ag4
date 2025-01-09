@@ -13,15 +13,37 @@ import random
 # Create your views here.
 
 ### Get the newspapers
+import random
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
+from .models import NewsPaper
+from analytics.models import UserContentPosition
+
 @login_required
 def get_newspapers(request):
     user = request.user
+    profile = user.profile  # Das Profil des Nutzers
     newspaper_type = ContentType.objects.get_for_model(NewsPaper)
+
+    # Prüfen, ob der Nutzer eine Bedingung hat
+    condition_tag = profile.condition.tag if profile.condition else None
+    print(condition_tag)
+
+    if not condition_tag:
+        # Wenn der Nutzer keiner Bedingung zugeordnet ist, keine Zeitungen anzeigen
+        context = {
+            'news_papers': []
+        }
+        
+        return render(request, 'articles/news_papers.html', context)
+    
+    #ansonsten Newspaper filtern
+    newspapers = list(NewsPaper.objects.filter(tag=condition_tag))
 
     # Prüfen, ob bereits eine Reihenfolge existiert
     if not UserContentPosition.objects.filter(user=user, content_type=newspaper_type).exists():
-        # Randomisiere die Zeitungen
-        newspapers = list(NewsPaper.objects.all())
+        # Zeitungen nach Tag filtern und randomisieren
         random.shuffle(newspapers)
 
         # Speichere die Reihenfolge im UserContentPosition-Modell
@@ -41,6 +63,7 @@ def get_newspapers(request):
         'news_papers': newspapers
     }
     return render(request, 'articles/news_papers.html', context)
+
 
 ## Article definitions
 @login_required

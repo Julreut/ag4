@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
 from django.template.defaultfilters import slugify
 from .utils import get_random_string
+from analytics.models import ExperimentCondition
 
 
 class Profile(models.Model):
@@ -11,8 +12,8 @@ class Profile(models.Model):
     bio = models.TextField(default="", max_length=500, blank=True)
     avatar = models.ImageField(default='avatar_default.png', upload_to='profile_pictures')
     slug = models.SlugField(unique=True, blank=True)
-    condition_id = models.IntegerField(null=True, blank=True)  # Versuchsbedingungs-ID
-
+    condition = models.ForeignKey(ExperimentCondition, on_delete=models.SET_NULL, null=True, blank=True)  # Verknüpfung zu condition
+    
     def __str__(self):
         return f"{self.user.username}"
 
@@ -31,4 +32,5 @@ class Profile(models.Model):
         else:
             # Ensure existing slug is always in lowercase
             self.slug = slugify(self.slug)
+        
         super().save(*args, **kwargs)

@@ -1,6 +1,11 @@
-from django.utils.timezone import now
-from .models import UserEventLog
 import json
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from .models import UserEventLog
+from profiles.models import Profile
+from django.utils.timezone import now
 
 def create_event_log(user, event_type, event_data):
     """
@@ -23,5 +28,4 @@ def create_event_log(user, event_type, event_data):
         )
     except (TypeError, ValueError) as e:
         print(f"Fehler beim Speichern von Event-Daten: {e}")
-
 
