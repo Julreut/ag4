@@ -14,7 +14,7 @@
 
         <div class="comment-section">
             <h4 class="section-title">Alle Kommentare:</h4>
-            {% if comments.exists %}
+            {% if comments %}
                 <div class="grid-container">
                     {% for comment in comments %}
                     <div class="comment-card">
@@ -23,14 +23,16 @@
                             <strong class="comment-author">
                                 by <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
                                     {{ comment.author.user.username }}
-                                </a>                            
-                                {% comment %} <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small> {% endcomment %}
+                                </a>
+                            </strong>
+                            <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small>
                         </div>
                         <div class="comment-body">
                             <p>{{ comment.content|truncatechars:100 }}</p>
                         </div>
                         <div class="comment-actions view-only">
                             <div class="like-dislike-form">
+                                <!-- Like Button -->
                                 <form method="post" action="{% url 'comments:like-comment-view' %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="comment_id" value="{{ comment.id }}">
@@ -39,6 +41,8 @@
                                     </button>
                                     <span>{{ comment.liked.count }}</span>
                                 </form>
+
+                                <!-- Dislike Button -->
                                 <form method="post" action="{% url 'comments:dislike-comment-view' %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="comment_id" value="{{ comment.id }}">
@@ -64,14 +68,11 @@
                 <input type="text" name="title" placeholder="Titel eingeben..." class="form-input" required>
                 <textarea name="content" rows="3" placeholder="Kommentar hinzufügen..." class="form-textarea" required></textarea>
                 <button type="submit" name="submit_comment_form" class="submit-btn">Senden</button>
-            </form>
+            </form> 
         </div>
     </div>
 </div>
 {% endblock %}
-
-
-{% comment %} LOG ENTRY {% endcomment %}
 
 <script>
     let startTime = Date.now();  // Startzeitpunkt erfassen
@@ -95,4 +96,3 @@
         });
     });
 </script>
-
