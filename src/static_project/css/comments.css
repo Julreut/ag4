@@ -110,17 +110,92 @@ body {
     align-items: center;
 }
 
+/* Like/Dislike Button Container */
 .like-dislike-form {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
     /* Abstand zwischen Button und Zähler */
 }
 
+/* Like/Dislike Buttons */
 .ui.icon.button {
-    margin: 0;
-    padding: 5px 10px;
-    /* Anpassung der Größe der Buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    /* Heller Hintergrund */
+    color: #007bff;
+    /* Primärfarbe für Icons */
+    border: 1px solid #ddd;
+    /* Leichter Rahmen */
+    border-radius: 50%;
+    /* Runde Buttons */
+    width: 40px;
+    /* Einheitliche Breite */
+    height: 40px;
+    /* Einheitliche Höhe */
+    font-size: 18px;
+    /* Größere Icons */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Sanfte Übergänge */
+}
+
+/* Hover-Effekte */
+.ui.icon.button:hover {
+    background-color: #007bff;
+    /* Hintergrundfarbe beim Hover */
+    color: #fff;
+    /* Weiße Icons */
+    border-color: #0056b3;
+    /* Rahmenfarbe anpassen */
+}
+
+/* Aktive Buttons */
+.ui.icon.button:active {
+    background-color: #0056b3;
+    /* Dunklerer Hintergrund bei Aktivierung */
+    transform: scale(0.95);
+    /* Leichter Klick-Effekt */
+}
+
+/* Like/Dislike Zähler */
+.like-dislike-form span {
+    font-size: 14px;
+    color: #333;
+    /* Textfarbe */
+    font-weight: bold;
+}
+
+/* Like/Dislike Buttons deaktiviert (View-Only) */
+.view-only .ui.icon.button {
+    background-color: #f1f1f1;
+    color: #ccc;
+    cursor: not-allowed;
+    /* Zeigt an, dass keine Interaktion möglich ist */
+    pointer-events: none;
+    border: 1px solid #ddd;
+}
+
+.view-only span {
+    color: #aaa;
+    /* Blassere Farbe für den Zähler */
+}
+
+/* Responsive Design für kleinere Bildschirme */
+@media (max-width: 768px) {
+    .ui.icon.button {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        /* Kleinere Icons auf kleineren Bildschirmen */
+    }
+
+    .like-dislike-form span {
+        font-size: 12px;
+        /* Kleinere Schrift für Zähler */
+    }
 }
 
 .comment-actions span {

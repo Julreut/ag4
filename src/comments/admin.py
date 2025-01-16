@@ -57,4 +57,3 @@ class LikeAdmin(admin.ModelAdmin):
 class DislikeAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'comment', 'value']
     list_filter = ['value']
-
