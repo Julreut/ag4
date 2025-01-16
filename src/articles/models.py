@@ -22,7 +22,7 @@ class Article(models.Model):
     # user_clicked = models.ManyToManyField(Profile, blank=True, related_name='clicked')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    tag = models.CharField(max_length=50, default='control')  # Tag für die Versuchsbedingung
+    tag = models.CharField(max_length=50, default='Control')  # Tag für die Versuchsbedingung
     
 
     def save(self, *args, **kwargs):
@@ -47,7 +47,7 @@ class NewsPaper(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
-    tag = models.CharField(max_length=50, default='control')  # Tag für die Versuchsbedingung
+    tag = models.CharField(max_length=50, default='Control')  # Tag für die Versuchsbedingung
 
     # num_clicked = models.IntegerField(default=0)
     # user_clicked = models.ManyToManyField(Profile, blank=True, related_name='clicked')

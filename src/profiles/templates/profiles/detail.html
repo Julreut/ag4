@@ -20,7 +20,7 @@
                         <span class="date">{% trans 'Mitglied seit' %} {{ profile.user.date_joined|date:"d.m.Y" }}</span>
                     </div>
                     <div class="description">
-                        {{ profile.bio|default:"{% trans 'Keine Biographie hinzugefügt.' %}" }}
+                        {{ profile.bio|default:"Keine Biographie hinzugefügt." }}
                     </div>
                 </div>
             </div>

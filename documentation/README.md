@@ -1,28 +1,62 @@
 # Mirronline
 
-## Using the tool
+## Verwendung des Tools
 
-### Install requirements
+### Anforderungen installieren
 
 ```
 pip install -r requirements.txt
 ```
 
-### Run the server:
+### Virtuelle Umgebung verwalten
+
+Es wird empfohlen, eine virtuelle Umgebung zu verwenden, um Abhängigkeiten isoliert zu halten.
+
+#### Virtuelle Umgebung erstellen
+
+Erstelle eine virtuelle Umgebung namens `env`:
+```
+python3 -m venv env
+```
+
+
+#### Virtuelle Umgebung aktivieren
+
+- **Windows:**
+```
+env\Scripts\activate
+```
+
+- **macOS/Linux:**
+```
+source env/bin/activate
+```
+
+
+#### Virtuelle Umgebung deaktivieren
+
+Deaktiviere die virtuelle Umgebung mit:
+```
+deactivate
+```
+
+### Server starten:
 
 ```
 python3 src/manage.py runserver
 ```
 
-### Migrations:
+Öffne dann deinen Webbrowser und gehe zu `http://127.0.0.1:8000/`, um die Anwendung zu sehen.
 
-When changing any part of the model you need to regenerate the migrations and apply them to migrate the database.
+### Migrationen:
+
+Wenn du einen Teil des Modells änderst, musst du die Migrationen neu generieren und anwenden, um die Datenbank zu migrieren.
 
 ```
 python3 src/manage.py makemigrations
 ```
 
-This will update all migration scripts. You can then apply them using:
+Dies aktualisiert alle Migrationsskripte. Du kannst sie dann anwenden mit:
 
 ```
 python3 src/manage.py migrate
@@ -39,6 +73,46 @@ python3 src/manage.py compilemessages
 ```
 
 Dieser Befehl erstellt die .mo-Dateien, die von Django zur Laufzeit verwendet werden. Die .mo-Dateien müssen nach jeder Änderung in den .po-Dateien neu erstellt werden.
+
+
+details> <summary>📂 Projektstruktur</summary>
+Projektstruktur
+</details> <details> <summary>🎨 Frontend: HTML & CSS</summary>
+Frontend: HTML & CSS
+</details> <details> <summary>📜 JavaScript Integration</summary>
+JavaScript Integration
+</details> <details> <summary>🗄️ Datenbank & Modelle</summary>
+Datenbank & Modelle
+</details> <details> <summary>👥 Benutzerverwaltung</summary>
+Benutzerverwaltung
+</details> <details> <summary>🔗 API Endpunkte</summary>
+API Endpunkte
+</details> <details> <summary>🚀 Deployment</summary>
+Deployment
+</details> <details> <summary>✅ Best Practices & Tipps</summary>
+Best Practices & Tipps
+</details> <details> <summary>🛠️ Fehlerbehebung</summary>
+Fehlerbehebung
+</details> <details> <summary📚 Anhang</summary>
+Anhang
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### We offer access to Fakebook in two different ways:
 

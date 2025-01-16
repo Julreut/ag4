@@ -81,8 +81,8 @@ my profile
                             {{ comment.content }}
                         </div>
                         <div class="meta">
-                            <a href="{{ comment.article.get_absolute_url }}" class="ui button">
-                                {% trans 'Go to article' %}
+                            <a href="{{ comment.get_absolute_url }}" class="ui button">
+                                {% trans 'Zum Kommentar' %}
                             </a>
                         </div>
                     </div>
