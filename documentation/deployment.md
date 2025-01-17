@@ -16,6 +16,7 @@ It is installed on a server and functions as a standalone application, handling 
 Fakebook can be set up behind a reverse proxy like nginx to allow for selective responses based on requested domain and route. This also allows using the application in conjunction with SSL/TLS over the HTTPS protocol, which is STRONGLY RECOMMENDED.
 
 ## Testing and Production purposes
+
 ### Docker
 
 The easiest way to deploy the software for testing or production purposes is by using docker. Beforehand, you will have to install Docker on your system.
@@ -92,8 +93,6 @@ docker compose stop [service]
 ```
 
 All instances will create a data directory in `./data/` on their first launch and copy their template database into there. The data files represent the entire instance and can be copied, replaced and backed up. They will survive destruction of the container itself.
-
-
 
 #### Running the container manually
 
