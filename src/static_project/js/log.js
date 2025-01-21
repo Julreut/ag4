@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-
 document.addEventListener("click", function (event) {
   // Sucht das nächste Button- oder Link-Element
   const target = event.target.closest("button, a");
@@ -74,8 +73,6 @@ document.addEventListener("click", function (event) {
     logUserAction("click", logData);
   }
 });
-
-
 
 // Kommentar-Post-Aktionen loggen
 document.addEventListener("submit", function (event) {
@@ -160,6 +157,47 @@ document.addEventListener("click", function (event) {
 document.addEventListener("click", function (event) {
   const target = event.target;
 
+  if (target.id === "show-article-form") {
+    const articleId = target.dataset.articleId; // Kommentar-ID aus dem data-Attribut
+    const commentForm = document.getElementById("article-form");
+
+    if (commentForm) {
+      logUserAction("write_comment_opened", { article_id: articleId }); // Loggen
+
+      if (commentForm.style.display === "none") {
+        commentForm.style.display = "block";
+        target.style.display = "none";
+      }
+    } else {
+      console.error("Kommentarformular konnte nicht gefunden werden.");
+    }
+  }
+});
+
+// Log event when the reply is submitted
+document.addEventListener("submit", function (event) {
+  const form = event.target;
+
+  if (form.classList.contains("article-form")) {
+    const articleId = form.dataset.articleId; // Kommentar-ID aus dem data-Attribut
+    const commentTitle =
+      document.getElementById("comment-title")?.value || "No title";
+
+    const commentText =
+        form.querySelector("textarea[name='content']")?.value ||"No content";
+
+    logUserAction("write_comment_submitted", {
+      article_id: articleId,
+      comment_title: commentTitle,
+      comment_text: commentText,
+    });
+  }
+});
+
+// Show the reply form on button click
+document.addEventListener("click", function (event) {
+  const target = event.target;
+
   if (target.id === "show-reply-form") {
     const commentId = target.dataset.commentId; // Kommentar-ID aus dem data-Attribut
     const replyForm = document.getElementById("reply-form");
@@ -195,4 +233,46 @@ document.addEventListener("submit", function (event) {
       reply_text: replyText,
     });
   }
+});
+
+document.addEventListener(
+  "focus",
+  function (event) {
+    const target = event.target;
+
+    // Tracke sowohl das "title"-Eingabefeld als auch das "content"-Textarea
+    if (
+      (target.name === "title" && target.type === "text") || // Eingabefeld
+      (target.name === "content" && target.tagName === "TEXTAREA") // Textarea
+    ) {
+      const logData = {
+        input_name: target.name, // Name des Eingabefelds (z. B. "title" oder "content")
+        placeholder: target.placeholder || "No placeholder", // Platzhaltertext
+        class: target.className || "No class", // CSS-Klasse des Eingabefelds
+      };
+
+      console.log("Input field focused:", logData); // Debug-Ausgabe
+      // Loggen
+      logUserAction("input_focus", logData);
+    }
+  },
+  true // Capture-Phase, um das `focus`-Event korrekt abzufangen
+);
+
+document.addEventListener("input", function (event) {
+  const target = event.target;
+
+    if (
+      (target.name === "title" && target.type === "text") || // Eingabefeld
+      (target.name === "content" && target.tagName === "TEXTAREA") // Textarea
+    ) {
+      const logData = {
+        input_name: target.name,
+        current_value: target.value, // Der aktuelle Text im Textarea-Feld
+      };
+
+      console.log("Textarea updated:", logData); // Debug-Ausgabe
+      // Loggen
+      logUserAction("input_change", logData);
+    }
 });

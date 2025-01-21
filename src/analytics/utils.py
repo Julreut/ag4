@@ -18,6 +18,8 @@ def create_event_log(user, event_type, event_data):
     try:
         # Validierung und Umwandlung der Daten in JSON
         event_data_json = json.dumps(event_data)
+        print(f"Creating log: User={user}, Type={event_type}, Data={event_data}")
+
         
         # Log-Eintrag erstellen
         UserEventLog.objects.create(

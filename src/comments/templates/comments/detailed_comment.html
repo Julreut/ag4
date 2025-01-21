@@ -108,16 +108,14 @@
         <!-- Reply Form -->
         <p>
         <div class="reply-form-section">
-            <h4 class="section-title">Eigene Antwort hinzufügen:</h4>
-            <!-- Show the reply form on button click -->
-            <button id="show-reply-form" data-comment-id="{{ comment.id }}" class="ui button">Antwort schreiben</button>
-            <form method="post" class="reply-form" id="reply-form" data-comment-id="{{ comment.id }}" style="display: none;">
+            <h4 class="section-title">Antwort hinzufügen:</h4>
+            <form method="post" class="reply-form" data-comment-id="{{ comment.id }}">
                 {% csrf_token %}
-                <input type="text" name="title" id="reply-title" placeholder="Titel für die Antwort eingeben" class="form-input" required>
-                <textarea name="content" id="reply-content" rows="3" placeholder="Antwort schreiben..." class="form-textarea" required></textarea>
-                <button type="submit" name="submit_secondary_comment_form" class="submit-btn">Antwort senden</button>
+                <input type="text" name="title" id="reply-title-{{ comment.id }}" placeholder="Titel für die Antwort eingeben" class="form-input" required>
+                <textarea name="content" id="reply-content-{{ comment.id }}" rows="3" placeholder="Antwort schreiben..." class="form-textarea" required></textarea>
+                <button type="submit" name="submit_reply_form" class="submit-btn">Antwort senden</button>
             </form>
-        </div>  
+        </div>
 
     </div>
 </div>
@@ -125,3 +123,4 @@
 
 {% block scripts %}
 {% endblock %}
+
