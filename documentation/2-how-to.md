@@ -1,3 +1,6 @@
+# Aufbau der Software
+
+
 # Hinweise für Versuchsleiter
 
 <details> <summary>Feature-Überblick</summary>
@@ -45,29 +48,67 @@ Admin-Zugriff:
     - ```views.py``` log_user_action loggt Javascript User Actions
 </details>
 
-<details> <summary>🚀 Articles App (Zeitungen und Artikel)
+
+<details> <summary>Articles App (Zeitungen und Artikel)
 </summary>
+<br> TL;DR: Hier passiert die Verwaltung und Darstellung von Zeitungen und Artikeln. Das Admin-Panel ermöglicht die dynamische Anpassung und CSV-Exporte. Die Models definieren die Struktur von Zeitungen und Artikeln, und die Templates sorgen für die Anzeige von Listen und Details.
 
-Artikel:
-Alle Artikel werden in der Admin-Ansicht unter Artikel gelistet.
-Forscher können neue Artikel hinzufügen oder bestehende bearbeiten.
+## Admin Panel:
+- **Zeitungen und Artikel verwalten**: Hier können Zeitungen und Artikel bearbeitet und verwaltet werden. Zusätzlich können Experiment-Conditions für Tags dynamisch aus einer separaten Tabelle (`ExperimentCondition`) geladen werden.
+- **CSV-Export**: Es ist möglich, Daten zu Zeitungen und Artikeln als CSV-Datei herunterzuladen.
 
-Felder zur Bearbeitung eines Artikels:
-Titel: Titel des Artikels.
-Inhalt: Text des Artikels.
-Autor: Kann ein Nutzer oder ein künstlicher Nutzer sein.
-Kommentare:
-Kommentare zu Artikeln werden unter Kommentare verwaltet.
-Felder zur Bearbeitung eines Kommentars:
-Artikel: Artikel, zu dem der Kommentar gehört.
-Inhalt: Text des Kommentars.
-Autor: Der Nutzer, der den Kommentar verfasst hat.
+## Dateien:
+- ```admin.py```: 
+  - Legt fest, wie Zeitungen und Artikel im Admin-Panel bearbeitet werden können.
+  - Ermöglicht den CSV-Export von Artikeln und Zeitungen.
+  - Dynamische Dropdown-Menüs für Tags basierend auf den `ExperimentCondition`-Daten.
+
+- ```models.py```:
+  - Definiert die Datenbanktabellen für:
+    1. **NewsPaper**: Enthält Informationen zu Zeitungen wie Name, Bild und Tag.
+    2. **Article**: Enthält Informationen zu Artikeln wie Titel, Inhalt, Slug, Bild und zugehörige Zeitung.
+  - Beide Modelle bieten Methoden zur Generierung von `absolute_url`-Links und zur automatischen Erstellung von Slugs.
+
+- ```urls.py```:
+  - Enthält die URLs für:
+    1. **Alle Zeitungen anzeigen** (`/`).
+    2. **Artikel einer Zeitung auflisten** (`/article_list/<int:news_paper_id>/`).
+    3. **Detailansicht eines Artikels** (`/<int:news_paper_id>/<slug:slug>/`).
+
+- ```apps.py```:
+  - Registriert die App unter dem Namen `'articles'`.
+
+## Templates:
+- **`all_articles.html`**: Listet alle Artikel einer spezifischen Zeitung.
+- **`detailed_article.html`**: Zeigt die Detailansicht eines Artikels.
+- **`news_papers.html`**: Zeigt eine Übersicht aller Zeitungen.
 
 </details>
 
- <details> <summary>✅ xx</summary>
-x</details> <details> <summary>🛠️ xx</summary>
+
+ <details> <summary>Comments App</summary>
+x</details> 
+
+
+<details> <summary>Configuration App</summary>
 x
-</details> <details> <summary>📚 xx </summary>
+</details>
+
+
+<details> <summary> Fakebook App</summary>
+x
+</details>
+
+
+</details> <details> <summary> Profiles App</summary>
+x
+</details>
+
+<details> <summary> Questions App</summary>
+x
+</details>
+
+
+<details> <summary> Static Project & Templates</summary>
 x
 </details>
