@@ -1,8 +1,12 @@
 # Mirronline
 
-## Verwendung des Tools
+Dies ist das Haupt-Repository des Mirror-Online-Projekts, einer Plattform, die eine Online-Forum-Umgebung ähnlich Spiegel Online für Forschungszwecke simuliert. Die Plattform ermöglicht es Forschenden, komplexe Interaktionen und Verhaltensmuster in einer kontrollierten und anpassbaren Umgebung zu analysieren.
 
-### Anforderungen installieren
+## Nutzung des Tools
+
+Mehr Informationen zu verwendeten Tools, Software-Aufbau, Deployment uvm. befinden sich im Ordner "Dokumentation" dieses Repositories.  
+
+### Requirements installieren
 
 ```
 pip install -r requirements.txt

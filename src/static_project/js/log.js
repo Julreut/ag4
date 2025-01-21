@@ -45,36 +45,36 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// Klicks auf Links und Buttons loggen
+
 document.addEventListener("click", function (event) {
-  const target = event.target.closest("button"); // Sucht den nächstgelegenen Button (falls auf ein Icon geklickt wurde)
+  // Sucht das nächste Button- oder Link-Element
+  const target = event.target.closest("button, a");
 
   if (target) {
-    // Allgemeine Log-Daten
+    // Allgemeine Log-Daten erfassen
     const logData = {
-      url: getPathFromUrl(target.href || window.location.href), // Aktuelle URL oder Ziel-URL
-      text: target.innerText || target.value || "No text", // Text des Buttons
-      tag: target.tagName, // Tag-Typ (z. B. BUTTON)
-      id: target.id || "No ID", // Button-ID
-      class: target.className || "No class", // Button-Klassen
+      url: target.href || window.location.href, // URL des Links oder aktuelle URL
+      text: target.innerText || target.value || "No text", // Text des Elements
+      tag: target.tagName, // Typ des Elements (z. B. BUTTON oder A)
+      id: target.id || "No ID", // ID des Elements
+      class: target.className || "No class", // Klassen des Elements
     };
 
-    // Zusätzliche Daten für Like/Dislike-Buttons
+    // Zusätzliche Daten aus `data-*`-Attributen erfassen (falls vorhanden)
     if (target.dataset.action) {
-      logData.action = target.dataset.action; // Aktion (like/unlike/dislike/undislike)
+      logData.action = target.dataset.action;
     }
     if (target.dataset.commentId) {
-      logData.comment_id = target.dataset.commentId; // Kommentar-ID
+      logData.comment_id = target.dataset.commentId;
     }
-    console.log(
-      "Button clicked:",
-      target.dataset.action,
-      target.dataset.commentId
-    );
+
+    console.log("Element clicked:", logData); // Debug-Ausgabe
+
     // Log-Daten senden
     logUserAction("click", logData);
   }
 });
+
 
 
 // Kommentar-Post-Aktionen loggen
@@ -104,11 +104,13 @@ document.addEventListener("submit", function (event) {
 });
 
 // Toggle "Mehr lesen/Weniger lesen"
+// Event-Listener für "Mehr lesen/Weniger lesen" und "Mehr lesen & interagieren"
 document.addEventListener("click", function (event) {
   const target = event.target;
 
-  if (target.classList.contains("read-more")) {
-    const replyId = target.dataset.replyId; // ID des Kommentars/Antworts
+  // Logik für "Mehr lesen/Weniger lesen"
+  if (target.classList.contains("read-more") && target.dataset.replyId) {
+    const replyId = target.dataset.replyId; // ID der Antwort
     const replyTitle = target.dataset.replyTitle; // Titel der Antwort
     const fullContent = document.getElementById(`content-${replyId}`);
     const shortContent = document.getElementById(`content-${replyId}-short`);
@@ -134,6 +136,23 @@ document.addEventListener("click", function (event) {
     } else {
       console.error("Inhalt für die Antwort konnte nicht gefunden werden.");
     }
+  }
+
+  // Logik für "Mehr lesen & interagieren"
+  if (target.classList.contains("read-more") && !target.dataset.replyId) {
+    const articleId = target.dataset.articleId; // Artikel-ID
+    const commentId = target.dataset.commentId; // Kommentar-ID
+
+    logUserAction("read_and_interact", {
+      article_id: articleId,
+      comment_id: commentId,
+    });
+
+    // Optional: Navigation verhindern und Logging sicherstellen
+    event.preventDefault();
+    setTimeout(() => {
+      window.location.href = target.href;
+    }, 100); // Leichte Verzögerung für das Logging
   }
 });
 
@@ -177,4 +196,3 @@ document.addEventListener("submit", function (event) {
     });
   }
 });
-

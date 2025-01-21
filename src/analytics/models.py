@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-
 class UserEventLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event_type = models.CharField(max_length=100)  # e.g., "article_click", "comment", "page_load"
@@ -26,7 +24,7 @@ class UserContentPosition(models.Model):
 class ExperimentCondition(models.Model):
     name = models.CharField(max_length=100)  # Name der Bedingung
     description = models.TextField(blank=True)  # Beschreibung der Bedingung
-    tag = models.CharField(max_length=50)  # Tag zur Kennzeichnung (z.B. 'positive' oder 'negative')
+    tag = models.CharField(max_length=50)  # Tag zur Kennzeichnung (z.B. 'exp' oder 'control')
     
     def __str__(self):
         return self.name

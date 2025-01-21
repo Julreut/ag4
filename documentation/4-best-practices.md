@@ -1,4 +1,4 @@
-## 10. Best Practices & Tipps
+## Best Practices & Tipps
 
 ### Code-Organisation
 - Halte deine Apps modular und übersichtlich.
@@ -14,7 +14,7 @@
 - Halte die Dokumentation aktuell und umfassend.
 - Nutze Kommentare im Code, um komplexe Logik zu erklären.
 
-## 11. Fehlerbehebung
+## Fehlerbehebung
 
 Hier sind einige häufige Probleme und deren Lösungen:
 

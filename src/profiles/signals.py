@@ -25,7 +25,6 @@ def post_save_create_profile_and_consent(sender, instance, created, **kwargs):
             event_data={"username": instance.username}
         )
 
-
 @receiver(user_logged_in)
 def assign_condition_on_login(sender, request, user, **kwargs):
     # Hole das zugehörige Profile-Objekt

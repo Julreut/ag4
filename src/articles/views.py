@@ -28,7 +28,7 @@ def get_newspapers(request):
 
     # Prüfen, ob der Nutzer eine Bedingung hat
     condition_tag = profile.condition.tag if profile.condition else None
-    print(condition_tag)
+    print(condition_tag) #debuggen
 
     if not condition_tag:
         # Wenn der Nutzer keiner Bedingung zugeordnet ist, keine Zeitungen anzeigen

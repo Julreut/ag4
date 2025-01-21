@@ -5,6 +5,8 @@
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% endblock %}
+{% block title %} Comment view of Article: {{ article.title }}  {% endblock title %}
+
 
 {% block content %}
 <div class="comment-system">
@@ -53,7 +55,11 @@
                                 </form>
                             </div>
                             <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" 
-                            class="ui button read-more">Mehr lesen & interagieren</a>
+                            class="ui button read-more"
+                            data-comment-id="{{ comment.id }}"
+                            data-article-id="{{ article.id }}">
+                            Mehr lesen & interagieren
+                            </a>
                         </div>
                     </div>
                     {% endfor %}
@@ -73,26 +79,3 @@
     </div>
 </div>
 {% endblock %}
-
-<script>
-    let startTime = Date.now();  // Startzeitpunkt erfassen
-
-    // Event: Wenn die Seite verlassen wird
-    window.addEventListener("beforeunload", function() {
-        let duration = Date.now() - startTime;  // Verweildauer in Millisekunden berechnen
-
-        // Daten an die Backend-API senden
-        fetch("{% url 'analytics:log_time_spent' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: JSON.stringify({
-                page_type: "comments",
-                id: {{ article.id }},  // Artikel-ID dynamisch einfügen
-                duration_ms: duration  // Verweildauer in Millisekunden
-            })
-        });
-    });
-</script>

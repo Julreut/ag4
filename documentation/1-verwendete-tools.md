@@ -1,7 +1,8 @@
-# Einführung
+# Übersicht über verwendete Tools
 
-**Mirror Online** ist ein Online-Forum, das auf dem Django-Webframework basiert. Diese Dokumentation soll dir helfen, das Projekt zu verstehen, es lokal einzurichten, zu nutzen und weiterzuentwickeln, auch wenn du keine Vorkenntnisse hast.
+**Mirror Online** ist ein simuliertes, kontrollierbares Online-Forum, das auf dem Django-Webframework basiert. 
 
+Diese Dokumentation soll dir helfen, das Projekt zu verstehen, es lokal einzurichten, zu nutzen und weiterzuentwickeln, auch wenn du keine Vorkenntnisse hast.
 
 <details>
 <summary>📂  <strong> Grundlagen Backend: Django & Python </strong></summary>
@@ -133,26 +134,3 @@ python3 src/manage.py migrate
 
 </details>
 
-
-
-details> <summary>📂 Projektstruktur</summary>
-Projektstruktur
-</details> <details> <summary> Frontend: HTML & CSS</summary>
-Frontend: HTML & CSS
-</details> <details> <summary> JavaScript Integration</summary>
-JavaScript Integration
-</details> <details> <summary>Datenbank & Modelle</summary>
-Datenbank & Modelle
-</details> <details> <summary>👥 Benutzerverwaltung</summary>
-Benutzerverwaltung
-</details> <details> <summary>🔗 API Endpunkte</summary>
-API Endpunkte
-</details> <details> <summary>🚀 Deployment</summary>
-Deployment
-</details> <details> <summary>✅ Best Practices & Tipps</summary>
-Best Practices & Tipps
-</details> <details> <summary>🛠️ Fehlerbehebung</summary>
-Fehlerbehebung
-</details> <details> <summary📚 Anhang </summary>
-Anhang
-</details>
