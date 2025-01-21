@@ -41,17 +41,6 @@ class Comment(models.Model):
             }
         )
     
-    
-class PlannedReaction(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="planned_reaction_set")
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="planned_reactions")
-    reaction_type = models.CharField(max_length=10, choices=[("Like", "Like"), ("Dislike", "Dislike")])
-    time_delta = models.PositiveIntegerField()  # Zeit in Sekunden bis zur Reaktion
-
-    def __str__(self):
-        return f"Planned {self.reaction_type} by {self.user.user.username} on {self.comment.id}"
-
-
 class Like(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="likes_set")
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="likes_on_comment")

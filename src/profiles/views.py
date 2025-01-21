@@ -77,12 +77,3 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
             context["comments"] = Comment.objects.filter(author=profile, is_public=True)
         
         return context
-
-class ProfileListView(LoginRequiredMixin, ListView):
-    model = Profile
-    template_name = 'profiles/profile_list.html'
-    context_object_name = 'profiles'
-
-    def get_queryset(self):
-        return Profile.objects.exclude(user=self.request.user)
-

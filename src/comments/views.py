@@ -16,7 +16,7 @@ import random
 
 from django.http import HttpResponseBadRequest
 
-from .models import Comment, Like, Dislike, PlannedReaction
+from .models import Comment, Like, Dislike
 from .forms import CommentModelForm, SecondaryCommentModelForm
 from profiles.models import Profile
 from articles.models import Article, NewsPaper  # Importiere Articles und Newspapers for IDs
@@ -345,50 +345,3 @@ def toggle_dislike(profile, comment, request):
 
     # Rückgabe der Aktion an das Frontend
     return action
-
-
-class CommentDeleteView(LoginRequiredMixin, DeleteView):
-    """Ermöglicht das Löschen eigener Kommentare."""
-    model = Comment
-    template_name = 'comments/confirm_del.html'
-    success_url = reverse_lazy('comments:article-comments')
-
-    def get_object(self, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        obj = Comment.objects.get(pk=pk)
-        if obj.author != Profile.objects.get(user=self.request.user):
-            messages.warning(self.request, _("You are not allowed to delete this comment."))
-        return obj
-
-
-class CommentUpdateView(LoginRequiredMixin, UpdateView):
-    """Ermöglicht das Aktualisieren eigener Kommentare."""
-    form_class = CommentModelForm
-    model = Comment
-    template_name = 'comments/update.html'
-    success_url = reverse_lazy('comments:article-comments')
-
-    def form_valid(self, form):
-        profile = Profile.objects.get(user=self.request.user)
-        if form.instance.author == profile:
-            return super().form_valid(form)
-        else:
-            form.add_error(None, _("You are not allowed to edit this comment."))
-            return super().form_invalid(form)
-
-
-def process_planned_reactions(profile):
-    """Verarbeitet geplante Reaktionen."""
-    executed_reactions = []
-    for planned_reaction in PlannedReaction.objects.filter(target_profile=profile):
-        comment = planned_reaction.comment
-
-        if time.time() - comment.created.timestamp() > planned_reaction.time_delta:
-            if planned_reaction.reaction_type == "Like":
-                toggle_like(profile, comment)
-            elif planned_reaction.reaction_type == "Dislike":
-                toggle_dislike(profile, comment)
-
-            executed_reactions.append(planned_reaction.id)
-
-    PlannedReaction.objects.filter(id__in=executed_reactions).delete()
