@@ -113,7 +113,7 @@
                 {% csrf_token %}
                 <input type="text" name="title" id="reply-title-{{ comment.id }}" placeholder="Titel für die Antwort eingeben" class="form-input" required>
                 <textarea name="content" id="reply-content-{{ comment.id }}" rows="3" placeholder="Antwort schreiben..." class="form-textarea" required></textarea>
-                <button type="submit" name="submit_reply_form" class="submit-btn">Antwort senden</button>
+                <button type="submit" name="submit_secondary_comment_form" class="submit-btn">Antwort senden</button>
             </form>
         </div>
 
