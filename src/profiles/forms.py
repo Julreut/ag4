@@ -4,12 +4,12 @@ from django.utils.translation import gettext_lazy as _  # Verwendung von `as _` 
 
 class ProfileModelForm(forms.ModelForm):
     bio = forms.CharField(
-        label=_("My Profile Biography"),
+        label=_("Meine Profilbeschreibung"),
         widget=forms.Textarea(),
         required=False
     )
     avatar = forms.ImageField(
-        label=_("Profile Picture"),
+        label=_("Profilbild"),
         required=False,
         widget=forms.FileInput  # Überschreibe das Standard-Widget, damit man es nicht mehr zuruecksetzen kann
     )
