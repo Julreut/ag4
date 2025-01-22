@@ -19,28 +19,34 @@ from .forms import ProfileModelForm
 
 @login_required
 def my_profile_view(request, slug=None):
-    # Hol das Profil basierend auf dem Slug oder das eigene Profil
     if slug:
         profile = get_object_or_404(Profile, slug=slug)
     else:
         profile = Profile.objects.get(user=request.user)
 
-    # Profilbearbeitungsformular nur für den aktuellen Benutzer
     form = None
     confirm = False
     if profile.user == request.user:
         form = ProfileModelForm(request.POST or None, request.FILES or None, instance=profile)
-        if request.method == "POST" and form.is_valid():
-            form.save()
-            confirm = True
 
-    # Kommentare: Alle für den Profilbesitzer, nur öffentliche für andere
-    if profile.user == request.user:
-        comments = Comment.objects.filter(author=profile)
-    else:
-        comments = Comment.objects.filter(author=profile, is_public=True)
+        if request.method == "POST":
+            # Debug-Ausgaben
+            print("POST-Daten:", request.POST)
+            print("Datei-Daten (FILES):", request.FILES)
 
-    # Kontextdaten
+            # Prüfe Konflikt zwischen `avatar-clear` und Datei-Upload
+            if 'avatar-clear' in request.POST and 'avatar' in request.FILES:
+                form.add_error('avatar', "Bitte wählen Sie entweder eine Datei aus oder wählen Sie 'Löschen', nicht beides.")
+
+            # Formular validieren und speichern
+            if form.is_valid():
+                form.save()
+                confirm = True
+            else:
+                print("Formularfehler:", form.errors)
+
+    comments = Comment.objects.filter(author=profile) if profile.user == request.user else Comment.objects.filter(author=profile, is_public=True)
+
     context = {
         'profile': profile,
         'form': form,

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static %}  <!-- Hinzufügen des static Tags -->
 {% block title %}
 my profile
 {% endblock title %}
@@ -13,21 +14,24 @@ my profile
     </div>
     <div class="image content">
         <div class="ui small image">
-            <img src="{{ profile.avatar.url }}" alt="Profilbild">
+            {% if profile.avatar and profile.avatar.url %}
+                <img src="{{ profile.avatar.url }}" alt="Profilbild">
+            {% else %}
+                <img src="{{ MEDIA_URL }}avatar_default.png" alt="Default Profilbild">
+            {% endif %}
         </div>
         <div class="description">
             <div class="ui header">{% trans 'profile-update-dialog-title' %}</div>
-            <form id="profile-update-form" action="" method="POST" class="ui form" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-            </form>
+        <form id="profile-update-form" action="" method="POST" class="ui form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.avatar.label_tag }}<br>
+            {{ form.avatar }}<br><br>
+            {{ form.bio.label_tag }}<br>
+            {{ form.bio }}<br>
+            <button type="submit" class="ui positive button">Profil aktualisieren</button>
+        </form>
+
         </div>
-    </div>
-    <div class="actions">
-        <button type="submit" form="profile-update-form" class="ui positive right labeled icon button">
-            {% trans 'profile-update-button' %}
-            <i class="checkmark icon"></i>
-        </button>
     </div>
 </div>
 
@@ -40,7 +44,11 @@ my profile
     <div class="ui grid">
         <div class="row">
             <div class="six wide column">
-                <img class="ui small rounded image" src="{{ profile.avatar.url }}" alt="Profilbild">
+                {% if profile.avatar and profile.avatar.url %}
+                    <img class="ui small rounded image" src="{{ profile.avatar.url }}" alt="Profilbild">
+                {% else %}
+                    <img class="ui small rounded image" src="{% static 'avatar_default.png' %}" alt="Default Profilbild">
+                {% endif %}
             </div>
             <div class="ten wide column">
                 <table class="ui table">

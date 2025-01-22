@@ -10,7 +10,8 @@ class ProfileModelForm(forms.ModelForm):
     )
     avatar = forms.ImageField(
         label=_("Profile Picture"),
-        required=False
+        required=False,
+        widget=forms.FileInput  # Überschreibe das Standard-Widget, damit man es nicht mehr zuruecksetzen kann
     )
 
     class Meta:
