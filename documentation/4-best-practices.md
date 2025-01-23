@@ -19,8 +19,7 @@ Hier findest du eine strukturierte Übersicht über Best Practices und Tipps zur
 <details>
 <summary>Versionskontrolle</summary>
 
-- Nutze Git effektiv mit klaren Commit-Nachrichten (`feat:`, `fix:`, `refactor:`).
-- Verwende Branch-Strategien wie Git Flow (`main`, `develop`, `feature/`).
+- Nutze Git effektiv mit klaren Commit-Nachrichten (`feat`, `fix`, `refactor`).
 - Füge `.gitignore` hinzu, um sensible Dateien wie `.env` und `*.sqlite3` auszuschließen.
 - Stelle sicher, dass du vor dem Deployment alle Änderungen in der Produktion testest.
 
@@ -43,6 +42,7 @@ Hier findest du eine strukturierte Übersicht über Best Practices und Tipps zur
 
 <details>
 <summary>Dokumentation</summary>
+
 - Halte die Dokumentation aktuell und umfassend.
 - Nutze Markdown-Dateien (`README.md`, `CHANGELOG.md`) für zentrale Informationen.
 - Dokumentiere komplexe Logik mit Kommentaren im Code.
@@ -100,3 +100,47 @@ Hier sind einige häufige Probleme und deren Lösungen:
 ```print("Empfangene Daten:", request.body)```
 
 </details>
+
+---
+
+<details>
+<summary>`django.contrib.sites` verwendet die falsche Standard-Domain</summary>
+
+**Problem:** Django verwendet die falsche Domain wie `example.com`, was zu unerwartetem Verhalten führen kann, z. B. bei URL-Generierungen.
+
+### Ursache:
+Die Standard-Domain in der `Site`-Datenbank ist falsch konfiguriert (z. B. `example.com` statt der lokalen Entwicklungsdomain wie `127.0.0.1:8000`).
+
+### Lösung:
+1. Öffne die Django-Shell:
+```bash
+python manage.py shell
+```
+
+2. Überprüfe die aktuell registrierten Sites:
+``` bash
+from django.contrib.sites.models import Site
+print(Site.objects.all())  # Zeigt alle registrierten Sites an
+```
+
+3. Ändere die Domain:
+```bash
+site = Site.objects.get(pk=1)
+site.domain = '127.0.0.1:8000'  # Deine lokale Entwicklungsdomain
+site.name = 'Localhost'
+site.save()
+```
+
+4. Überprüfe die Änderungen: 
+```bash
+print(Site.objects.get(pk=1))  # Zeigt die aktualisierte Site-Domain an
+```
+Jetzt sollte Django URLs mit der richtigen Domain generieren.
+</details> 
+
+---
+
+
+
+
+

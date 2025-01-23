@@ -39,34 +39,24 @@ def create_user(request):
 
     username = request.POST.get("username", "")
     password = request.POST.get("password", "")
-    email = request.POST.get("email", "")
-    first_name = request.POST.get("firstname", "")
-    last_name = request.POST.get("lastname", "")
     bio = request.POST.get("bio", "")
-    country = request.POST.get("country", "")
 
-    if username == "" or password == "" or email == "":
+    if username == "" or password == "":
         # shouldn't happen, UI will require input, so it's fine to just return 400
         return HttpResponse(content="400 Bad request", status=400)
 
-    if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-        messages.add_message(request, messages.ERROR, "Conflict detected - username or email already in use. No action was taken.")
+    if User.objects.filter(username=username).exists():
+        messages.add_message(request, messages.ERROR, "Conflict detected - username already in use. No action was taken.")
         # return HttpResponse(content="409 Conflict - username or email already in use", status=409)
         return redirect('user-creation-view')
 
 
-    user = User.objects.create_user(username=username, email=email, password=password)
+    user = User.objects.create_user(username=username, password=password)
     # profile is automatically created by signal
     profile = Profile.objects.filter(user=user).first()
 
-    if first_name != "":
-        profile.first_name = first_name
-    if last_name != "":
-        profile.last_name = last_name
     if bio != "":
         profile.bio = bio
-    if country != "":
-        profile.country = country
 
     # for profile image support, use API route
     # This is not supported here as the view is not a form and would therefore have to manually implement uploading images
@@ -74,7 +64,7 @@ def create_user(request):
     user.save()
     profile.save()
 
-    messages.add_message(request, messages.SUCCESS, f"User with id {user.id} and profile {profile.id} created successfully!")
+    messages.add_message(request, messages.SUCCESS, f"User with username {user.username}, id {user.id} and profile {profile.id} created successfully!")
 
     return redirect('user-creation-view')
 
@@ -84,13 +74,21 @@ def download_view(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def download_xlsx(request):
-    # check which checkboxes were ticked and get the related tables in an xlsx file
-    tables = ["user", "friends", "chats", "posts", "comments", "likes", "dislikes", "reports", "advertisements", "sessions", "post-views"]
+    # Tabellen, die verfügbar sind
+    tables = [
+        "user", "comments", "likes", "dislikes", 
+        "articles", "newspapers", "usereventlog", 
+        "usercontentposition", "experimentcondition"
+    ]
     selected_tables = []
+
+    # Überprüfen, welche Tabellen ausgewählt wurden
     for entry in tables:
         if str(request.POST.get(entry)) == "on":
             selected_tables.append(entry)
-    xlsx_file = get_xlsx_file_from_database(selected_tables)   
+
+    # XLSX-Datei generieren
+    xlsx_file = get_xlsx_file_from_database(selected_tables)
     return xlsx_file
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -100,15 +98,19 @@ def download_database(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def download_pictures(request):
-    print(request.POST)
-    # check which checkboxes were ticked and get the zip archives
-    archives = ["posts", "profile_pictures", "advertisements"]
+    # Definiere verfügbare Archive
+    archives = ["articles", "newspapers", "profile_pictures"]
     selected_archives = []
+
+    # Überprüfen, welche Archive ausgewählt wurden
     for entry in archives:
         if str(request.POST.get(entry)) == "on":
             selected_archives.append(entry)
-    zip_file = get_zip_file(selected_archives)   
+
+    # ZIP-Datei generieren
+    zip_file = get_zip_file(selected_archives)
     return zip_file
+
 
 @csrf_exempt
 def is_registration_enabled(request):

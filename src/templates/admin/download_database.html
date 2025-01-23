@@ -15,7 +15,6 @@
     <a href="{% url 'admin:index' %}">Go back to home</a>
 </p>
 
-
 <!-- Download the excel file -->
 
 <form action="{% url 'download-xlsx' %}" method="post">
@@ -34,44 +33,36 @@
             <td>user_id, username, first_name, last_name, avatar, bio, date_joined, last_login</td>
         </tr>
         <tr>
-            <td><label> <input type="checkbox" name="likes"> likes</label></td>
-            <td>post_id, user_id, value, updated, created</td>
+            <td><label><input type="checkbox" name="comments"> comments</label></td>
+            <td>comment_id, author_id, article_id, title, content, created, updated</td>
+        </tr>
+        <tr>
+            <td><label><input type="checkbox" name="likes"> likes</label></td>
+            <td>like_id, user_id, comment_id, value</td>
         </tr>
         <tr>
             <td><label><input type="checkbox" name="dislikes"> dislikes</label></td>
-            <td>post_id, user_id, value, updated, created</td>
+            <td>dislike_id, user_id, comment_id, value</td>
         </tr>
         <tr>
-            <td><label><input type="checkbox" name="sessions"> sessions</label></td>
-            <td>username, user_id, first_seen, last_seen</td>
+            <td><label><input type="checkbox" name="articles"> articles</label></td>
+            <td>article_id, news_paper_id, title, content, created_at, updated_at</td>
         </tr>
         <tr>
-            <td><label><input type="checkbox" name="post-views"> post-views</label></td>
-            <td>username, profile_id, post_id, total_time_ms</td>
+            <td><label><input type="checkbox" name="newspapers"> newspapers</label></td>
+            <td>newspaper_id, name, image</td>
         </tr>
         <tr>
-            <td><label> <input type="checkbox" name="reports"> reports</label></td>
-            <td>post_id, user_id, value, updated, created</td>
+            <td><label><input type="checkbox" name="usereventlog"> user event log</label></td>
+            <td>event_id, user_id, event_type, event_data, timestamp</td>
         </tr>
         <tr>
-            <td><label> <input type="checkbox" name="chats"> chats </label></td>
-            <td>source_user, target_user, content, date</td>
+            <td><label><input type="checkbox" name="usercontentposition"> user content position</label></td>
+            <td>position_id, user_id, object_id, position</td>
         </tr>
         <tr>
-            <td><label> <input type="checkbox" name="advertisements"> advertisements</label></td>
-            <td>advertisement_id, text, url, num_clicked, image, profile_id</td>
-        </tr>
-        <tr>
-            <td><label> <input type="checkbox" name="posts"> posts</label></td>
-            <td>post_id, author_id, content, created, image, comments, likes_received, dislikes_received, reports_received</td>
-        </tr>
-        <tr>
-            <td><label> <input type="checkbox" name="comments"> comments</label></td>
-            <td>comment_id, post_id, user_id, content, created, updated</td>
-        </tr>
-        <tr>
-            <td><label> <input type="checkbox" name="friends"> friends</label></td>
-            <td>sender_id, receiver_id, status, updated, created</td>
+            <td><label><input type="checkbox" name="experimentcondition"> experiment condition</label></td>
+            <td>condition_id, name, description</td>
         </tr>
       </table>
 
@@ -107,16 +98,12 @@
 
     <p>Select the pictures you want to download:</p>
     
-    <p><label> <input type="checkbox" name="posts"> posts</label></p>
-    <p><label> <input type="checkbox" name="profile_pictures"> profile pictures</label></p>
-    <p><label> <input type="checkbox" name="advertisements"> advertisements</label></p>
+    <p><label><input type="checkbox" name="profile_pictures"> profile pictures</label></p>
+    <p><label><input type="checkbox" name="articles"> articles</label></p>
+    <p><label><input type="checkbox" name="newspapers"> newspapers</label></p>
 
     <p><input type="submit" value="Download selected pictures as a .zip"></p>
 
 </form>
 
-
-
-  
 {% endblock %}
-
