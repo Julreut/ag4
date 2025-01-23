@@ -23,7 +23,6 @@
 
   <!-- Footer mit Zurück-Button -->
   <div class="ui center aligned container">
-    {% comment %} <a href="{% url 'articles:all-articles' news_paper_id=newspaper.id %}" class="ui secondary basic button" >Back to all articles</a> {% endcomment %}
     <a href="{% url 'comments:article-comments' news_paper_id=newspaper.id article_id=article.id %}"
     class="ui button">
     <i class="right arrow icon"></i>
@@ -33,26 +32,5 @@
 </div>
 {% endblock content %}
 
-{% comment %} LOG ENTRY {% endcomment %}
-<script>
-    let startTime = Date.now();
-
-    window.addEventListener("beforeunload", function() {
-        let duration = Date.now() - startTime;  // Zeit in Millisekunden
-
-        fetch("{% url 'analytics:log_time_spent' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: JSON.stringify({
-                page_type: "detailed_article",
-                id: {{ article.id }},
-                duration_ms: duration
-            })
-        });
-    });
-</script>
 
 

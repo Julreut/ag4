@@ -52,9 +52,9 @@ document.addEventListener("click", function (event) {
   if (target) {
     // Allgemeine Log-Daten erfassen
     const logData = {
-      url: target.href || window.location.href, // URL des Links oder aktuelle URL
+      url: target.href || window.location.href || "No Url", // URL des Links oder aktuelle URL
       text: target.innerText || target.value || "No text", // Text des Elements
-      tag: target.tagName, // Typ des Elements (z. B. BUTTON oder A)
+      tag: target.tagName || "No Tag", // Typ des Elements (z. B. BUTTON oder A)
       id: target.id || "No ID", // ID des Elements
       class: target.className || "No class", // Klassen des Elements
     };
@@ -136,13 +136,29 @@ document.addEventListener("click", function (event) {
   }
 
   // Logik für "Mehr lesen & interagieren"
-  if (target.classList.contains("read-more") && !target.dataset.replyId) {
-    const articleId = target.dataset.articleId; // Artikel-ID
-    const commentId = target.dataset.commentId; // Kommentar-ID
+  if (
+    target.classList.contains("read-more") &&
+    target.dataset.action === "read_and_interact"
+  ) {
+    const articleId = target.dataset.articleId || null; // Kommentar-ID
+    const commentId = target.dataset.commentId || null; // Kommentar-ID
+    const url = target.href || window.location.href;
+
+    console.log(
+      "Gesendete Daten:",
+      JSON.stringify({
+        event_type: "read_and_interact",
+        event_data: {
+          article_id: articleId,
+          comment_id: commentId,
+          url: url,
+        },
+      })
+    );
 
     logUserAction("read_and_interact", {
-      article_id: articleId,
       comment_id: commentId,
+      url: url,
     });
 
     // Optional: Navigation verhindern und Logging sicherstellen

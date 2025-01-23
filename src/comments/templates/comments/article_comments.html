@@ -57,8 +57,9 @@
                             <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" 
                             class="ui button read-more"
                             data-comment-id="{{ comment.id }}"
-                            data-article-id="{{ article.id }}">
-                            Mehr lesen & interagieren
+                            data-article-id="{{ article.id }}"
+                            data-action="read_and_interact">
+                            Mehr lesen und interagieren
                             </a>
                         </div>
                     </div>
