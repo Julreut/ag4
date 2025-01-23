@@ -82,16 +82,6 @@ def question_list(request, label):
                         sub_question=f"Zeile_{sub_question}",
                         answer_text=answer_value
                     )
-
-            elif question.question_type == 'fancy_combination':
-                for sub_question in question.get_sub_questions():
-                    for column in ['left', 'right']:
-                        sub_field_name = f'{field_name}_{sub_question}_{column}'
-                        answer_value = request.POST.get(sub_field_name)
-                        if question.required and not answer_value:
-                            messages.error(request, f"Bitte beantworten Sie die Frage: {sub_question} ({column})")
-                            return render(request, 'questions/question_list.html', {'questions': unanswered_questions, 'label': label})
-                        
             elif question.question_type == 'ampel_rating':
                 # Alle Antworten für die Frage sammeln
                 answers = []

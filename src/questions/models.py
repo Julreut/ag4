@@ -11,7 +11,6 @@ class Question(models.Model):
         ('open_text', 'Open Text'),
         ('slider', 'Slider'),
         ('multiple_likert', 'Multiple Likert'),
-        ('fancy_combination', 'Fancy Combination'),
         ('ampel_rating', 'Ampel Rating')
     ]
     name = models.TextField(
@@ -36,7 +35,7 @@ class Question(models.Model):
     )
     sub_questions = models.TextField(
         blank=True,
-        help_text="Für Multiple Likert und Fancy Combination: Semikolon-separierte Sub-Fragen."
+        help_text="Für Multiple Likert: Semikolon-separierte Sub-Fragen."
     )
     sub_choices = models.TextField(
         blank=True,
@@ -110,7 +109,7 @@ class Answer(models.Model):
         max_length=255,
         blank=True,
         null=True,
-        help_text="Optional: Sub-question identifier for formats like Multiple Likert or Fancy Combination."
+        help_text="Optional: Sub-question identifier for formats like Multiple Likert."
     )
 
     class Meta:

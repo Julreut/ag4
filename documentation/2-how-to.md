@@ -1,8 +1,5 @@
 # Aufbau der Software
 
-
-# Hinweise für Versuchsleiter
-
 <details> <summary>Feature-Überblick</summary>
 
 User:
@@ -21,6 +18,8 @@ Forschende:
 - Datenexport: Export der Daten als .xlsx-Datei (ausgewählte Tabellen oder gesamte Datenbank).
 </details>
 
+---
+
 <details> <summary>Nutzerverwaltung für Forscher </summary>
 Registrierung:
 
@@ -31,6 +30,8 @@ Admin-Zugriff:
 - Forscher können über <URL>/admin auf die Administrationsseite zugreifen. 
 - Login erfolgt mit Superuser-Zugangsdaten, die während der Einrichtung festgelegt wurden. Über die Admin-Seite können alle Module eingesehen und bearbeitet werden.
 </details>
+
+---
 
 <details> <summary>🚀 Analytics App
 </summary>
@@ -48,8 +49,9 @@ Admin-Zugriff:
     - ```views.py``` log_user_action loggt Javascript User Actions
 </details>
 
+---
 
-<details> <summary>Articles App (Zeitungen und Artikel)
+<details> <summary> 🗞️ Articles App (Zeitungen und Artikel)
 </summary>
 <br> TL;DR: Hier passiert die Verwaltung und Darstellung von Zeitungen und Artikeln. Das Admin-Panel ermöglicht die dynamische Anpassung und CSV-Exporte. Die Models definieren die Struktur von Zeitungen und Artikeln, und die Templates sorgen für die Anzeige von Listen und Details.
 
@@ -85,6 +87,7 @@ Admin-Zugriff:
 
 </details>
 
+---
 
 <details> <summary>💬 Comments App</summary>
 
@@ -128,9 +131,64 @@ Admin-Zugriff:
             - Verarbeiten Like/Dislike-Aktionen und loggen Änderungen.
 </details>
 
-<details> <summary>Configuration App</summary>
-x
+---
+
+<details> <summary>🔧 Configuration App</summary>
+
+<br>
+
+**TL; DR:**
+Die **Configuration App** ermöglicht die zentrale Verwaltung wichtiger Einstellungen der Versuchsumgebung. Diese Konfigurationen können flexibel angepasst werden, ohne den Code selbst zu verändern.
+
+---
+
+### Features
+
+1. **Zentrale Konfigurationsparameter:**
+   - Like/Dislike-Funktionalität aktivieren oder deaktivieren.
+   - Sitzungs-Timer an/ausschalten.
+   - Maximale Sitzungsdauer festlegen.
+
+2. **Django Admin-Integration:**
+   - Konfigurationsparameter direkt im Admin-Bereich verwalten.
+
+3. **Automatische Token-Generierung:**
+   - Verwaltungstoken (`management_token`) regenerieren, um zusätzliche Sicherheit zu gewährleisten.
+
+---
+
+### Admin.py
+
+Die `admin.py` definiert, wie die Konfiguration im Django Admin angezeigt und verwaltet wird.
+
+#### Eigenschaften:
+- **Liste der anzeigbaren Felder (`list_display`)**:
+  - `like_dislike_enabled`: Aktiviert/Deaktiviert die Like/Dislike-Funktionalität.
+  - `is_timer_enabled`: Steuert, ob der Sitzungs-Timer aktiv ist.
+  - `max_session_duration`: Maximale Sitzungsdauer in Sekunden.
+  - `management_token`: Ein zufälliger Token für Verwaltungsaufgaben.
+
+### Models.py
+
+Die **Configuration-Modellklasse** definiert die Konfigurationsparameter und deren Standardwerte.
+
+### Felder
+1. **like_dislike_enabled**: Steuert, ob Likes/Dislikes aktiv sind.
+2. **is_timer_enabled**: Aktiviert oder deaktiviert den Sitzungs-Timer.
+3. **max_session_duration**: Maximale Dauer der Sitzung in Sekunden (Standard: 3600 Sekunden = 1 Stunde).
+4. **management_token**: Verwaltungstoken, das für administrative Zwecke generiert wird.
+
+### Methoden
+- **regenerate_mgmt_token()**:
+  - Generiert ein neues Token aus zufälligen Zeichen.
+- **get_the_config()**:
+  - Lädt die bestehende Konfiguration oder erstellt eine neue Standardkonfiguration.
+- **ensure_config_exists()**:
+  - Stellt sicher, dass eine Konfiguration in der Datenbank existiert.
+
 </details>
+
+---
 
 
 <details> 
@@ -243,6 +301,7 @@ Definiert Routen für verschiedene Funktionen:
 
 </details>
 
+---
 
 <details> <summary>👤 Profiles App</summary>
 
@@ -286,6 +345,7 @@ Definiert Routen für verschiedene Funktionen:
 
 </details>
 
+---
 
 <details> <summary>❓ Questions App</summary>
 
@@ -378,6 +438,8 @@ Definiert Routen für verschiedene Funktionen:
 4. Abschlussseite.
 </details>
 
+---
+
 <details> <summary>🗂️ Static Project & Templates</summary>
 
 ### **Static Project**
@@ -435,7 +497,9 @@ Das `static_project`-Verzeichnis ist für die Bereitstellung und Verwaltung von 
 
 </details>
 
-<details> <summary>🔧 Base Template und Navbar</summary>
+---
+
+<details> <summary> 🧭 Base Template und Navbar</summary>
 
 <br> TL;DR: Das Base Template `base.html` dient als **Grundgerüst für alle HTML-Dateien** der Anwendung. Es enthält allgemeine Layout- und Design-Elemente, die in anderen Templates wiederverwendet werden. Alle spezifischen Seiten basieren auf diesem Template und ergänzen oder überschreiben dessen Inhalte mithilfe von **`{% block ... %}` und `{% endblock %}`**. Die Navigationsleiste `navbar.html` bietet Zugriff auf zentrale Funktionen und wird ebenfalls auf allen Seiten eingebunden.
 
@@ -518,7 +582,9 @@ Beispiel:
 ```
 </details>
 
-<details> <summary> manage.py in Django</summary>
+---
+
+<details> <summary> ☞ manage.py in Django</summary>
 <br> TL;DR:Die Datei `manage.py` ist ein zentraler Bestandteil jeder Django-Anwendung. Sie dient als **Schnittstelle für administrative Aufgaben** und wird verwendet, um verschiedene Befehle auszuführen.
 
 ---
@@ -550,6 +616,131 @@ python src/manage.py help
 ```
 </details>
 
+---
+<br>
+
+# Hinweise für Versuchsleiter
+
+## Fragetypen im `Question`-Modell
+
+Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen Fragetypen (`question_type`) im `Question`-Modell ausgefüllt werden müssen.
+
+<details>
+<summary>1. Dropdown</summary>
+
+- **Beschreibung:** Ermöglicht eine Auswahl aus einer Dropdown-Liste.
+- **Erforderliche Felder:**
+  - `choices`: Semikolon-separierte Auswahlmöglichkeiten (z. B. `Option1;Option2;Option3`).
+- **Optional:** 
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+<details>
+<summary>2. Multiple Choice</summary>
+
+- **Beschreibung:** Mehrere Auswahlmöglichkeiten können gleichzeitig ausgewählt werden.
+- **Erforderliche Felder:**
+  - `choices`: Semikolon-separierte Auswahlmöglichkeiten (z. B. `Option1;Option2;Option3`).
+- **Optional:** 
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+<details>
+<summary>3. Single Choice</summary>
+
+- **Beschreibung:** Nur eine Auswahl aus mehreren Optionen ist erlaubt.
+- **Erforderliche Felder:**
+  - `choices`: Semikolon-separierte Auswahlmöglichkeiten (z. B. `Option1;Option2;Option3`).
+- **Optional:** 
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+<details>
+<summary>4. Numeric Scale</summary>
+
+- **Beschreibung:** Eine Bewertungsskala mit numerischen Werten (z. B. 1–10).
+- **Erforderliche Felder:**
+  - `min_value`: Der niedrigste Wert der Skala.
+  - `max_value`: Der höchste Wert der Skala.
+- **Optional:**
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+<details>
+<summary>5. Open Text</summary>
+
+- **Beschreibung:** Ermöglicht eine offene Textantwort.
+- **Erforderliche Felder:**
+  - Keine spezifischen Felder notwendig.
+- **Optional:** 
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+<details>
+<summary>6. Slider</summary>
+
+- **Beschreibung:** Ein Schieberegler für die Auswahl eines Werts innerhalb eines definierten Bereichs.
+- **Erforderliche Felder:**
+  - `min_value`: Minimaler Wert.
+  - `max_value`: Maximaler Wert.
+  - `step_value`: Schrittgröße des Reglers (z. B. 1, 5, 10).
+  - `start_value`: Anfangsposition des Reglers.
+- **Optional:** 
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+<details>
+<summary>7. Multiple Likert</summary>
+
+- **Beschreibung:** Eine Matrixfrage mit mehreren Items (z. B. Aussagen), die auf einer Likert-Skala bewertet werden.
+- **Erforderliche Felder:**
+  - `sub_questions`: Semikolon-separierte Sub-Fragen (z. B. `Frage1;Frage2;Frage3`).
+  - `choices`: Semikolon-separierte Bewertungskategorien (z. B. `Stimme nicht zu;Stimme zu`).
+- **Optional:**
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+<details>
+<summary>8. Ampel Rating</summary>
+
+- **Beschreibung:** Bewertung mit einer visuellen Ampel (z. B. rot, gelb, grün).
+- **Erforderliche Felder:**
+  - `choices`: Muss die drei Standardoptionen für die Ampelfarben enthalten (z. B. `Rot;Gelb;Grün`).
+- **Optional:** 
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+</details>
+
+---
+
+## Zusätzliche Hinweise
+
+- **Globaler Hinweis zu `choices`:** Für alle Fragen, die `choices` verwenden, müssen die Optionen durch Semikolons getrennt angegeben werden.
+- **Validierung:** Das Modell führt während des Speicherns eine Validierung durch (`clean()`), um sicherzustellen, dass alle erforderlichen Felder basierend auf dem `question_type` korrekt ausgefüllt sind.
+- **Pflichtfragen:** Das Feld `required` kann für jeden Fragetyp genutzt werden, um anzugeben, ob eine Antwort zwingend notwendig ist.
+
+---
 
 <details> 
 <summary>🛠 Kleine Änderungen vornehmen</summary>
