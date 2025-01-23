@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, Text, SessionConfig
+from .models import Question, Text
 
 
 @admin.register(Question)
@@ -57,7 +57,7 @@ class TextAdmin(admin.ModelAdmin):
         print("Available Identifiers:", list(identifiers))  # Log the identifiers for the admin
         return queryset
 
-@admin.register(SessionConfig)
-class SessionConfigAdmin(admin.ModelAdmin):
-    list_display = ('max_duration','is_timer_enabled')
-    fields =('max_duration','is_timer_enabled') # Customize the detail view order
+# @admin.register(SessionConfig)
+# class SessionConfigAdmin(admin.ModelAdmin):
+#     list_display = ('max_duration','is_timer_enabled')
+#     fields =('max_duration','is_timer_enabled') # Customize the detail view order

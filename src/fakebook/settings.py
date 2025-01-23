@@ -95,7 +95,7 @@ MIDDLEWARE = [
     'fakebook.middleware.NewspaperTimerMiddleware',
 ]
 
-MAX_SESSION_DURATION = 3600  # 1 Stunde in Sekunden
+# MAX_SESSION_DURATION = 3600  # 1 Stunde in Sekunden # not needed anymore
 
 ROOT_URLCONF = 'fakebook.urls'
 

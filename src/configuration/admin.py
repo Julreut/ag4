@@ -21,7 +21,20 @@ admin.site.unregister(SocialToken)
 
 @admin.register(Configuration)
 class ConfigurationAdmin(admin.ModelAdmin):
-    list_display = ["change_configuration", "comments_interaction", "comments_interaction", "like_dislike_enabled", "registration_enabled", "management_token"]
+    list_display = [
+        "like_dislike_enabled",
+        "registration_enabled",
+        "is_timer_enabled",  # Timer aktiviert?
+        "max_session_duration",  # Maximale Sitzungsdauer
+        "management_token",
+    ]
+    fields = [
+        "like_dislike_enabled",
+        "registration_enabled",
+        "is_timer_enabled",
+        "max_session_duration",
+        "management_token",
+    ]
 
     def change_configuration(self, configuration):
         return "change configuration"

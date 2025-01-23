@@ -32,6 +32,7 @@
                         <div class="comment-body">
                             <p>{{ comment.content|truncatechars:100 }}</p>
                         </div>
+                        {% if like_dislike_enabled %}
                         <div class="comment-actions view-only">
                             <div class="like-dislike-form">
                                 <!-- Like Button -->
@@ -54,6 +55,7 @@
                                     <span>{{ comment.disliked.count }}</span>
                                 </form>
                             </div>
+                            {% endif %}
                             <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" 
                             class="ui button read-more"
                             data-comment-id="{{ comment.id }}"

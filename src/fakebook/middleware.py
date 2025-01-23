@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from django.utils.timezone import now
 from django.shortcuts import redirect
 from django.urls import reverse, Resolver404
-from questions.models import SessionConfig
+from configuration.models import get_the_config
 import logging
 
 logger = logging.getLogger(__name__)
@@ -39,12 +39,12 @@ class NewspaperTimerMiddleware:
                 return self.get_response(request)
 
             # Load configuration from the database
-            config = SessionConfig.objects.first()
+            config = get_the_config()
             if not config or not config.is_timer_enabled:
                 logger.debug("Timer is not enabled in the configuration.")
                 return self.get_response(request)
 
-            max_session_duration = config.max_duration if config.max_duration else 3600
+            max_session_duration = config.max_session_duration if config.max_session_duration else 3600
 
             # Set entry time for '/newspapers/' path if not already set
             if request.path == reverse('articles:news-papers') and 'newspaper_entry_time' not in request.session:

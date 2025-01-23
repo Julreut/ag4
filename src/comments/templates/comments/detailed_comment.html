@@ -32,6 +32,7 @@
             </div>
 
             <!-- Like/Dislike Buttons -->
+            {% if like_dislike_enabled %}
             <div class="comment-actions">
                 <!-- Like Button -->
                 <form method="post" action="{% url 'comments:like-comment-view' %}" class="like-dislike-form">
@@ -62,6 +63,7 @@
                     <span>{{ comment.disliked.count }}</span>
                 </form>
             </div>
+            {% endif %}
 
         <!-- Replies Section -->
         <div class="reply-section">

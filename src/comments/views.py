@@ -55,6 +55,8 @@ def article_comments_view(request, news_paper_id, article_id):
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     comment_type = ContentType.objects.get_for_model(Comment)
+    config = get_the_config()
+
 
     # 1. Hauptkommentare abrufen (nur IDs)
     main_comment_ids = Comment.objects.filter(
@@ -182,6 +184,8 @@ def article_comments_view(request, news_paper_id, article_id):
         'comments': main_comments,  # Hauptkommentare in zufälliger Reihenfolge
         'comment_form': comment_form,
         'secondary_comment_form': secondary_comment_form,
+        'like_dislike_enabled': config.like_dislike_enabled,  # Wert an das Template übergeben
+
     }
     return render(request, 'comments/article_comments.html', context)
 
@@ -199,6 +203,7 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     comment_type = ContentType.objects.get_for_model(Comment)
+    config = get_the_config()
 
     # Primärkommentar-Aktionen berechnen
     comment.like_action = "unlike" if profile in comment.liked.all() else "like"
@@ -278,6 +283,8 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
         'article': article,
         'newspaper': newspaper,
         'secondary_comment_form': SecondaryCommentModelForm(),
+        'like_dislike_enabled': config.like_dislike_enabled,  # Wert an das Template übergeben
+
     }
     return render(request, 'comments/detailed_comment.html', context)
 

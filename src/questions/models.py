@@ -158,12 +158,12 @@ class Consent(models.Model):
         return f"Consent by {self.user.username} at {self.timestamp}"
     
     
-class SessionConfig(models.Model):
-    max_duration = models.PositiveIntegerField(
-        default=3600,  # Standard: 1 Stunde
-        help_text="Maximale Zeit in Sekunden, bevor der Benutzer automatisch ausgeloggt wird."
-    )
-    is_timer_enabled = models.BooleanField(default=False, help_text="Timer aktivieren oder deaktivieren")
+# class SessionConfig(models.Model):
+#     max_duration = models.PositiveIntegerField(
+#         default=3600,  # Standard: 1 Stunde
+#         help_text="Maximale Zeit in Sekunden, bevor der Benutzer automatisch ausgeloggt wird."
+#     )
+#     is_timer_enabled = models.BooleanField(default=False, help_text="Timer aktivieren oder deaktivieren")
 
-    def __str__(self):
-        return f"SessionConfig: {self.max_duration} Sekunden (Timer {'Enabled' if self.is_timer_enabled else 'Disabled'})"
+#     def __str__(self):
+#         return f"SessionConfig: {self.max_duration} Sekunden (Timer {'Enabled' if self.is_timer_enabled else 'Disabled'})"

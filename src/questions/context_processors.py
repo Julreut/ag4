@@ -1,5 +1,5 @@
 from django.conf import settings
-from .models import SessionConfig
+from configuration.models import get_the_config
 
 
 def global_settings(request):
@@ -8,7 +8,7 @@ def global_settings(request):
     }
 
 def session_config(request):
-    config = SessionConfig.objects.first()
+    config = get_the_config()
     return {
-        'MAX_SESSION_DURATION': config.max_duration if config else 3600  # Fallback: 1 Stunde
+        'MAX_SESSION_DURATION': config.max_session_duration if config else 1800  # Fallback: 1 Stunde
     }
