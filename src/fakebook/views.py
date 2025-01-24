@@ -72,13 +72,22 @@ def create_user(request):
 def download_view(request):
     return render(request, 'admin/download_database.html')
 
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import user_passes_test
+
 @user_passes_test(lambda u: u.is_superuser)
+@csrf_exempt
 def download_xlsx(request):
     # Tabellen, die verfügbar sind
     tables = [
         "user", "comments", "likes", "dislikes", 
         "articles", "newspapers", "usereventlog", 
-        "usercontentposition", "experimentcondition"
+        "usercontentposition", "experimentcondition",
+        "questions", "answers", "consent", 
+        "profiles", "configuration", 
+        "django_admin_log", "auth_permission", 
+        "auth_group", "django_session"
     ]
     selected_tables = []
 
@@ -87,9 +96,32 @@ def download_xlsx(request):
         if str(request.POST.get(entry)) == "on":
             selected_tables.append(entry)
 
+    # Überprüfen, ob mindestens eine Tabelle ausgewählt wurde
+    if not selected_tables:
+        return JsonResponse({"error": "No tables selected."}, status=400)
+
     # XLSX-Datei generieren
-    xlsx_file = get_xlsx_file_from_database(selected_tables)
-    return xlsx_file
+    try:
+        # Hier muss die Funktion `get_xlsx_file_from_database` die ausgewählten Tabellen verarbeiten
+        xlsx_file = get_xlsx_file_from_database(selected_tables)
+
+        # Wenn keine Daten generiert werden konnten
+        if not xlsx_file:
+            return JsonResponse({"error": "No data available for the selected tables."}, status=404)
+
+        # Antwort mit der XLSX-Datei
+        response = HttpResponse(
+            xlsx_file, 
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response["Content-Disposition"] = "attachment; filename=data_export.xlsx"
+        return response
+
+    except Exception as e:
+        # Fehlerbehandlung für Debugging oder Protokollierung
+        error_message = f"An error occurred: {str(e)}"
+        return JsonResponse({"error": error_message}, status=500)
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def download_database(request):

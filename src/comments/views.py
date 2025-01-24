@@ -1,28 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
 from django.db import models
 
 from django.db.models import Q, Prefetch
 from django.utils.translation import gettext as _
-from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView, DeleteView
 from django.contrib import messages
 
 from django.contrib.contenttypes.models import ContentType
 from analytics.models import UserContentPosition
 import random
 
-from django.http import HttpResponseBadRequest
-
-from .models import Comment, Like, Dislike
+from .models import Comment
 from .forms import CommentModelForm, SecondaryCommentModelForm
 from profiles.models import Profile
 from articles.models import Article, NewsPaper  # Importiere Articles und Newspapers for IDs
 from configuration.models import get_the_config
 
-import time
 
 def save_comment(form, profile, article, parent_comment=None, is_public=False):
     """Helper-Funktion zum Speichern von Haupt- und Sekundärkommentaren und Event-Tracking."""

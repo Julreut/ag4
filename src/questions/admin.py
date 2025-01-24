@@ -18,7 +18,12 @@ class QuestionAdmin(admin.ModelAdmin):
         'sub_questions',
         'sub_choices',
         'min_value', 
-        'max_value'
+        'max_value',
+        'start_value', 
+        'step_value'
+        
+        
+
 
     )  # Customize the detail view order
 
@@ -56,8 +61,3 @@ class TextAdmin(admin.ModelAdmin):
         identifiers = queryset.values_list('identifier', flat=True).distinct()
         print("Available Identifiers:", list(identifiers))  # Log the identifiers for the admin
         return queryset
-
-# @admin.register(SessionConfig)
-# class SessionConfigAdmin(admin.ModelAdmin):
-#     list_display = ('max_duration','is_timer_enabled')
-#     fields =('max_duration','is_timer_enabled') # Customize the detail view order

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 
-from .models import Comment, Like, Dislike
+from .models import Comment
 from analytics.models import ExperimentCondition
 
 
@@ -39,13 +39,3 @@ class CommentAdmin(admin.ModelAdmin):
         """
         updated = queryset.update(is_public=False)
         self.message_user(request, f"{updated} ausgewählte Kommentare wurden privat gemacht.")
-
-@admin.register(Like)
-class LikeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'comment', 'value']
-    list_filter = ['value']
-
-@admin.register(Dislike)
-class DislikeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'comment', 'value']
-    list_filter = ['value']

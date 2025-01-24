@@ -79,7 +79,7 @@ def question_list(request, label):
                     Answer.objects.create(
                         question=question,
                         user=request.user,
-                        sub_question=f"Zeile_{sub_question}",
+                        sub_question=f"Sub_question:{sub_question}",
                         answer_text=answer_value
                     )
             elif question.question_type == 'ampel_rating':
@@ -104,7 +104,7 @@ def question_list(request, label):
                     Answer.objects.create(
                         question=question,
                         user=request.user,
-                        sub_question=f"Zeile_{index + 1}",
+                        sub_question=f"Sub_choices:{pair}",
                         answer_text=answer_value
                     )
 

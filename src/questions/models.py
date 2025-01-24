@@ -15,12 +15,12 @@ class Question(models.Model):
     ]
     name = models.TextField(
         blank=True,
-        help_text="Hier bitte den Item-Name festlegen (fuer die Datenauswertung)."
+        help_text="Hier bitte den Item-Name festlegen (Spalte 'name' in der questions Datenbanktabelle)."
     )
     question_type = models.CharField(
             max_length=20,
             choices=QUESTION_TYPES,
-            help_text="Hier bitte den Fragen-Typ festlegen."
+            help_text="Hier bitte den Fragen-Typ auswählen."
         )
     label = models.CharField(
         max_length=10,
@@ -31,15 +31,15 @@ class Question(models.Model):
 
     choices = models.TextField(
         blank=True,
-        help_text="Für alle Fragen mit vordefinierten Antworten. Für Slider bitte genau drei Möglichkeiten passend zu den min und max values angeben: Semikolon-separierte Auswahlmöglichkeiten."
+        help_text="Für alle Fragen mit vordefinierten Antworten. <br> Für Slider: Bitte genau drei Möglichkeiten passend zu den Min und Max Werten angeben. <br>Angabe: Semikolon-separierte Auswahlmöglichkeiten."
     )
     sub_questions = models.TextField(
         blank=True,
-        help_text="Für Multiple Likert: Semikolon-separierte Sub-Fragen."
+        help_text="Für Multiple Likert.<br>Angabe:Semikolon-separierte Sub-Fragen."
     )
     sub_choices = models.TextField(
         blank=True,
-        help_text="Zeilenweise Aussagen für die Matrix-Frage, Semikolon-separierte Sub-Choices."
+        help_text="Für Ampel-Frage.<br>Angabe von Tupeln für Fragenpole als semikolon-separierte Sub-Choices. <br>Beispieltext: Sehr unwahrscheinlich;Sehr wahrscheinlich; Negativ;Positiv"
     )
     min_value = models.IntegerField(
         blank=True, null=True,
@@ -55,7 +55,7 @@ class Question(models.Model):
     )
     start_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Für Slider: Startwert."
+        help_text="Für Slider: Startwert. Bitte Wert im Bereich von Min und Max Value wählen."
     )
     
     required = models.BooleanField(

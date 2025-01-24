@@ -40,20 +40,3 @@ class Comment(models.Model):
                 "comment_id": self.id
             }
         )
-    
-class Like(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="likes_set")
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="likes_on_comment")
-    value = models.CharField(max_length=10, choices=[("Like", "Like"), ("Unlike", "Unlike")])
-
-    def __str__(self):
-        return f"{self.user.user.username} {self.value} on {self.comment.id}"
-
-
-class Dislike(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="dislikes_set")
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="dislikes_on_comment")
-    value = models.CharField(max_length=10, choices=[("Dislike", "Dislike"), ("Undislike", "Undislike")])
-
-    def __str__(self):
-        return f"{self.user.user.username} {self.value} on {self.comment.id}"

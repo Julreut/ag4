@@ -58,6 +58,8 @@ django-admin --version
 
 </details>
 
+---
+
 <details>
 <summary>🎨 <strong> Grundlagen Frontend: HTML & CSS </strong></summary>
 <br>
@@ -78,6 +80,8 @@ Dies ermöglicht die Wiederverwendung einer Design-Basis und den Zugriff auf sta
 **Beispiel:** `static/css/styles.css`
 
 </details>
+
+----
 
 <details>
 <summary>📜  <strong>Verwendung von JavaScript in Django Templates  </strong></summary>
@@ -111,6 +115,8 @@ In einem spezifischen Template, z. B. article_comments.html, kannst du den Block
 - Wartbarkeit: Der Code bleibt übersichtlicher und einfacher zu verwalten.
 
 </details>
+
+---
 
 <details>
 <summary>🗄️<strong>Datenbank & Modelle</strong></summary>

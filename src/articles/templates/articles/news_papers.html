@@ -12,7 +12,7 @@ Newspapers {% endblock title %}
     {% for newspaper in news_papers %}
     <div class="newspaper-item">
       <div class="image-container">
-        <img src="{{ newspaper.image }}" alt="{{ newspaper.name }}" />
+        <img src="{{ newspaper.image.url }}" alt="{{ newspaper.name }}" />
       </div>
       <div class="newspaper-content">
         <h2 class="newspaper-title">{{ newspaper.name }}</h2>
@@ -29,28 +29,3 @@ Newspapers {% endblock title %}
 </div>
 {% endblock content %}
 
-
-{% comment %} LOG ENTRY {% endcomment %}
-<script>
-    let startTime = Date.now();
-
-      document.addEventListener("visibilitychange", function() {
-          if (document.visibilityState === "hidden") {
-              let duration = Date.now() - startTime;  // Zeit in Millisekunden
-
-              fetch("{% url 'analytics:log_time_spent' %}", {
-                  method: "POST",
-                  headers: {
-                      "Content-Type": "application/json",
-                      "X-CSRFToken": "{{ csrf_token }}"
-                  },
-                  body: JSON.stringify({
-                      page_type: "newspaper",
-                      id: null,
-                      duration_ms: duration
-                  })
-              }).catch(err => console.error("Error logging time spent:", err));
-          } 
-      });
-
-</script>

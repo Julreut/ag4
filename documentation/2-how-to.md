@@ -186,6 +186,19 @@ Die **Configuration-Modellklasse** definiert die Konfigurationsparameter und der
 - **ensure_config_exists()**:
   - Stellt sicher, dass eine Konfiguration in der Datenbank existiert.
 
+## Hinweis: 
+Wenn mehrere Configurations bestehen, wird einfach über `Configuration.objects.first()` die erste Konfiguration aus der Datenbank zurückgegeben (nach der Spalte id).
+
+Wenn keine Konfiguration vorhanden ist (config is None), erstellt der Code eine neue Konfiguration mit Standardwerten:
+
+```bash
+like_dislike_enabled=True
+
+is_timer_enabled=False
+
+max_session_duration=1800 (30 Minuten).
+```
+**Management-Token-Logik:** Wenn das management_token den Wert "changeme" hat, wird es mit config.regenerate_mgmt_token() aktualisiert.
 </details>
 
 ---
@@ -254,8 +267,8 @@ Definiert Routen für verschiedene Funktionen:
 
 #### **`middleware.py`**
 - **NewspaperTimerMiddleware**:
-  - Verfolgt die Verweildauer von Benutzern auf bestimmten Seiten.
-  - Automatische Weiterleitung nach Ablauf der maximalen Sitzungszeit.
+  - Verfolgt die Verweildauer von Benutzern ab Start des Experiments (nach Beantwortung der Fragen mit Label "before").
+  - Automatische Weiterleitung zu "after" Fragen bzw. Ende des Experiments nach Ablauf der maximalen Sitzungszeit.
 
 #### **`settings.py`**
 - Definiert globale Einstellungen der Fakebook App:
@@ -263,7 +276,7 @@ Definiert Routen für verschiedene Funktionen:
   - **Statische Dateien**:
     - Statische Inhalte (CSS, JS) und Mediendateien sind konfigurierbar.
   - **Zeitzonen und Sprache**:
-    - Standardmäßig `en` als Sprache und UTC als Zeitzone.
+    - Standardmäßig `en` als Sprache und UTC als Zeitzone. Sprache sollte noch weiter angepasst werden
   - **Externe Authentifizierung**:
     - Integration von `django-allauth` für Benutzerverwaltung.
 
@@ -629,6 +642,8 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <summary>1. Dropdown</summary>
 
 - **Beschreibung:** Ermöglicht eine Auswahl aus einer Dropdown-Liste.
+<img src="images/Dropdown-Question.png" alt="Dropdown Question" width="500">
+
 - **Erforderliche Felder:**
   - `choices`: Semikolon-separierte Auswahlmöglichkeiten (z. B. `Option1;Option2;Option3`).
 - **Optional:** 
@@ -642,6 +657,8 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <summary>2. Multiple Choice</summary>
 
 - **Beschreibung:** Mehrere Auswahlmöglichkeiten können gleichzeitig ausgewählt werden.
+<img src="images/Multiple-Choice-Question.png" alt="Multiple Choice Question" width="500">
+
 - **Erforderliche Felder:**
   - `choices`: Semikolon-separierte Auswahlmöglichkeiten (z. B. `Option1;Option2;Option3`).
 - **Optional:** 
@@ -655,6 +672,8 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <summary>3. Single Choice</summary>
 
 - **Beschreibung:** Nur eine Auswahl aus mehreren Optionen ist erlaubt.
+<img src="images/Single-Choice-Question.png" alt="Single Choice Question" width="500">
+
 - **Erforderliche Felder:**
   - `choices`: Semikolon-separierte Auswahlmöglichkeiten (z. B. `Option1;Option2;Option3`).
 - **Optional:** 
@@ -667,10 +686,12 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <details>
 <summary>4. Numeric Scale</summary>
 
-- **Beschreibung:** Eine Bewertungsskala mit numerischen Werten (z. B. 1–10).
+- **Beschreibung:** Eine Frage mit numerischen Antworten, die eine obere und untere Grenze haben können (z. B. 18–99).
+<img src="images/Numeric-Scale-Question.png" alt="Numeric Scale Question" width="500">
+
 - **Erforderliche Felder:**
-  - `min_value`: Der niedrigste Wert der Skala.
-  - `max_value`: Der höchste Wert der Skala.
+  - `min_value`: Der niedrigste Wert.
+  - `max_value`: Der höchste Wert.
 - **Optional:**
   - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
 
@@ -695,6 +716,8 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <summary>6. Slider</summary>
 
 - **Beschreibung:** Ein Schieberegler für die Auswahl eines Werts innerhalb eines definierten Bereichs.
+<img src="images/Slider-Question.png" alt="Slider Question" width="500">
+
 - **Erforderliche Felder:**
   - `min_value`: Minimaler Wert.
   - `max_value`: Maximaler Wert.
@@ -711,6 +734,7 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <summary>7. Multiple Likert</summary>
 
 - **Beschreibung:** Eine Matrixfrage mit mehreren Items (z. B. Aussagen), die auf einer Likert-Skala bewertet werden.
+<img src="images/Multiple-Likert-Question.png" alt="Multiple Likert Question" width="500">
 - **Erforderliche Felder:**
   - `sub_questions`: Semikolon-separierte Sub-Fragen (z. B. `Frage1;Frage2;Frage3`).
   - `choices`: Semikolon-separierte Bewertungskategorien (z. B. `Stimme nicht zu;Stimme zu`).
@@ -724,12 +748,16 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <details>
 <summary>8. Ampel Rating</summary>
 
-- **Beschreibung:** Bewertung mit einer visuellen Ampel (z. B. rot, gelb, grün).
-- **Erforderliche Felder:**
-  - `choices`: Muss die drei Standardoptionen für die Ampelfarben enthalten (z. B. `Rot;Gelb;Grün`).
-- **Optional:** 
-  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+- **Beschreibung:** Bewertung mit zwei Polen: <br>
+<img src="images/Ampel-Rating-Question.png" alt="Ampel Rating Question" width="500">
 
+- **Erforderliche Felder:**
+  - `choices`: Muss die zwei Optionen enthalten (z. B. `positiv;negativ`).
+
+- **Optional:** 
+  - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss. <br>
+  Warning Beispiel:<br>
+    <img src="images/Ampel-Rating-Selection-Warning.png" alt="Ampel Rating Selection With Warnings" width="500">
 </details>
 
 ---

@@ -10,100 +10,121 @@
 
 {% block content %}
 
-
 <p>
     <a href="{% url 'admin:index' %}">Go back to home</a>
 </p>
 
-<!-- Download the excel file -->
+<!-- Download the Excel file -->
 
 <form action="{% url 'download-xlsx' %}" method="post">
-
     {% csrf_token %}
-
-    <p>Select the tables you want to download:</p>
-
-    <table>
-        <tr>
-            <th>Table</th>
-            <th>Columns</th>
-        </tr>
-        <tr>
-            <td><label> <input type="checkbox" name="user"> user</label></td>
-            <td>user_id, username, first_name, last_name, avatar, bio, date_joined, last_login</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="comments"> comments</label></td>
-            <td>comment_id, author_id, article_id, title, content, created, updated</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="likes"> likes</label></td>
-            <td>like_id, user_id, comment_id, value</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="dislikes"> dislikes</label></td>
-            <td>dislike_id, user_id, comment_id, value</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="articles"> articles</label></td>
-            <td>article_id, news_paper_id, title, content, created_at, updated_at</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="newspapers"> newspapers</label></td>
-            <td>newspaper_id, name, image</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="usereventlog"> user event log</label></td>
-            <td>event_id, user_id, event_type, event_data, timestamp</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="usercontentposition"> user content position</label></td>
-            <td>position_id, user_id, object_id, position</td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" name="experimentcondition"> experiment condition</label></td>
-            <td>condition_id, name, description</td>
-        </tr>
-      </table>
-
+    <p><strong>Select the tables you want to download:</strong></p>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Table</th>
+                <th>Columns</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><label><input type="checkbox" name="user"> user</label></td>
+                <td>user_id, username, first_name, last_name, email, is_staff, is_active, date_joined, last_login</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="comments"> comments</label></td>
+                <td>comment_id, author_id, article_id, title, content, created, updated, public, tag</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="likes"> likes</label></td>
+                <td>like_id, user_id, comment_id, value</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="dislikes"> dislikes</label></td>
+                <td>dislike_id, user_id, comment_id, value</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="articles"> articles</label></td>
+                <td>article_id, news_paper_id, title, content, slug, image, created_at, updated_at, tag</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="newspapers"> newspapers</label></td>
+                <td>newspaper_id, name, image, tag</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="usereventlog"> user event log</label></td>
+                <td>event_id, user_id, event_type, event_data, timestamp</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="usercontentposition"> user content position</label></td>
+                <td>position_id, user_id, content_type, object_id, position</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="experimentcondition"> experiment condition</label></td>
+                <td>condition_id, profile, name, description, tag</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="questions"> questions</label></td>
+                <td>question_id, name, question_type, label, question_text, choices, sub_questions, min_value, max_value</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="answers"> answers</label></td>
+                <td>answer_id, question_id, user_id, answer_text, created_at</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="consent"> consent</label></td>
+                <td>consent_id, user_id, consent_given, timestamp</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="profiles"> profiles</label></td>
+                <td>profile_id, user_id, bio, avatar, slug, condition</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="configuration"> configuration</label></td>
+                <td>config_id, like_dislike_enabled, registration_enabled, is_timer_enabled, max_session_duration</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="django_admin_log"> admin log</label></td>
+                <td>log_id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="auth_permission"> auth permission</label></td>
+                <td>permission_id, name, content_type_id, codename</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="auth_group"> auth group</label></td>
+                <td>group_id, name</td>
+            </tr>
+            <tr>
+                <td><label><input type="checkbox" name="django_session"> session</label></td>
+                <td>session_key, session_data, expire_date</td>
+            </tr>
+        </tbody>
+    </table>
     <p><input type="submit" value="Download selected tables as .xlsx"></p>
-
 </form>
 
 <hr>
-<hr>
-<hr>
 
-<!-- Download the database as a file -->
+<!-- Download the entire database -->
 
 <form action="{% url 'download-database' %}" method="post">
-
     {% csrf_token %}
-
-    <p>Click here to download the entire database:</p>
-
+    <p><strong>Click here to download the entire database:</strong></p>
     <p><input type="submit" value="Download database as .sqlite3 file"></p>
-
 </form>
 
 <hr>
-<hr>
-<hr>
 
-<!-- Download the pictures  -->
+<!-- Download pictures -->
 
 <form action="{% url 'download-pictures' %}" method="post">
-
     {% csrf_token %}
-
-    <p>Select the pictures you want to download:</p>
-    
-    <p><label><input type="checkbox" name="profile_pictures"> profile pictures</label></p>
-    <p><label><input type="checkbox" name="articles"> articles</label></p>
-    <p><label><input type="checkbox" name="newspapers"> newspapers</label></p>
-
+    <p><strong>Select the pictures you want to download:</strong></p>
+    <p><label><input type="checkbox" name="profile_pictures"> Profile pictures</label></p>
+    <p><label><input type="checkbox" name="articles"> Articles</label></p>
+    <p><label><input type="checkbox" name="newspapers"> Newspapers</label></p>
     <p><input type="submit" value="Download selected pictures as a .zip"></p>
-
 </form>
 
 {% endblock %}
