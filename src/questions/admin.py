@@ -4,7 +4,7 @@ from .models import Question, Text
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('label', 'question_text', 'question_type', 'required')
+    list_display = ('name','question_text', 'question_type', 'label','required')
     search_fields = ('question_text',)
     list_filter = ('label', 'question_type', 'required')
     ordering = ('label', 'question_type')
@@ -21,11 +21,7 @@ class QuestionAdmin(admin.ModelAdmin):
         'max_value',
         'start_value', 
         'step_value'
-        
-        
-
-
-    )  # Customize the detail view order
+    )
 
     def get_queryset(self, request):
         # Allow admin to filter questions based on label and type
@@ -48,6 +44,7 @@ class TextAdmin(admin.ModelAdmin):
     list_display = ('identifier', 'content_preview', 'visibility')
     search_fields = ('identifier', 'content')
     ordering = ('identifier',)
+    list_filter = ('identifier', 'visibility')
     fields = ('identifier', 'content', 'visibility')  # Customize the detail view order
 
     def content_preview(self, obj):

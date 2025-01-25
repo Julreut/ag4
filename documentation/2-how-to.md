@@ -717,6 +717,7 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 
 - **Beschreibung:** Ein Schieberegler für die Auswahl eines Werts innerhalb eines definierten Bereichs.
 <img src="images/Slider-Question.png" alt="Slider Question" width="500">
+<img src="images/Einseitige-Slider-Question.png" alt="Slider Question" width="500">
 
 - **Erforderliche Felder:**
   - `min_value`: Minimaler Wert.
@@ -734,7 +735,9 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <summary>7. Multiple Likert</summary>
 
 - **Beschreibung:** Eine Matrixfrage mit mehreren Items (z. B. Aussagen), die auf einer Likert-Skala bewertet werden.
-<img src="images/Multiple-Likert-Question.png" alt="Multiple Likert Question" width="500">
+<img src="images/Multiple-Likert-Question.png" alt="Multiple Likert Question" width="500">+
+<img src="images/Multiple-Likert.png" alt="Multiple Likert Question" width="500">
+
 - **Erforderliche Felder:**
   - `sub_questions`: Semikolon-separierte Sub-Fragen (z. B. `Frage1;Frage2;Frage3`).
   - `choices`: Semikolon-separierte Bewertungskategorien (z. B. `Stimme nicht zu;Stimme zu`).

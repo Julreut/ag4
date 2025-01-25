@@ -15,47 +15,47 @@ class Question(models.Model):
     ]
     name = models.TextField(
         blank=True,
-        help_text="Hier bitte den Item-Name festlegen (Spalte 'name' in der questions Datenbanktabelle)."
+        help_text="Für alle Fragetypen: Hier bitte den Item-Name festlegen (Spalte 'name' in der questions Datenbanktabelle)."
     )
     question_type = models.CharField(
             max_length=20,
             choices=QUESTION_TYPES,
-            help_text="Hier bitte den Fragen-Typ auswählen."
+            help_text="Für alle Fragetypen: Hier bitte den Fragen-Typ auswählen."
         )
     label = models.CharField(
         max_length=10,
         choices=[('before', 'Before'), ('after', 'After')],
-        help_text="Gibt an, ob die Frage vor oder nach dem Experiment gestellt wird."
+        help_text="Für alle Fragetypen: Gibt an, ob die Frage vor oder nach dem Experiment gestellt wird."
     )
-    question_text = models.TextField(help_text="Welche Frage soll in diesem Item gestellt werden?")
+    question_text = models.TextField(help_text="Für alle Fragetypen: Welche Frage soll in diesem Item gestellt werden?")
 
     choices = models.TextField(
         blank=True,
-        help_text="Für alle Fragen mit vordefinierten Antworten. <br> Für Slider: Bitte genau drei Möglichkeiten passend zu den Min und Max Werten angeben. <br>Angabe: Semikolon-separierte Auswahlmöglichkeiten."
+        help_text="Für alle Fragetypen mit <strong>vordefinierten Choices</strong>. <br> Dropdown, Multiple/Single Choice, Likert, Multiple Likert, Slider.<br> Für Slider: Bitte genau drei Möglichkeiten passend zu den Min und Max Werten angeben. <br>Angabe: Semikolon-separierte Auswahlmöglichkeiten."
     )
     sub_questions = models.TextField(
         blank=True,
-        help_text="Für Multiple Likert.<br>Angabe:Semikolon-separierte Sub-Fragen."
+        help_text=" <strong>NUR für Multiple Likert.</strong> <br>Angabe: Semikolon-separierte Sub-Fragen."
     )
     sub_choices = models.TextField(
         blank=True,
-        help_text="Für Ampel-Frage.<br>Angabe von Tupeln für Fragenpole als semikolon-separierte Sub-Choices. <br>Beispieltext: Sehr unwahrscheinlich;Sehr wahrscheinlich; Negativ;Positiv"
+        help_text=" <strong>NUR für Ampel-Frage. </strong><br>Angabe von Tupeln für Fragenpole als semikolon-separierte Sub-Choices. <br>Beispieltext: negativ;positiv;ineffektiv;effektiv"
     )
     min_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Für Numeric Scale und Slider: Minimaler Wert."
+        help_text=" <strong>Für Numeric Scale und Slider: </strong> Minimaler Wert."
     )
     max_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Für Numeric Scale und Slider: Maximaler Wert."
+        help_text=" <strong>Für Numeric Scale und Slider: </strong> Maximaler Wert."
     )
     step_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Für Slider: Stepgröße."
+        help_text=" <strong>Für Slider: </strong> Stepgröße."
     )
     start_value = models.IntegerField(
         blank=True, null=True,
-        help_text="Für Slider: Startwert. Bitte Wert im Bereich von Min und Max Value wählen."
+        help_text=" <strong>Für Slider: </strong> Startwert. Bitte Wert im Bereich von Min und Max Value wählen."
     )
     
     required = models.BooleanField(
@@ -141,8 +141,8 @@ class Text(models.Model):
         ('no_consent_message_en', 'No Consent (English)'),
     ]
 
-    identifier = models.CharField(max_length=200, choices=IDENTIFIER_CHOICES, unique=True, help_text="Choose which text to display.")
-    content = models.TextField(help_text="HTML or plain text content.")
+    identifier = models.CharField(max_length=200, choices=IDENTIFIER_CHOICES, unique=True, help_text="Textart auswählen.")
+    content = models.TextField(help_text="HTML text sorgt dafür, dass der Content deutlich besser lesbar ist. Hierfür einfach den Plain Text in ChatGPT o.Ä. einfügen mit dem Prompt <br>'Erstelle eine anschauliche HTML-Seite mit folgendem Plaintext: [<i>Text hier einfügen</i>] <br>Der Titel der Seite sollte [<i>Titel</i>] lauten. Der Haupttext soll in der Mitte der Seite stehen, mit einer roten Überschrift und einer Beschreibung darunter. <br>Füge auch eine Kontaktmöglichkeit per E-Mail hinzu. Die Seite soll ansprechend und responsiv gestaltet sein.'")
     visibility = models.BooleanField(default=False)
 
     def __str__(self):

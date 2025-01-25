@@ -17,7 +17,7 @@ class Article(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     slug = models.SlugField(unique=True, blank=True)  # Slug-Feld hinzugefügt
-    image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False)
+    image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Bannerformat:1800 x 600 px")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     tag = models.CharField(max_length=50, default='Control')  # Tag für die Versuchsbedingung
@@ -43,7 +43,7 @@ class Article(models.Model):
 class NewsPaper(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False)
+    image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Bannerformat:1800 x 600 px")
     tag = models.CharField(max_length=50, default='Control')  # Tag für die Versuchsbedingung
     def get_id(self):
         return self.id
