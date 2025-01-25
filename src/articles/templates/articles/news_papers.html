@@ -5,7 +5,7 @@
 Newspapers {% endblock title %}
 {% block content %}
 <div class="ui container" style="padding: 20px">
- <h1 class="ui header">Newspapers</h1>
+ <div class="ui huge header">Newspapers</div>
 
   {% if news_papers %}
   <div class="newspaper-grid">
@@ -15,7 +15,9 @@ Newspapers {% endblock title %}
         <img src="{{ newspaper.image.url }}" alt="{{ newspaper.name }}" />
       </div>
       <div class="newspaper-content">
-        <h2 class="newspaper-title">{{ newspaper.name }}</h2>
+        <h1 class="ui header">{{ newspaper.name }}</h1>
+        <h3 class="ui header">{{ newspaper.content }}</h3>
+        <br>
         <a href="{% url 'articles:all-articles' news_paper_id=newspaper.id %}" class="ui button read-more">
           Read more
         </a>

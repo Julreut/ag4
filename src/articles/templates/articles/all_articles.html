@@ -21,10 +21,10 @@ Articles
           
           <!-- Inhalt des Artikels -->
           <div class="article-content">
-            <h2 class="article-title">{{ article.title }}</h2>
-            <div class="article-meta">
+            <h3 class="ui left aligned header">{{ article.title }}</h3>
+            <h5 class="ui left aligned header">
               <span>Published on: {{ article.created_at|date:"F j, Y" }}</span>
-            </div>
+            </h5>
             <p class="article-description">{{ article.content|truncatewords:20 }}</p>
             <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="ui button read-more">
               Read more
@@ -39,36 +39,4 @@ Articles
   {% endif %}
 </div>
 
-{% comment %} Footer {% endcomment %}
-
-{% comment %} <div class="article-footer">
-    <a href="{% url 'articles:news-papers' %}" class="ui secondary basic button">Back to Newspaper Overview</a>
-</div> {% endcomment %}
-
 {% endblock content %}
-
-{% comment %} LOG ENTRY {% endcomment %}
-{% comment %} Zeit-Tracking für die Verweildauer auf der Seite {% endcomment %}
-<script>
-    let startTime = Date.now();  // Startzeitpunkt erfassen
-
-    // Event: Wenn die Seite verlassen wird
-    window.addEventListener("beforeunload", function() {
-        let duration = Date.now() - startTime;  // Verweildauer in Millisekunden berechnen
-
-        // Daten an die Backend-API senden
-        fetch("{% url 'analytics:log_time_spent' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: JSON.stringify({
-                page_type: "all_articles",
-                id: {{ newspaper.id }},  // Zeitung-ID dynamisch einfügen
-                duration_ms: duration    // Verweildauer in Millisekunden
-            })
-        });
-    });
-</script>
-

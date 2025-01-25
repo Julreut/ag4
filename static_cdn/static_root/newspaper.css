@@ -34,8 +34,16 @@
 }
 
 .newspaper-title {
-    font-size: 1.2em;
+    font-size: 200px;
+    font-weight: 600;
     color: #333;
+    margin: 0 0 5px;
+}
+
+.newspaper-info {
+    text-align: center;
+    font-size: 1.0em;
+    color: #686868;
     margin: 0 0 5px;
 }
 

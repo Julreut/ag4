@@ -43,7 +43,8 @@ class Article(models.Model):
 class NewsPaper(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Bannerformat:1800 x 600 px")
+    content = models.CharField(max_length=255, default = 'Change me: This is the short description of the newspaper content.')
+    image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Format:900 x 600 px")
     tag = models.CharField(max_length=50, default='Control')  # Tag für die Versuchsbedingung
     def get_id(self):
         return self.id
