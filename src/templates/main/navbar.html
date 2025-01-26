@@ -17,47 +17,60 @@
         Login
   </a>
   {% else %}
-    
-  <div class="ui container">
-    <!-- Link to home-Screen -->
-    <a href="{{ path_to_news_papers }}" class="{% if request.path == path_to_news_papers %}active{% endif %} item">
-        <i class="fas fa-home"></i> 
-    </a>
-    {% comment %} <!-- Link to home-Screen -->
-    <a href="{{ path_to_news_papers }}" class="{% if request.path == path_to_news_papers %}active{% endif %} item">
-        <i class="fas fa-home"></i> 
-    </a> {% endcomment %}
   
-    <div class="right menu">
+  <div class="ui top fixed menu">
+    <div class="ui container">
+      <!-- Zurück-Button -->
+      <div class="item">
+        <button class="ui icon button" onclick="goBackAndReload()" aria-label="Go Back">
+          <i class="arrow left icon"></i> Zurück
+        </button>
+      </div>
 
-      <!-- Timer -->
-    {% if request.session.newspaper_entry_time %}
-    <div class="ui item" id="timer">
-        Remaining Time: <span id="timer-countdown">Calculating...</span>
+      <!-- Vor-Button -->
+      <div class="item">
+        <button class="ui icon button" onclick="goForwardAndReload()" aria-label="Go Forward">
+          <i class="arrow right icon"></i> Vor
+        </button>
+      </div>
+
+
+      <!-- Home-Button -->
+      <a href="{{ path_to_news_papers }}" class="item {% if request.path == path_to_news_papers %}active{% endif %}">
+        <i class="home icon"></i> Home
+      </a>
+
+      <!-- Rechte Seite der Navigation -->
+      <div class="right menu">
+        <!-- Timer -->
+        {% if request.session.newspaper_entry_time %}
+        <div class="item" id="timer">
+          <i class="clock outline icon"></i>
+          <span>Remaining Time: <span id="timer-countdown">Calculating...</span></span>
+        </div>
+        {% endif %}
+
+        <!-- Profil-Link -->
+        <a href="{{ path_to_my_profile }}" class="item {% if request.path == path_to_my_profile %}active{% endif %}">
+          <img src="{{ picture.url }}" class="ui avatar image" alt="Profilbild">&nbsp; {{ request.user }}
+        </a>
+
+        <!-- After Questions -->
+        <a href="{{ questions_after }}" class="item">
+          <i class="question circle outline icon"></i>&nbsp; After Questions
+        </a>
+
+        <!-- Logout -->
+        <a href="{% url 'account_logout' %}" class="item">
+          <i class="sign-out alternate icon"></i>&nbsp; Cancel (Quit Experiment)
+        </a>
+      </div>
     </div>
-    {% endif %}
-
-      <!-- Path to Profile -->
-      <a href="{{ path_to_my_profile }}" class="{% if request.path == path_to_my_profile %}active{% endif %} item">
-          <img src="{{ picture.url }}" class="ui avatar image">&nbsp;
-              {{ request.user }}
-      </a>
-
-      <!-- Logout -->
-      <a href="{{ questions_after }}" class="ui item">
-        <i class="fas fa-sign-out-alt"></i>&nbsp;
-        After Questions 
-      </a>
-
-            <!-- Logout -->
-      <a href="{% url 'account_logout' %}" class="ui item">
-        <i class="fas fa-sign-out-alt"></i>&nbsp;
-        Cancel (Quit Experiment)
-      </a>
-    </div> 
   </div>
+
   {% endif %}
 </div>
+<br>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -93,4 +106,14 @@
     setInterval(updateTimer, 1000);
     updateTimer();
   });
+
+  function goBackAndReload() {
+    history.back();
+    setTimeout(() => location.reload(), 100); // Kurz warten, bevor die Seite neu geladen wird
+  }
+
+  function goForwardAndReload() {
+    history.forward();
+    setTimeout(() => location.reload(), 100); // Kurz warten, bevor die Seite neu geladen wird
+  }
 </script>

@@ -1,73 +1,69 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}
     {{ profile.user.username }}'s Profil
 {% endblock title %}
 
 {% block content %}
-<div class="ui container">
+<!-- MAIN PROFILE SECTION -->
+<div class="ui segment">
+    <h3>{{ profile.user.username }}'s Profil</h3>
     <div class="ui grid stackable">
-        <!-- Linke Spalte: Profilinformationen -->
-        <div class="four wide column">
-            <div class="ui card">
-                <div class="image">
-                    <img src="{{ profile.avatar.url }}" alt="{% trans 'Profilbild' %}">
-                </div>
-                <div class="content">
-                    <h2 class="header">{{ profile.user.username }}</h2>
-                    <div class="meta">
-                        <span class="date">{% trans 'Mitglied seit' %} {{ profile.user.date_joined|date:"d.m.Y" }}</span>
-                    </div>
-                    <div class="description">
-                        {{ profile.bio|default:"Keine Biographie hinzugefügt." }}
-                    </div>
+        <div class="row">
+            <!-- Profilbild und Details -->
+            <div class="six wide column">
+                {% if profile.avatar and profile.avatar.url %}
+                    <img class="ui small rounded image" src="{{ profile.avatar.url }}" alt="Profilbild">
+                {% else %}
+                    <img class="ui small rounded image" src="{% static 'avatar_default.png' %}" alt="Default Profilbild">
+                {% endif %}
+                <div class="ui segment">
+                    <h4>{% trans 'Mitglied seit' %}: {{ profile.user.date_joined|date:"d.m.Y" }}</h4>
+                    <p>
+                        {{ profile.bio|default:"{% trans 'Keine Biographie hinzugefügt.' %}" }}
+                    </p>
                 </div>
             </div>
-            {% if profile.user == request.user %}
-                <div class="ui buttons fluid">
-                    <button class="ui blue button" id="update-profile-btn">
-                        {% trans 'Profil aktualisieren' %}
-                    </button>
-                </div>
-            {% endif %}
-        </div>
 
-        <!-- Rechte Spalte: Kommentare -->
-        <div class="twelve wide column">
-            <div class="ui segment">
-                <h2 class="ui dividing header">{% trans 'Kommentare' %}</h2>
-                {% if comments %}
-                    <div class="ui feed">
-                        {% for comment in comments %}
-                            <div class="event">
-                                <div class="content">
-                                    <div class="summary">
-                                        <strong>{{ comment.title|default:"{% trans 'Ohne Titel' %}" }}</strong>
-                                        <div class="date">
-                                            {{ comment.created|date:"d.m.Y H:i" }}
+            <!-- Kommentare -->
+            <div class="ten wide column">
+                <h3>{% trans 'Kommentare von' %} {{ profile.user.username }}</h3>
+                <div class="ui segment">
+                    {% if comments %}
+                        <div class="ui feed">
+                            {% for comment in comments %}
+                                <div class="event">
+                                    <div class="content">
+                                        <div class="summary">
+                                            <strong>{{ comment.title|default:"{% trans 'Ohne Titel' %}" }}</strong>
+                                            <div class="date">
+                                                {{ comment.created|date:"d.m.Y H:i" }}
+                                            </div>
+                                        </div>
+                                        <div class="extra text">
+                                            {{ comment.content|linebreaks }}
+                                        </div>
+                                        <div class="meta">
+                                            <a href="{{ comment.get_absolute_url }}" class="ui button">
+                                                {% trans 'Zum Kommentar' %}
+                                            </a>
                                         </div>
                                     </div>
-                                    <div class="extra text">
-                                        {{ comment.content|linebreaks }}
-                                    </div>
-                                    <div class="meta">
-                                        <a href="{{ comment.get_absolute_url }}" class="ui button">
-                                            {% trans 'Zum Kommentar' %}
-                                        </a>
-                                    </div>
                                 </div>
-                            </div>
-                            <div class="ui divider"></div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="ui message">
-                        {% trans 'Es gibt noch keine Kommentare.' %}
-                    </div>
-                {% endif %}
+                                <div class="ui divider"></div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="ui message">
+                            {% trans 'Es gibt noch keine Kommentare.' %}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock content %}

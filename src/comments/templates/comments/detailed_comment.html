@@ -18,11 +18,19 @@
         <!-- Main Comment Section -->
         <div class="comment-card detailed-view">
             <div class="comment-header">
-            <strong class="comment-author">
-                by <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
-                    {{ comment.author.user.username }}
-                </a>
-            </strong>
+                
+                {% if profile.user == request.user %}
+                    <strong class="comment-author">
+                        by <a href="{% url 'profiles:my-profile-view' comment.author.slug %}">
+                            {{ comment.author.user.username }}
+                        </a>
+                    </strong>
+                {%else%}
+                    <strong class="comment-author">
+                        by <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
+                            {{ comment.author.user.username }}
+                        </a>
+                    </strong>
                 <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small>
             </div>
             <hr class="divider">

@@ -74,6 +74,8 @@
             <h4 class="section-title">Schreibe einen Kommentar:</h4>
             <form method="post" class="comment-form">
                 {% csrf_token %}
+                <!-- Verstecktes Feld für Artikel-ID Logging -->
+                <input type="hidden" name="article_id" value="{{ article.id }}">
                 <input type="text" name="title" placeholder="Titel eingeben..." class="form-input" required>
                 <textarea name="content" rows="3" placeholder="Kommentar hinzufügen..." class="form-textarea" required></textarea>
                 <button type="submit" name="submit_comment_form" class="submit-btn">Senden</button>

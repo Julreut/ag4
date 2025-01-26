@@ -238,7 +238,7 @@ document.addEventListener("submit", function (event) {
   if (form.classList.contains("reply-form")) {
     const commentId = form.dataset.commentId; // Kommentar-ID aus dem data-Attribut
     const replyTitle =
-      document.getElementById("reply-title")?.value || "No title";
+      form.querySelector("input[name='title']")?.value || "No title";
 
     const replyText =
         form.querySelector("textarea[name='content']")?.value ||"No content";
