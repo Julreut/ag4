@@ -686,6 +686,9 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 - **Optional:** 
   - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
 
+- **Vorab-Hinweise:** 
+-   Für einfache Vorab-Hinweise vor dem Experiment (oder auch danach) eignet sich das Frage-Format "Single Choice". Mehr Informationen dazu sh. Abschnitt "Texte im Question Modell"
+
 </details>
 
 ---
