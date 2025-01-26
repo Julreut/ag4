@@ -12,7 +12,7 @@
 <div class="comment-system">
     <div class="container">
         <h2 class="article-title">Kommentare für "{{ article.title }}"</h2>
-        <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="back-link">← Zurück zum Artikel</a>
+        {% comment %} <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="back-link">← Zurück zum Artikel</a> {% endcomment %}
 
         <div class="comment-section">
             <h4 class="section-title">Alle Kommentare:</h4>
