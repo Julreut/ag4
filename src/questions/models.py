@@ -13,6 +13,10 @@ class Question(models.Model):
         ('multiple_likert', 'Multiple Likert'),
         ('ampel_rating', 'Ampel Rating')
     ]
+    order = models.PositiveIntegerField(
+        default=0,
+        help_text="Anzeigeposition der Frage. Fragen mit niedrigeren Werten erscheinen zuerst."
+    )
     name = models.TextField(
         blank=True,
         help_text="Für alle Fragetypen: Hier bitte den Item-Name festlegen (Spalte 'name' in der questions Datenbanktabelle)."
@@ -99,6 +103,9 @@ class Question(models.Model):
 
     def __str__(self):
         return f"{self.get_label_display()} - {self.question_text[:50]}"
+    
+    class Meta:
+        ordering = ["order"]  # Standardmäßige Sortierung nach Reihenfolge
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

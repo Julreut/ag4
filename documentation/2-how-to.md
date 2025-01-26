@@ -638,6 +638,13 @@ python src/manage.py help
 
 Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen Fragetypen (`question_type`) im `Question`-Modell ausgefüllt werden müssen.
 
+### Allgemein
+- **Pflichtfragen:** Das Feld `required` kann für jeden Fragetyp genutzt werden, um anzugeben, ob eine Antwort zwingend notwendig ist.
+- **Globaler Hinweis zu `choices`:** Für alle Fragen, die `choices` verwenden, müssen die Optionen durch Semikolons getrennt angegeben werden. Daher können unterschiedliche Optionen keine Semikolons enthalten - das führt sonst zu einem Fehler.
+<br>
+
+
+
 <details>
 <summary>1. Dropdown</summary>
 
@@ -765,13 +772,158 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 
 ---
 
-## Zusätzliche Hinweise
+## "Texte" im `Question`-Modell
 
-- **Globaler Hinweis zu `choices`:** Für alle Fragen, die `choices` verwenden, müssen die Optionen durch Semikolons getrennt angegeben werden.
-- **Validierung:** Das Modell führt während des Speicherns eine Validierung durch (`clean()`), um sicherzustellen, dass alle erforderlichen Felder basierend auf dem `question_type` korrekt ausgefüllt sind.
-- **Pflichtfragen:** Das Feld `required` kann für jeden Fragetyp genutzt werden, um anzugeben, ob eine Antwort zwingend notwendig ist.
+### Anzeigen von VP-Hinweisen zur Experiment-Bearbeitung
+- Für einfache Vorab-Hinweise vor dem Experiment (oder auch danach) eignet sich das `Frage-Format "Single Choice"`. 
 
+- **Hinweis:** Durch Angabe von `<h4 class="large-label">{{ question.question_text | safe }}</h4>` im HTML Template `question_list.hmtl` kann im Fragetext mit HTML gearbeitet werden. Dies ist stark zu empfehlen!! Sh. hierzu folgendes Beispiel mit HTML Text:
+
+  <img src="images/Hinweise-vor-Bearbeitung-Admin.png" alt="Hinweise-vor-Bearbeitung-Admin" width="500">
+  <img src="images/Hinweise-vor-Bearbeitung.png" alt="Hinweise-vor-Bearbeitung-Experiment" width="500">
+
+<details>
+<summary>HTML Code</summary>
+
+HTML Text sorgt dafür, dass der Content deutlich besser lesbar ist. Hierfür einfach den Plain Text in ChatGPT o.Ä. einfügen mit dem Prompt <br>
+
+``` html
+'Erstelle einen HTML-Text aus folgendem Plaintext: [Text hier einfügen]. Der Titel der Seite sollte [Titel] lauten. Der Haupttext soll in der Mitte der Seite stehen, mit einer  [Farbe hier einfügen] Überschrift und einer Beschreibung darunter. Füge auch eine Kontaktmöglichkeit per E-Mail hinzu. Die Seite soll ansprechend und responsiv gestaltet sein.'
+```
+
+```html
+  <title>Anzeigen von Hinweisen vor oder nach dem Experiment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+  </head>
+  <body>
+      <h1>Hinweise vor der Bearbeitung</h1>
+      <p>Liebe Teilnehmerin, lieber Teilnehmer,</p>
+      <p>bevor Sie mit der Bearbeitung beginnen, bitten wir Sie, die folgenden Hinweise zu beachten:</p>
+      <ul>
+          <li><strong>Verwendung der Buttons:</strong> Bitte nutzen Sie ausschließlich die in der Versuchsoberfläche bereitgestellten „Weiter“- und „Zurück“-Buttons, um zwischen den Seiten zu navigieren. Verwenden Sie <em>nicht</em> die Vor- und Zurück-Funktionen Ihres Browsers, da dies zu technischen Problemen führen kann.</li>
+          <li><strong>Bearbeitungszeit:</strong> Planen Sie genügend ungestörte Zeit für die Bearbeitung ein, um die Aufgaben vollständig abschließen zu können.</li>
+          <li><strong>Unterbrechungen vermeiden:</strong> Bitte versuchen Sie, die Bearbeitung nicht zu unterbrechen, da dies die Qualität der Ergebnisse beeinflussen könnte.</li>
+          <li><strong>Technische Hinweise:</strong> Sollten technische Probleme auftreten, notieren Sie diese bitte und setzen Sie sich mit der Versuchsleitung in Verbindung.</li>
+      </ul>
+      <p>Vielen Dank für Ihre Aufmerksamkeit und Ihre Teilnahme! Wir wünschen Ihnen viel Erfolg bei der Bearbeitung. 😊</p>
+  </body>
+  ```
+
+  </details>
+
+
+### Weitere Texte: Teilnehmerinformation, Consent-Form, Not Eligible, Start-View und End-Viewzur Experiment-Bearbeitung
+
+Die folgenden Abschnitte enthalten Details zur Verwendung, Funktionalität und Implementierung der wichtigsten Templates: Teilnehmerinformation, Consent-Form, Not Eligible, Start-View, und End-View.
+
+**Teilnehmerinformation (participant_info.html)**
+- Zweck: Stellt den Teilnehmenden Informationen zum Experiment bereit, bevor sie ihre Zustimmung geben.
+- Merkmale:
+  - Überschrift: Dynamisch geladen basierend auf der Sprache.
+  - Beschreibung: HTML-fähiger Inhalt für bessere Lesbarkeit.
+  - Weiter-Button: Verlinkt auf die Einverständniserklärung.
+
+**Teilnehmerinformation (participant_info.html)**
+- Zweck: Ermöglicht den Teilnehmenden, ihre Zustimmung zur Teilnahme am Experiment zu geben.
+- Merkmale:
+  - Zustimmungsoptionen: Radio-Buttons für "Ja" oder "Nein".
+  - Submit-Button: Startet das Experiment oder verweigert den Zugriff.
+  - Dynamische Inhalte: Überschrift und Nachricht werden aus der Datenbank geladen.
+
+**Nicht zugelassen (not_eligible.html)**
+- Zweck: Informiert Teilnehmende, die die Teilnahme abgelehnt haben oder nicht berechtigt sind.
+- Merkmale:
+  - Zeigt eine benutzerdefinierte Nachricht an.
+  - Minimalistisches Design.
+
+**Startseite (start.html)**
+- Zweck: Erster Einstiegspunkt für Teilnehmende, mit Optionen zur Neuregistrierung oder zum Login.
+- Merkmale:
+  - Optionen: Button für neue Teilnehmende und bestehende Accounts.
+
+**Ende des Experiments (end.html)**
+- Zweck: Zeigt eine Dankesnachricht an und bietet die Möglichkeit, sich abzumelden.
+- Merkmale:
+  - Dynamische Inhalte: Überschrift und Nachricht werden aus der Datenbank geladen.
+  - Logout-Button: Beendet die Sitzung.
+
+**Funktionsweise von Headern und Nachrichten**
+- Die Header und Nachrichten werden dynamisch aus der Datenbank geladen, basierend auf spezifischen Identifiers. Dies erlaubt eine flexible Anpassung der Inhalte durch den Admin, ohne den Code selbst ändern zu müssen.
+
+- Ablauf der dynamischen Textintegration
+1.	Modelle:
+  - Es gibt ein Text-Modell mit den Feldern identifier, content und visibility.
+  - Der identifier dient zur eindeutigen Identifikation eines bestimmten Inhalts (z. B. participant_info_header_en für die englische Überschrift der Teilnehmerinformation).
+  - Der content enthält den eigentlichen Text, der angezeigt wird.
+  - Das Feld visibility bestimmt, ob der Text aktuell sichtbar und aktiv ist.
+
+Beispiel:
+```bash
+class Text(models.Model):
+    identifier = models.CharField(max_length=200, choices=IDENTIFIER_CHOICES, unique=True)
+    content = models.TextField()
+    visibility = models.BooleanField(default=False)
+```
+
+2.	Views:
+  - In der View wird die Datenbank abgefragt, um den passenden content für einen bestimmten identifier zu finden.
+  - Wenn ein Eintrag mit visibility=True und passendem identifier existiert, wird dessen content geladen.
+  - Falls kein passender Text gefunden wird, wird ein Standardtext angezeigt.
+
+Beispiel:
+```bash
+def participant_info(request):
+    participant_info_header = Text.objects.filter(visibility=True, identifier__startswith="participant_info_header").first()
+    participant_info_message = Text.objects.filter(visibility=True, identifier__startswith="participant_info_message").first()
+
+    return render(request, 'questions/participant_info.html', {
+        'participant_info_header': participant_info_header.content if participant_info_header else "Default Header",
+        'participant_info_message': participant_info_message.content if participant_info_message else "Default Message",
+    })
+```
+
+3.	Templates:
+  - Im Template werden die geladenen Inhalte mit Platzhaltern wie {{ participant_info_header }} oder {{ participant_info_message }} eingefügt.
+  - Falls der Text HTML-Code enthält, wird durch |safe sichergestellt, dass dieser korrekt gerendert wird.
+Beispiel:
+```bash
+<h1 class="ui dividing header">{{ participant_info_header | safe }}</h1>
+<p class="description.participant.info">{{ participant_info_message | safe }}</p>
+```
+
+4.	Verwaltung über das Admin-Panel:
+  - Im Django-Admin kannst du Text-Objekte erstellen oder bearbeiten.
+  - Der identifier sorgt dafür, dass Inhalte gezielt zugeordnet und angepasst werden können.
+  - Das Feld visibility legt fest, ob ein Text aktiv ist oder nicht.
+
+5.	Internationalisierung:
+  - Unterschiedliche Sprachen werden durch spezifische identifier-Namen unterstützt (z. B. _en für Englisch oder _de für Deutsch).
+  - Views laden die passenden Inhalte basierend auf der Sprachlogik.
+
+Beispiel:
+```bash
+participant_info_header_en: "Welcome to the Study"
+participant_info_message_en: "Here is some important information..."
+```
 ---
+
+## Weitere Informationen
 
 <details> 
 <summary>🛠 Kleine Änderungen vornehmen</summary>

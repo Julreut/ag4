@@ -32,7 +32,7 @@ from django.contrib import messages
 def question_list(request, label):
 
     # Alle Fragen und beantwortete Fragen filtern
-    questions = Question.objects.filter(label=label)
+    questions = Question.objects.filter(label=label).order_by('order')
     answered_questions = Answer.objects.filter(
         user=request.user, question__label=label
     ).values_list('question_id', flat=True)

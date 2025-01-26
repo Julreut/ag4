@@ -4,7 +4,9 @@ from .models import Question, Text
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('name','question_text', 'question_type', 'label','required')
+    list_display = ('name','question_text', 'question_type', 'label','required', 'order')
+    list_editable = ("order",)
+    ordering = ("order",)
     search_fields = ('question_text',)
     list_filter = ('label', 'question_type', 'required')
     ordering = ('label', 'question_type')
@@ -12,6 +14,7 @@ class QuestionAdmin(admin.ModelAdmin):
         'name',
         'question_type',
         'required',
+        'order',
         'label', 
         'question_text', 
         'choices', 

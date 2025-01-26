@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="ui container">
-    <h1 class="ui header">{{ label|title }} Questions</h1>
+    {% comment %} <h1 class="ui header">{{ label|title }} Questions</h1> {% endcomment %}
     <form class="ui form" method="post">
         {% csrf_token %}
 
@@ -19,7 +19,7 @@
         <div class="question-container">
             {% for question in questions %}
             <div class="field question-step" data-step="{{ forloop.counter }}" style="{% if forloop.first %}display:block;{% else %}display:none;{% endif %}">
-                <h4 class="large-label">{{ question.question_text }}</h4>
+                <h4 class="large-label">{{ question.question_text | safe }}</h4>
                 
                 {% comment %} DROPDOWN {% endcomment %}
                 {% if question.question_type == 'dropdown' %}
