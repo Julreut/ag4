@@ -149,7 +149,7 @@ class Text(models.Model):
     ]
 
     identifier = models.CharField(max_length=200, choices=IDENTIFIER_CHOICES, unique=True, help_text="Textart auswählen.")
-    content = models.TextField(help_text="HTML text sorgt dafür, dass der Content deutlich besser lesbar ist. Hierfür einfach den Plain Text in ChatGPT o.Ä. einfügen mit dem Prompt <br>'Erstelle eine anschauliche HTML-Seite mit folgendem Plaintext: [<i>Text hier einfügen</i>] <br>Der Titel der Seite sollte [<i>Titel</i>] lauten. Der Haupttext soll in der Mitte der Seite stehen, mit einer roten Überschrift und einer Beschreibung darunter. <br>Füge auch eine Kontaktmöglichkeit per E-Mail hinzu. Die Seite soll ansprechend und responsiv gestaltet sein.'")
+    content = models.TextField(help_text="HTML Text sorgt dafür, dass der Content deutlich besser lesbar ist. Hierfür einfach den Plain Text in ChatGPT o.Ä. einfügen mit dem Prompt <br>'Erstelle eine anschauliche HTML-Seite mit folgendem Plaintext: [<i>Text hier einfügen</i>] <br>Der Titel der Seite sollte [<i>Titel</i>] lauten. Der Haupttext soll in der Mitte der Seite stehen, mit einer roten Überschrift und einer Beschreibung darunter. <br>Füge auch eine Kontaktmöglichkeit per E-Mail hinzu. Die Seite soll ansprechend und responsiv gestaltet sein.'")
     visibility = models.BooleanField(default=False)
 
     def __str__(self):
@@ -163,13 +163,3 @@ class Consent(models.Model):
     def __str__(self):
         return f"Consent by {self.user.username} at {self.timestamp}"
     
-    
-# class SessionConfig(models.Model):
-#     max_duration = models.PositiveIntegerField(
-#         default=3600,  # Standard: 1 Stunde
-#         help_text="Maximale Zeit in Sekunden, bevor der Benutzer automatisch ausgeloggt wird."
-#     )
-#     is_timer_enabled = models.BooleanField(default=False, help_text="Timer aktivieren oder deaktivieren")
-
-#     def __str__(self):
-#         return f"SessionConfig: {self.max_duration} Sekunden (Timer {'Enabled' if self.is_timer_enabled else 'Disabled'})"

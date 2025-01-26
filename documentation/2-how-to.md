@@ -842,12 +842,13 @@ Die folgenden Abschnitte enthalten Details zur Verwendung, Funktionalität und I
   - Beschreibung: HTML-fähiger Inhalt für bessere Lesbarkeit.
   - Weiter-Button: Verlinkt auf die Einverständniserklärung.
 
-**Teilnehmerinformation (participant_info.html)**
+**Consent Form (consent_form.html)**
 - Zweck: Ermöglicht den Teilnehmenden, ihre Zustimmung zur Teilnahme am Experiment zu geben.
 - Merkmale:
   - Zustimmungsoptionen: Radio-Buttons für "Ja" oder "Nein".
   - Submit-Button: Startet das Experiment oder verweigert den Zugriff.
   - Dynamische Inhalte: Überschrift und Nachricht werden aus der Datenbank geladen.
+<img src="images/Consent-Text-Admin.png" alt="No Consent Tent" width="500">
 
 **Nicht zugelassen (not_eligible.html)**
 - Zweck: Informiert Teilnehmende, die die Teilnahme abgelehnt haben oder nicht berechtigt sind.
