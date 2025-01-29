@@ -427,15 +427,15 @@ Definiert Routen für verschiedene Funktionen:
 
 #### Fragebögen erstellen:
 - Fragen können im Admin-Bereich unter `Question` hinzugefügt werden.
-- Fragetypen sind flexibel (z. B. Dropdown, Slider, Likert).
+- Fragetypen sind flexibel (z. Biserklärung:
+- Bei Ablehnung wird automatisch eine "Nicht teilnahmefähig"-Seite angezeigt.
+- Consent-Status wird im Modell `Consent` . Dropdown, Slider, Likert).
 - `choices` und `sub_questions` müssen bei entsprechenden Fragetypen definiert werden.
 
 #### Validierungen und Pflichtfelder:
 - Pflichtfragen und spezifische Validierungen (z. B. Min-/Max-Werte) sind automatisiert.
 
-#### Einverständniserklärung:
-- Bei Ablehnung wird automatisch eine "Nicht teilnahmefähig"-Seite angezeigt.
-- Consent-Status wird im Modell `Consent` gespeichert.
+#### Einverständngespeichert.
 
 #### Timer und Sitzungskonfiguration:
 - Sitzungsdauer (`max_duration`) und Timer können über das Modell `SessionConfig` angepasst werden.
@@ -514,7 +514,7 @@ Das `static_project`-Verzeichnis ist für die Bereitstellung und Verwaltung von 
 
 <details> <summary> 🧭 Base Template und Navbar</summary>
 
-<br> TL;DR: Das Base Template `base.html` dient als **Grundgerüst für alle HTML-Dateien** der Anwendung. Es enthält allgemeine Layout- und Design-Elemente, die in anderen Templates wiederverwendet werden. Alle spezifischen Seiten basieren auf diesem Template und ergänzen oder überschreiben dessen Inhalte mithilfe von **`{% block ... %}` und `{% endblock %}`**. Die Navigationsleiste `navbar.html` bietet Zugriff auf zentrale Funktionen und wird ebenfalls auf allen Seiten eingebunden.
+<br> TL;DR: Das Base Template `base.html` dient als <strong> Grundgerüst für alle HTML-Dateien </strong> der Anwendung. Es enthält allgemeine Layout- und Design-Elemente, die in anderen Templates wiederverwendet werden. Alle spezifischen Seiten basieren auf diesem Template und ergänzen oder überschreiben dessen Inhalte mithilfe von **`{% block ... %}` und `{% endblock %}`**. Die Navigationsleiste `navbar.html` bietet Zugriff auf zentrale Funktionen wie die Navigation und wird ebenfalls auf allen Seiten eingebunden.
 
 
 #### **Was passiert in `base.html`?**
@@ -533,7 +533,7 @@ Das `static_project`-Verzeichnis ist für die Bereitstellung und Verwaltung von 
     - **`{% block scripts %}`**: Ermöglicht das Einfügen von seitenabhängigen JavaScript-Funktionen.
 
 4. **Navbar**:
-    - Das Template bindet die Navigationsleiste (`navbar.html`) ein, die auf jeder Seite angezeigt wird.
+    - Das Template bindet die Navigationsleiste (`navbar.html`) ein, die auf jeder Seite angezeigt wird. Enthalten darin ist eine Plattform-eigene Navigation (Vor und Zurück-Buttons).
 
 5. **CSRF und URLs**:
     - Die **CSRF-Token** und wichtige URLs (z. B. `analytics:log_user_action`) werden als JavaScript-Variablen definiert, damit sie für Frontend-Skripte verfügbar sind.
@@ -640,10 +640,9 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 
 ### Allgemein
 - **Pflichtfragen:** Das Feld `required` kann für jeden Fragetyp genutzt werden, um anzugeben, ob eine Antwort zwingend notwendig ist.
+- **Anzeigeposition:** Das Feld `order` bestimmt die Anzeigeposition der Frage. Fragen mit niedrigeren Werten erscheinen zuerst.
 - **Globaler Hinweis zu `choices`:** Für alle Fragen, die `choices` verwenden, müssen die Optionen durch Semikolons getrennt angegeben werden. Daher können unterschiedliche Optionen keine Semikolons enthalten - das führt sonst zu einem Fehler.
 <br>
-
-
 
 <details>
 <summary>1. Dropdown</summary>
@@ -765,7 +764,7 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <img src="images/Ampel-Rating-Question.png" alt="Ampel Rating Question" width="500">
 
 - **Erforderliche Felder:**
-  - `choices`: Muss die zwei Optionen enthalten (z. B. `positiv;negativ`).
+  - `sub_choices`: Muss die zwei Optionen enthalten (z. B. `positiv;negativ`).
 
 - **Optional:** 
   - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss. <br>
@@ -949,5 +948,16 @@ participant_info_message_en: "Here is some important information..."
 3. **Zeilen Auskommentieren über cmd+shift+7 (Mac)**
 4. **Änderungen speichern**
 5. **Server neu starten**
+
+</details>
+<details> 
+<summary>User-Profile Duality</summary>
+
+The tool uses a framework for user authentication which brings its own `User` class. Additionally, on user creation, it creates and links its own `Profile` object to the new user. The <span style="text-decoration: underline">**user is used for authentication**</span> (loginname, auto-generated email), the <span style="text-decoration: underline">**profile for everything else**</span> tool related (bio, ...).
+
+There are some duplicate fields on them, `firstname` and `lastname` on the `User` are ignored, and `email` on the `profile` is ignored.
+
+The variable naming in code is quite inconsistent. In most cases relating to business logic profiles are used but are called users (which leads to the beautiful `user.user` statement). So make sure to check which one it is in either case.
+
 
 </details>

@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('total_time', models.BigIntegerField(default=0)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_views', to='posts.Post')),
+                # ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_views', to='posts.Post')),
                 ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_post_views', to='profiles.Profile')),
             ],
         ),

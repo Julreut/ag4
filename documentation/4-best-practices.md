@@ -8,9 +8,7 @@ Hier findest du eine strukturierte Übersicht über Best Practices und Tipps zur
 <summary>Code-Organisation</summary>
 
 - Halte deine Apps modular und übersichtlich.
-- Verwende eine sinnvolle Ordnerstruktur, z. B. `/apps`, `/core`, `/utils`.
-- Gruppiere verwandte Funktionen in Services, Serializern und Views.
-- Verwende Funktionen wie `Prefetch` und `annotate` für optimierte Datenbankabfragen.
+- Verwende eine sinnvolle Ordnerstruktur, z. B. `/apps`, `/views`, `/utils`.
 
 </details>
 

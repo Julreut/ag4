@@ -2,16 +2,18 @@ version: "3.9"
 
 services:
 
-  demo:
-    image: fakebook
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data/demo:/fakebook/data
+  # demo:
+  #   image: mirroronline
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ./data/demo:/ag4/data
 
   prod:
-    image: fakebook
+    build: ./
+    image: mirroronline:latest
+    container_name: mirroronline
     ports:
       - "8001:8000"
     volumes:
-      - ./data/prod:/fakebook/data
+      - ./data:/ag4/data

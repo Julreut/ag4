@@ -1,4 +1,3 @@
-
 # base image
 FROM python:3.8
 
@@ -6,21 +5,23 @@ FROM python:3.8
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# copy the (re)sources to the /fakebook directory in the container
-# COPY . fakebook
-COPY ./src /fakebook/src
-COPY ./static_cdn/static_root /fakebook/static_cdn/static_root
-COPY ./config /fakebook/config
-COPY ./data.template /fakebook/data.template
+# copy the (re)sources to the /ag4 directory in the container
+COPY ./src /ag4/src
+COPY ./static_cdn/static_root /ag4/static_cdn/static_root
+COPY ./config /ag4/config
 
 # Collect static files
-RUN python /fakebook/src/manage.py collectstatic --noinput
+RUN python /ag4/src/manage.py collectstatic --noinput
 
 # set working directory for application inside the container
-WORKDIR /fakebook
+WORKDIR /ag4
 
-# run the manage.py script on container run
-ENTRYPOINT [ "python", "src/manage.py" ]
+# Create a startup script
+COPY entrypoint.sh /ag4/entrypoint.sh
+RUN chmod +x /ag4/entrypoint.sh
 
-# start server, bind to all interfaces, port 8000, this port may be exposed to something else using docker / compose
-CMD [ "runserver", "0.0.0.0:8000" ]
+# run the entrypoint script on container run
+ENTRYPOINT ["/ag4/entrypoint.sh"]
+
+# start server, bind to all interfaces, port 8000
+CMD ["runserver", "0.0.0.0:8000"]

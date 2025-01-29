@@ -36,6 +36,10 @@ def assign_condition_on_login(sender, request, user, **kwargs):
             assigned_condition = random.choice(conditions)  # Wähle zufällig eine Bedingung aus
             profile.condition = assigned_condition
             profile.save()
+        else:
+            first_condition = ExperimentCondition(name="FirstCond", description="Eine Test-Bedingung", tag="exp")
+            profile.condition = first_condition
+            profile.save()
 
         # Logge das Zuweisungsereignis
         create_event_log(

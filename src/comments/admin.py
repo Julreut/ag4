@@ -10,12 +10,13 @@ class CommentAdminForm(forms.ModelForm):
         model = Comment
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Dynamische Dropdown-Werte aus der ExperimentCondition-Tabelle
-        self.fields['tag'].widget = forms.Select(
-            choices=[(condition.tag, condition.name) for condition in ExperimentCondition.objects.all()]
-        )
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     # Dynamische Dropdown-Werte aus der ExperimentCondition-Tabelle
+    #     self.fields['tag'].widget = forms.Select(
+    #         choices=[(condition.tag, condition.name) for condition in ExperimentCondition.objects.all()]
+    #     )
+    #aktivieren wenn conditions auch fuer comments angelegt werden koennen
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):

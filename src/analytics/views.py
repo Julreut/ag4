@@ -15,9 +15,15 @@ def log_user_action(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            user = request.user
+            user = request.user if request.user.is_authenticated else None
             event_type = data.get("event_type")
             event_data = data.get("event_data", {})
+
+            # Logging überspringen für anonyme Benutzer
+            if not user:
+                print("Skipping logging: User is anonymous.")
+                return JsonResponse({"message": "Event logging skipped for anonymous user"}, status=200)
+            
             
           # Zusätzliche Validierung actions
             if event_type in ["click"] and "action" in event_data:

@@ -28,11 +28,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'n*vms&0n)98o4py0vpydyu1l3-qt2%g*hm8c5n31fg+)8bh@zy'
 
 # SECURITY WARNING: don't run with debug turned on in production! ##aenderungJuliane
-DEBUG = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
-if DEBUG:
-    print("Enabling debug mode")
+# DEBUG_MODE = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# DEBUG = False
+DEBUG = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
+
+# if DEBUG:
+#     print("Enabling debug mode")
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "*"]
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -77,7 +81,7 @@ ACCOUNT_FORMS = {
 ACCOUNT_AUTHENTICATION_METHOD = "username"  # Nur Username für Authentifizierung
 ACCOUNT_EMAIL_REQUIRED = False  # Email wird nicht benötigt
 ACCOUNT_USERNAME_REQUIRED = True  # Username bleibt Pflichtfeld
-ACCOUNT_EMAIL_VERIFICATION = "optional"  # Email-Verifikation deaktivieren
+# ACCOUNT_EMAIL_VERIFICATION = "optional"  # Email-Verifikation deaktivieren
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'

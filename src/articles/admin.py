@@ -35,12 +35,14 @@ class ArticleAdminForm(forms.ModelForm):
         model = NewsPaper
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Dynamische Dropdown-Werte aus der ExperimentCondition-Tabelle
-        self.fields['tag'].widget = forms.Select(
-            choices=[(condition.tag, condition.name) for condition in ExperimentCondition.objects.all()]
-        )
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     # Dynamische Dropdown-Werte aus der ExperimentCondition-Tabelle
+    #     self.fields['tag'].widget = forms.Select(
+    #         choices=[(condition.tag, condition.name) for condition in ExperimentCondition.objects.all()]
+    #     )
+        #aktivieren wenn conditions auch fuer articles angelegt werden koennen
+
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
