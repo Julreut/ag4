@@ -1,4 +1,9 @@
-# Aufbau der Software
+# Aufbau der Software+
+
+### Tipps für Laien:
+- Wenn du nicht sicher bist, wo du anfangen sollst, lies zuerst die Abschnitte "First Steps After Deployment" und "Umgang mit der Datenbank".
+- Verwende das Glossar, um unbekannte Begriffe nachzuschlagen.
+- Wenn du auf Probleme stößt, wende dich an deinen Entwickler oder konsultiere die Django-Dokumentation.
 
 <details> <summary>Feature-Überblick</summary>
 
@@ -414,28 +419,16 @@ Definiert Routen für verschiedene Funktionen:
         - **`end.html`**: Abschlussseite des Experiments.
         - **`participant_info.html`**: Informationen für Teilnehmer.
         - **`start.html`**: Begrüßungsseite für die Studie.
-        - **`not_eligible.html`**: Nachricht für Teilnehmer, die die Einverständniserklärung verweigern.
+        - **`not_eligible.html`**: Nachricht für Teilnehmer, die die Einverständniserklärung verweigern. Bei Ablehnung wird automatisch eine "Nicht teilnahmefähig"-Seite angezeigt. Consent-Status wird im Modell `Consent` gespeichert.
     - **`utils.py`**:
         - **`calculate_questionnaire_duration`**:
             - Berechnet die Dauer für das Ausfüllen eines Fragebogens basierend auf Event-Logs. (Still TODO)
 
-## Wichtig für den Versuchsleiter:
+## Weitere Hinweise:
 
 #### Anpassbare Texte:
 - Texte für Consent-Formulare, Endnachrichten und Teilnehmerinformationen können im Admin-Bereich (Modell `Text`) bearbeitet werden.
 - Die Sichtbarkeit (`visibility`) steuert, welche Texte im Frontend angezeigt werden.
-
-#### Fragebögen erstellen:
-- Fragen können im Admin-Bereich unter `Question` hinzugefügt werden.
-- Fragetypen sind flexibel (z. Biserklärung:
-- Bei Ablehnung wird automatisch eine "Nicht teilnahmefähig"-Seite angezeigt.
-- Consent-Status wird im Modell `Consent` . Dropdown, Slider, Likert).
-- `choices` und `sub_questions` müssen bei entsprechenden Fragetypen definiert werden.
-
-#### Validierungen und Pflichtfelder:
-- Pflichtfragen und spezifische Validierungen (z. B. Min-/Max-Werte) sind automatisiert.
-
-#### Einverständngespeichert.
 
 #### Timer und Sitzungskonfiguration:
 - Sitzungsdauer (`max_duration`) und Timer können über das Modell `SessionConfig` angepasst werden.
@@ -449,6 +442,7 @@ Definiert Routen für verschiedene Funktionen:
 2. Login (Start des Trackings)
 3. Vor-Experiment-Fragen → Experiment → Nach-Experiment-Fragen
 4. Abschlussseite.
+
 </details>
 
 ---
@@ -634,14 +628,143 @@ python src/manage.py help
 
 # Hinweise für Versuchsleiter
 
-## Fragetypen im `Question`-Modell
+<details><summary>Umgang mit der Datenbank</summary>
+
+# Django-Datenbank: Verständnis und Zugriff auf Modelle
+
+In diesem Abschnitt wird erklärt, wie die Django-Datenbank aufgebaut ist und wie du auf die verschiedenen Tabellen und Daten zugreifen kannst. Die Datenbank besteht aus mehreren Tabellen, die durch Modelle repräsentiert werden. Diese werden jeweils in der `models.py`festgelegt. Jede Tabelle entspricht einem Django-Modell, und die Beziehungen zwischen den Tabellen werden durch Fremdschlüssel (Foreign Keys) definiert.
+
+---
+
+Kurz erklärt: 
+
+### So exportierst du Daten als Excel-Datei:
+1. Gehe ins Admin-Panel.
+2. Wähle die gewünschte Tabelle aus (z. B. `Comments Comment`).
+3. Klicke auf `Exportieren` und wähle das Excel-Format.
+4. Die Daten werden als Excel-Datei heruntergeladen.
+
+--- 
+
+## 1. **Datenbankstruktur**
+
+Die Django-Datenbank besteht aus mehreren Tabellen, die miteinander verknüpft sind. Hier sind die wichtigsten Tabellen und ihre Beziehungen:
+
+### **Benutzer und Profile**
+- **`auth_user`**: Enthält alle Benutzerdaten wie Benutzername, automatisch generierte E-Mail, Passwort usw. Datenschutzhinweis: Das Passwort ist dabei stets anonym und verschlüsselt - also auch für Versuchsleitende nicht einsehbar!
+- **`profiles_profile`**: Enthält zusätzliche Benutzerinformationen wie Bio, Avatar und eine Verknüpfung zum Benutzer (`auth_user`).
+
+### **Artikel und Kommentare**
+- **`articles_article`**: Enthält Artikel mit Titel, Inhalt, Veröffentlichungsdatum usw.
+- **`comments_comment`**: Enthält Kommentare zu Artikeln. Jeder Kommentar ist mit einem Artikel (`articles_article`) und einem Benutzer (`profiles_profile`) verknüpft.
+
+### **Fragen und Antworten**
+- **`questions_question`**: Enthält Fragen, die Benutzern gestellt werden.
+- **`questions_answer`**: Enthält Antworten auf Fragen. Jede Antwort ist mit einer Frage (`questions_question`) und einem Benutzer (`auth_user`) verknüpft.
+
+### **Analytics und Logs**
+- **`analytics_usereventlog`**: Protokolliert Benutzerereignisse wie Klicks oder Anmeldungen.
+- **`analytics_experimentcondition`**: Enthält Informationen zu Experimenten, an denen Benutzer teilnehmen.
+
+### **Weitere wichtige Tabellen**
+- **`django_session`**: Speichert Benutzersitzungen.
+- **`django_admin_log`**: Protokolliert Änderungen, die im Admin-Panel vorgenommen wurden.
+
+---
+
+## 2. **Zugriff auf die Datenbank**
+
+### **Über das Django Admin-Panel**
+- Du kannst auf alle Tabellen über das Django Admin-Panel zugreifen. Gehe dazu auf: `http://127.0.0.1:8000/admin/`
+- Melde dich mit deinem Superuser-Account an. Wie du den Superuser erstellst, ist in der [Deployment-Dokumentation](./7-deployment.md) beschrieben.
+- Jede Tabelle (Modell) wird als Eintrag im Admin-Panel angezeigt. Du kannst die Daten anzeigen, herunterladen oder löschen.
+
+### **Daten als Excel exportieren**
+- Im Admin-Panel kannst du die Daten jeder Tabelle als Excel-Datei exportieren:
+1. Wähle die gewünschte Tabelle aus.
+2. Klicke auf "Exportieren" und wähle das Excel-Format.
+3. Die Daten werden als Excel-Datei heruntergeladen.
+
+---
+
+## 3. **Beziehungen zwischen den Tabellen**
+
+### **Benutzer und Profile**
+- Jeder Benutzer (`auth_user`) hat ein Profil (`profiles_profile`).
+- Die Verknüpfung erfolgt über das Feld `user` in der `profiles_profile`-Tabelle.
+
+### **Artikel und Kommentare**
+- Jeder Artikel (`articles_article`) kann mehrere Kommentare (`comments_comment`) haben.
+- Jeder Kommentar ist mit einem Artikel (`articles_article`) und einem Benutzer (`profiles_profile`) verknüpft.
+
+### **Fragen und Antworten**
+- Jede Frage (`questions_question`) kann mehrere Antworten (`questions_answer`) haben.
+- Jede Antwort ist mit einer Frage (`questions_question`) und einem Benutzer (`auth_user`) verknüpft.
+
+---
+
+## 4. **Beispiel: Zugriff auf Benutzerdaten**
+
+### **Benutzerdaten anzeigen**
+- Gehe im Admin-Panel zu `Auth User`.
+- Hier siehst du alle Benutzer mit ihren Details wie Benutzername, E-Mail (immer username@example.com) und Passwort.
+
+### **Profile anzeigen**
+- Gehe im Admin-Panel zu `Profiles Profile`.
+- Hier siehst du die Profile der Benutzer mit Informationen wie Bio, Avatar und verknüpftem Benutzer.
+
+---
+
+## 5. **Beispiel: Zugriff auf Kommentare**
+
+### **Kommentare anzeigen**
+- Gehe im Admin-Panel zu `Comments Comment`.
+- Hier siehst du alle Kommentare mit Informationen wie Inhalt, Autor und verknüpftem Artikel.
+
+### **Kommentare exportieren**
+- Wähle die `Comments Comment`-Tabelle aus und exportiere die Daten als Excel-Datei.
+
+---
+
+## 6. **Wichtige Hinweise**
+- **Fremdschlüssel**: Verknüpfungen zwischen Tabellen werden durch Fremdschlüssel (Foreign Keys) hergestellt. Zum Beispiel ist das Feld `user` in der `profiles_profile`-Tabelle ein Fremdschlüssel zur `auth_user`-Tabelle.
+- **Admin-Panel**: Das Admin-Panel ist der einfachste Weg, um auf die Daten zuzugreifen und sie zu verwalten.
+- **Datenexport**: Du kannst die Daten jeder Tabelle als Excel-Datei exportieren, um sie weiter zu analysieren.
+
+---
+
+## 7. **Zusammenfassung**
+- Die Django-Datenbank besteht aus mehreren Tabellen, die durch Modelle repräsentiert werden.
+- Du kannst auf die Daten über das Admin-Panel zugreifen und sie als Excel-Dateien exportieren.
+- Die Beziehungen zwischen den Tabellen werden durch Fremdschlüssel definiert.
+
+Falls du weitere Fragen hast, schau gerne in die [Django-Dokumentation](https://docs.djangoproject.com/en/5.1/intro/tutorial02/)! 😊
+</details>
+
+---
+
+<details><summary>❓ Fragetypen im `Question`-Modell</summary>
 
 Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen Fragetypen (`question_type`) im `Question`-Modell ausgefüllt werden müssen.
 
 ### Allgemein
 - **Pflichtfragen:** Das Feld `required` kann für jeden Fragetyp genutzt werden, um anzugeben, ob eine Antwort zwingend notwendig ist.
 - **Anzeigeposition:** Das Feld `order` bestimmt die Anzeigeposition der Frage. Fragen mit niedrigeren Werten erscheinen zuerst.
-- **Globaler Hinweis zu `choices`:** Für alle Fragen, die `choices` verwenden, müssen die Optionen durch Semikolons getrennt angegeben werden. Daher können unterschiedliche Optionen keine Semikolons enthalten - das führt sonst zu einem Fehler.
+- **Globaler Hinweis zu `choices`, `sub_choices`,`sub_questions`:** Für alle Fragen, die `choices` verwenden, müssen die Optionen durch Semikolons getrennt angegeben werden. Daher können unterschiedliche Optionen keine Semikolons enthalten - das führt sonst zu einem Fehler. Auch kein Semikolon am Ende: Füge kein Semikolon nach der letzten Option oder Frage ein! Richtig: `Option1;Option2` `Falsch: Option1;Option2;`
+
+### So erstellst du einen neuen Fragetyp:
+1. Gehe ins Admin-Panel unter `Questions`.
+2. Klicke auf `Add Question`.
+3. Wähle den gewünschten Fragetyp aus (z. B. `Dropdown`).
+4. Fülle die erforderlichen Felder aus:
+   - `question_text`: Der Text der Frage.
+   - `choices`: Die Antwortmöglichkeiten, getrennt durch Semikolons (z. B. `Option1;Option2;Option3`).
+   - `sub_choices` und `sub_questions` müssen bei entsprechenden Fragetypen definiert werden. 
+    - `sub_choices` definiert die Pole einer Ampelfrage (z. B. "positiv/negativ").
+    - `sub_questions` definiert die Aussagen oder Fragen einer Multiple-Likert-Frage
+  (...sh. Admin Panel)
+5. Speichere die Frage.
+
 <br>
 
 <details>
@@ -654,6 +777,10 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
   - `choices`: Semikolon-separierte Auswahlmöglichkeiten (z. B. `Option1;Option2;Option3`).
 - **Optional:** 
   - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss.
+
+### Beispiel für eine Dropdown-Frage:
+- **Frage:** "Bitte wählen Sie einen der folgenden Altersabschnite aus:"
+- **Antwortmöglichkeiten:** `18-25;26-35;36-45;46+`
 
 </details>
 
@@ -764,20 +891,23 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <img src="images/Ampel-Rating-Question.png" alt="Ampel Rating Question" width="500">
 
 - **Erforderliche Felder:**
-  - `sub_choices`: Muss die zwei Optionen enthalten (z. B. `positiv;negativ`).
+  - `sub_choices`: Muss eine gerade Anzahl an Optionen enthalten (z. B. `positiv;negativ` oder auch `positiv;negativ;gut;schlecht`). 
 
 - **Optional:** 
   - `required`: Gibt an, ob die Frage verpflichtend beantwortet werden muss. <br>
   Warning Beispiel:<br>
     <img src="images/Ampel-Rating-Selection-Warning.png" alt="Ampel Rating Selection With Warnings" width="500">
 </details>
+</details>
 
 ---
 
-## "Texte" im `Question`-Modell
+<details>
+<summary>"Texte" im `Question`-Modell</summary>
 
 ### Anzeigen von VP-Hinweisen zur Experiment-Bearbeitung
-- Für einfache Vorab-Hinweise vor dem Experiment (oder auch danach) eignet sich das `Frage-Format "Single Choice"`. 
+- Für einfache Vorab-Hinweise vor dem Experiment (oder auch danach) eignet sich das `Frage-Format "Single Choice"`. Beispielsweise ist es wichtig, dazuzusagen, dass die VP die tool-interne Navigation nutzen sollten und nicht die Browser-Navigation. Wird diese doch genutzt, kommt es im Normalfall **nicht** zu technischen Problemen, jedoch kann dies das Logging verfälschen.
+
 
 - **Hinweis:** Durch Angabe von `<h4 class="large-label">{{ question.question_text | safe }}</h4>` im HTML Template `question_list.hmtl` kann im Fragetext mit HTML gearbeitet werden. Dies ist stark zu empfehlen!! Sh. hierzu folgendes Beispiel mit HTML Text:
 
@@ -829,8 +959,18 @@ HTML Text sorgt dafür, dass der Content deutlich besser lesbar ist. Hierfür ei
 
   </details>
 
+---
 
 ### Weitere Texte: Teilnehmerinformation, Consent-Form, Not Eligible, Start-View und End-Viewzur Experiment-Bearbeitung
+
+### So erstellst du einen HTML-Text im Admin-Panel:
+1. Gehe ins Admin-Panel unter `Text`.
+2. Klicke auf `Add Text`.
+3. Fülle die Felder aus:
+   - `identifier`: Ein eindeutiger Name für den Text (z. B. `participant_info_header_en`).
+   - `content`: Der HTML-Text (z. B. `<h1>Willkommen!</h1><p>Bitte beachten Sie die Hinweise.</p>`).
+   - `visibility`: Setze dies auf `True`, um den Text anzuzeigen.
+4. Speichere den Text.
 
 Die folgenden Abschnitte enthalten Details zur Verwendung, Funktionalität und Implementierung der wichtigsten Templates: Teilnehmerinformation, Consent-Form, Not Eligible, Start-View, und End-View.
 
@@ -924,12 +1064,21 @@ Beispiel:
 participant_info_header_en: "Welcome to the Study"
 participant_info_message_en: "Here is some important information..."
 ```
+</details>
+
 ---
 
 ## Weitere Informationen
 
 <details> 
 <summary>🛠 Kleine Änderungen vornehmen</summary>
+
+### So nimmst du kleine Änderungen im Code vor:
+1. Öffne die entsprechende Datei in deinem Code-Editor.
+2. Finde den Codeabschnitt, den du ändern möchtest.
+3. Nimm die gewünschten Änderungen vor (z. B. Kommentiere Code aus oder füge neuen Code hinzu).
+4. Speichere die Datei.
+5. Starte den Server neu, damit die Änderungen wirksam werden.  (Baue ein neues Image, falls du Docker nutzt)
 
 ### Beispielhafte Schritte, um den "Cancel Experiment"-Button zu entfernen:
 
@@ -950,14 +1099,24 @@ participant_info_message_en: "Here is some important information..."
 5. **Server neu starten**
 
 </details>
+
+---
+
 <details> 
 <summary>User-Profile Duality</summary>
 
-The tool uses a framework for user authentication which brings its own `User` class. Additionally, on user creation, it creates and links its own `Profile` object to the new user. The <span style="text-decoration: underline">**user is used for authentication**</span> (loginname, auto-generated email), the <span style="text-decoration: underline">**profile for everything else**</span> tool related (bio, ...).
+### Was ist der Unterschied zwischen `User` und `Profile`?
+- **User**: Enthält grundlegende Informationen wie Benutzername und Passwort. Wird für die Anmeldung verwendet.
+- **Profile**: Enthält zusätzliche Informationen wie Biografie, Profilbild und experimentelle Bedingungen. Wird für alles Tool-bezogene verwendet.
 
-There are some duplicate fields on them, `firstname` and `lastname` on the `User` are ignored, and `email` on the `profile` is ignored.
+### Achtung: Variablennamen im Code
+- Im Code wird oft `user` verwendet, obwohl eigentlich `profile` gemeint ist. Zum Beispiel: `user.user` bezieht sich auf das Profil des Benutzers.
+- **Tipp**: Überprüfe immer, ob `user` oder `profile` gemeint ist, indem du den Kontext betrachtest.
 
-The variable naming in code is quite inconsistent. In most cases relating to business logic profiles are used but are called users (which leads to the beautiful `user.user` statement). So make sure to check which one it is in either case.
+
+Das Tool verwendet ein Framework für die Benutzerauthentifizierung, das eine eigene User-Klasse mitbringt. Zusätzlich wird bei der Erstellung eines Benutzers ein eigenes Profile-Objekt erstellt und mit dem neuen Benutzer verknüpft. Der User wird für die Authentifizierung verwendet (Anmeldename, automatisch generierte E-Mail), während das Profile für alles andere Tool-bezogene (Bio, ...) genutzt wird.
+
+Es gibt einige doppelte Felder: firstname und lastname im User werden ignoriert, und die E-Mail im Profile wird ebenfalls ignoriert.
 
 
 </details>

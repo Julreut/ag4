@@ -155,14 +155,16 @@ def question_list(request, label):
         {'question': q, 'subchoice_pairs': q.get_subchoice_pairs(), 'choices': q.get_choices()}
         for q in questions
     ]
-    range_11 = range(11)  # Generate a range from 0 to 10
+    range_10 = range(10)  # Generate a range from 0 to 9 - Standartwert
+    if question.range_value:
+        range_10 = [int(value) for value in question.range_value.split(';') if value.strip()]
 
     #Context
 
     context = {
     'questions': unanswered_questions,
     'label': label,
-    'range_11': range_11,
+    'range_10': range_10,
     'questions_with_pairs': questions_with_pairs
 }
 

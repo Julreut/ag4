@@ -1,6 +1,6 @@
 # Übersicht über verwendete Tools
 
-**Mirror Online** ist ein simuliertes, kontrollierbares Online-Forum, das auf dem Django-Webframework basiert. 
+**Mirror Online** ist ein simuliertes, kontrollierbares Online-Forum, das auf dem Django-Webframework basiert.
 
 Diese Dokumentation soll dir helfen, das Projekt zu verstehen, es lokal einzurichten, zu nutzen und weiterzuentwickeln, auch wenn du keine Vorkenntnisse hast.
 
@@ -16,7 +16,9 @@ Django ist ein leistungsstarkes, hochgradig konfigurierbares Webframework für P
 Das Django Admin Panel ist eine automatisch generierte Web-Oberfläche, die es Administratoren ermöglicht, Datenmodelle zu verwalten, ohne eigenen Code schreiben zu müssen. Es bietet eine benutzerfreundliche Oberfläche zum Hinzufügen, Bearbeiten und Löschen von Daten.
 
 ### Installation von Python und Django
+
 #### Download
+
 Gehe zur offiziellen [Python-Website](https://www.python.org/downloads/) und lade die neueste Version herunter.
 
 #### Installation Python
@@ -32,12 +34,15 @@ Folge den Installationsanweisungen für dein Betriebssystem.
 ```bash
 python --version
 ```
+
 #### Installation Django
+
 ```bash
 pip install django
 ```
 
 #### Überprüfung
+
 ```bash
 django-admin --version
 ```
@@ -55,7 +60,6 @@ django-admin --version
 - **templates/**: HTML-Vorlagen.
 - **static/**: Statische Dateien wie CSS, JS und Bilder.
 
-
 </details>
 
 ---
@@ -65,14 +69,14 @@ django-admin --version
 <br>
 
 **HTML-Dateien** definieren die Struktur und Inhalte der Webseiten. In Django werden sie meist im `templates/`-Verzeichnis der jeweiligen App abgelegt.  
-**Beispiel:** `src/comments/templates/article_comments.html`  
+**Beispiel:** `src/comments/templates/article_comments.html`
 
-Die Dateien enthalten oft spezielle Django-Template-Tags, um dynamische Inhalte einzubinden:  
+Die Dateien enthalten oft spezielle Django-Template-Tags, um dynamische Inhalte einzubinden:
 
 ```html
-{% extends "base.html" %}
-{% load static %}
+{% extends "base.html" %} {% load static %}
 ```
+
 Dies ermöglicht die Wiederverwendung einer Design-Basis und den Zugriff auf statische Ressourcen.
 
 **CSS-Dateien** bestimmen das Aussehen und Layout der Webseiten. Diese befinden sich im static/css/ Verzeichnis.
@@ -81,7 +85,7 @@ Dies ermöglicht die Wiederverwendung einer Design-Basis und den Zugriff auf sta
 
 </details>
 
-----
+---
 
 <details>
 <summary>📜  <strong>Verwendung von JavaScript in Django Templates  </strong></summary>
@@ -89,13 +93,15 @@ Dies ermöglicht die Wiederverwendung einer Design-Basis und den Zugriff auf sta
 JavaScript wird verwendet, um interaktive Funktionen auf deinen Webseiten bereitzustellen. In Django kannst du JavaScript-Dateien im `static/js/` Verzeichnis speichern und in deinen Templates einbinden.
 
 ### Einbindung von Skripten: Blocks und Static Files
+
 Um JavaScript in deinen Django-Templates effektiv zu verwalten, kannst du Template-Blöcke verwenden. Dies ermöglicht es dir, spezifische Skripte auf bestimmten Seiten zu laden.
-In der base.html Datei `src/templates/base.html` findest du den Javascripts Block: 
+In der base.html Datei `src/templates/base.html` findest du den Javascripts Block:
+
 ```html
 <!-- JavaScript Block -->
-    {% block scripts %}
-    {% endblock %}
+{% block scripts %} {% endblock %}
 ```
+
 Dieser Block dient als Platzhalter für JavaScript-Code, der in untergeordneten Templates eingebunden wird.
 
 ### Beispiel: JavaScript in einer Unterseite einfügen
@@ -103,13 +109,13 @@ Dieser Block dient als Platzhalter für JavaScript-Code, der in untergeordneten 
 In einem spezifischen Template, z. B. article_comments.html, kannst du den Block wie folgt nutzen:
 
 ```html
-{% extends "base.html" %}
-{% block scripts %}
+{% extends "base.html" %} {% block scripts %}
 <script src="{% static 'js/article_comments.js' %}"></script>
 {% endblock %}
 ```
 
 #### Vorteile:
+
 - Modularität: Skripte werden nur geladen, wenn sie tatsächlich benötigt werden.
 - Performance: Weniger unnötige Skripte verbessern die Ladegeschwindigkeit.
 - Wartbarkeit: Der Code bleibt übersichtlicher und einfacher zu verwalten.
@@ -124,6 +130,7 @@ In einem spezifischen Template, z. B. article_comments.html, kannst du den Block
 Modelle definieren die Struktur deiner Datenbank. In Django werden sie im models.py einer App definiert.
 
 **Beispiel:** src/articles/models.py
+
 ### Migrationen:
 
 Wenn du einen Teil des Modells änderst, musst du die Migrationen neu generieren und anwenden, um die Datenbank zu migrieren.
@@ -140,3 +147,11 @@ python3 src/manage.py migrate
 
 </details>
 
+<br>
+
+# Glossar
+
+- **User**: Ein Benutzerkonto, das für die Anmeldung verwendet wird.
+- **Profile**: Enthält zusätzliche Informationen über den Benutzer, wie Biografie und Profilbild.
+- **Superuser**: Ein Administrator, der vollen Zugriff auf das Admin-Panel hat.
+- **Template**: Eine HTML-Datei, die das Layout einer Seite definiert.

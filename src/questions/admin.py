@@ -23,7 +23,8 @@ class QuestionAdmin(admin.ModelAdmin):
         'min_value', 
         'max_value',
         'start_value', 
-        'step_value'
+        'step_value', 
+        'range_value'
     )
 
     def get_queryset(self, request):

@@ -61,7 +61,13 @@ class Question(models.Model):
         blank=True, null=True,
         help_text=" <strong>Für Slider: </strong> Startwert. Bitte Wert im Bereich von Min und Max Value wählen."
     )
-    
+    range_value = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Geben Sie die Werte für die Range ein, getrennt durch Semikolons (z. B. '0;1;2;3;4;5;6;7;8;9;10')."
+    )
+
     required = models.BooleanField(
         default=True,
         help_text="Pflichtfrage?"
