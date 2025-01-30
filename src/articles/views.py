@@ -19,81 +19,109 @@ from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from .models import NewsPaper
 from analytics.models import UserContentPosition
-
 @login_required
 def get_newspapers(request):
     user = request.user
-    profile = user.profile  # Das Profil des Nutzers
+    profile = user.profile
     newspaper_type = ContentType.objects.get_for_model(NewsPaper)
-
-    # Prüfen, ob der Nutzer eine Bedingung hat
     condition_tag = profile.condition.tag if profile.condition else None
-    print(condition_tag) #debuggen
 
     if not condition_tag:
-        # Wenn der Nutzer keiner Bedingung zugeordnet ist, keine Zeitungen anzeigen
-        context = {
-            'news_papers': []
-        }
-        
-        return render(request, 'articles/news_papers.html', context)
-    
-    #ansonsten Newspaper filtern
-    newspapers = list(NewsPaper.objects.filter(tag=condition_tag))
+        return render(request, 'articles/news_papers.html', {'news_papers': []})
 
-    # Prüfen, ob bereits eine Reihenfolge existiert
-    if not UserContentPosition.objects.filter(user=user, content_type=newspaper_type).exists():
-        # Zeitungen nach Tag filtern und randomisieren
-        random.shuffle(newspapers)
+    # Filterung mit derselben Logik wie beim Positions-Check
+    newspapers = NewsPaper.objects.filter(
+        Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)
+    )
 
-        # Speichere die Reihenfolge im UserContentPosition-Modell
-        for index, newspaper in enumerate(newspapers):
-            UserContentPosition.objects.create(
+    # Existierende Positionen
+    existing_positions = UserContentPosition.objects.filter(
+        user=user,
+        content_type=newspaper_type,
+        object_id__in=newspapers.values_list('id', flat=True)
+    )
+
+    if not existing_positions.exists():
+        # Alte Einträge löschen
+        UserContentPosition.objects.filter(
+            user=user,
+            content_type=newspaper_type
+        ).delete()
+
+        # Neue Randomisierung
+        newspapers_list = list(newspapers)
+        random.shuffle(newspapers_list)
+
+        # Positionen mit get_or_create anlegen
+        for index, newspaper in enumerate(newspapers_list, start=1):
+            UserContentPosition.objects.get_or_create(
                 user=user,
                 content_type=newspaper_type,
                 object_id=newspaper.id,
-                position=index + 1
+                defaults={'position': index}
             )
 
     # Lade die gespeicherte Reihenfolge
-    newspaper_positions = UserContentPosition.objects.filter(user=user, content_type=newspaper_type).order_by('position')
-    newspapers = [pos.content_object for pos in newspaper_positions]
+    newspaper_positions = UserContentPosition.objects.filter(
+        user=user,
+        content_type=newspaper_type
+    ).order_by('position')
+    
+    news_papers = [pos.content_object for pos in newspaper_positions]
 
-    context = {
-        'news_papers': newspapers
-    }
-    return render(request, 'articles/news_papers.html', context)
-
-
+    return render(request, 'articles/news_papers.html', {'news_papers': news_papers})
 ## Article definitions
 @login_required
 def article_list(request, news_paper_id):
     user = request.user
+    profile = user.profile
     article_type = ContentType.objects.get_for_model(Article)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
 
-    # IDs aller Artikel der Zeitung abrufen
-    article_ids = Article.objects.filter(news_paper_id=news_paper_id).values_list('id', flat=True)
+    # Bedingung des Nutzers
+    condition_tag = profile.condition.tag if profile.condition else None
 
-    # Prüfen, ob bereits eine Reihenfolge existiert
-    if not UserContentPosition.objects.filter(user=user, content_type=article_type, object_id__in=article_ids).exists():
-        # Randomisiere die Artikel für diese Zeitung
-        articles = list(Article.objects.filter(news_paper_id=news_paper_id))
-        random.shuffle(articles)
+    # Filter für Artikel mit derselben Logik wie beim Positions-Check
+    articles = Article.objects.filter(
+        news_paper_id=news_paper_id
+    ).filter(
+        Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)
+    )
 
-        # Speichere die Reihenfolge im UserContentPosition-Modell
-        for index, article in enumerate(articles):
-            UserContentPosition.objects.create(
+    # Existierende Positionen für diese Artikel
+    existing_positions = UserContentPosition.objects.filter(
+        user=user,
+        content_type=article_type,
+        object_id__in=articles.values_list('id', flat=True)
+    )
+
+    # Nur neu generieren wenn keine Positionen existieren
+    if not existing_positions.exists():
+        # Alte Positionen löschen falls vorhanden
+        UserContentPosition.objects.filter(
+            user=user,
+            content_type=article_type
+        ).delete()
+
+        # Neue zufällige Reihenfolge erstellen
+        articles_list = list(articles)
+        random.shuffle(articles_list)
+
+        # Positionen mit get_or_create anlegen
+        for index, article in enumerate(articles_list, start=1):
+            UserContentPosition.objects.get_or_create(
                 user=user,
                 content_type=article_type,
                 object_id=article.id,
-                position=index + 1
+                defaults={'position': index}
             )
 
-    # Lade die gespeicherte Reihenfolge
+    # Artikel in der gespeicherten Reihenfolge laden
     article_positions = UserContentPosition.objects.filter(
-        user=user, content_type=article_type, object_id__in=article_ids
+        user=user,
+        content_type=article_type
     ).order_by('position')
+    
     articles = [pos.content_object for pos in article_positions]
 
     context = {'articles': articles, 'newspaper': newspaper}
@@ -111,11 +139,17 @@ def detailed_article(request, news_paper_id, slug):
     article = get_object_or_404(Article, slug=slug, news_paper_id=news_paper_id)
     profile = Profile.objects.get(user=request.user)
 
+    condition_tag = profile.condition.tag if profile.condition else None
+    print(f"Condition des Nutzers: {condition_tag}")  # Debugging
+
+
     public_comments_count = article.comments.filter(
-        parent_comment__isnull=True,
+      Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)  # Filter für passende Tags
     ).filter(
-        Q(is_public=True) | Q(author=profile)  # Öffentlich ODER vom spezifischen Benutzer
-    ).count()
+        Q(is_public=True) | Q(author=profile)
+    ).filter(
+        Q(parent_comment=None)
+    ).values_list('id', flat=True).count()
 
     context = {
         'article': article, 

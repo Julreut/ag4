@@ -16,8 +16,13 @@ from profiles.models import Profile
 from articles.models import Article, NewsPaper  # Importiere Articles und Newspapers for IDs
 from configuration.models import get_the_config
 
+from django.core.exceptions import ValidationError
 
-def save_comment(form, profile, article, parent_comment=None, is_public=False):
+from django.http import JsonResponse
+import json
+
+
+def save_comment(form, profile, article, parent_comment=None, is_public=False, is_secondary=False):
     """Helper-Funktion zum Speichern von Haupt- und Sekundärkommentaren und Event-Tracking."""
     try:
         # Formulardaten speichern, ohne die Instanz direkt zu committen
@@ -26,6 +31,7 @@ def save_comment(form, profile, article, parent_comment=None, is_public=False):
         instance.article = article
         instance.parent_comment = parent_comment
         instance.is_public = is_public
+        instance.is_secondary = is_secondary
 
         # Speichere den Kommentar
         instance.save()
@@ -33,6 +39,7 @@ def save_comment(form, profile, article, parent_comment=None, is_public=False):
         # Log für Debugging
         print(f"Kommentar gespeichert: ID {instance.id}, Titel: {instance.title}")
         return instance
+    
     except Exception as e:
         print(f"Fehler beim Speichern des Kommentars: {str(e)}")
         raise
@@ -51,10 +58,16 @@ def article_comments_view(request, news_paper_id, article_id):
     config = get_the_config()
 
 
+    # Prüfen, ob der Nutzer eine Bedingung hat
+    condition_tag = profile.condition.tag if profile.condition else None
+    print(f"Condition des Nutzers: {condition_tag}")  # Debugging
+
     # 1. Hauptkommentare abrufen (nur IDs)
     main_comment_ids = Comment.objects.filter(
         article=article,
         parent_comment=None,
+    ).filter(
+        Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)  # Nur Kommentare mit passenden Tags
     ).filter(
         Q(is_public=True) | Q(author=profile)
     ).values_list('id', flat=True)
@@ -109,6 +122,8 @@ def article_comments_view(request, news_paper_id, article_id):
     for comment in main_comments:
         # IDs der Antworten abrufen
         reply_ids = comment.replies.filter(
+            Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)  # Filter für passende Tags
+        ).filter(
             Q(is_public=True) | Q(author=profile)
         ).values_list('id', flat=True)
 
@@ -146,29 +161,13 @@ def article_comments_view(request, news_paper_id, article_id):
                 form=comment_form,
                 profile=profile,
                 article=article,
-                is_public=request.user.is_staff  # Admin-Kommentare sind direkt öffentlich
+                is_public=request.user.is_staff,  # Admin-Kommentare sind direkt öffentlich
+                is_secondary=False, 
             )
             messages.success(request, _("Dein Kommentar wurde erfolgreich hinzugefügt!"))
             return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
         else:
             messages.error(request, _("Es gab einen Fehler beim Hinzufügen deines Kommentars."))
-
-    # Sekundärkommentar hinzufügen
-    if request.method == "POST" and 'submit_secondary_comment_form' in request.POST:
-        secondary_comment_form = SecondaryCommentModelForm(request.POST)
-        if secondary_comment_form.is_valid():
-            parent_comment = get_object_or_404(Comment, id=request.POST.get('comment_id'))
-            save_comment(
-                form=secondary_comment_form,
-                profile=profile,
-                article=article,
-                parent_comment=parent_comment,
-                is_public=False  # Sekundärkommentare sind standardmäßig nicht öffentlich
-            )
-            messages.success(request, _("Deine Antwort wurde erfolgreich hinzugefügt!"))
-            return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
-        else:
-            messages.error(request, _("Es gab einen Fehler beim Hinzufügen deiner Antwort."))
 
     # 6. Kontextdaten für das Template
     context = {
@@ -176,7 +175,6 @@ def article_comments_view(request, news_paper_id, article_id):
         'article': article,
         'comments': main_comments,  # Hauptkommentare in zufälliger Reihenfolge
         'comment_form': comment_form,
-        'secondary_comment_form': secondary_comment_form,
         'like_dislike_enabled': config.like_dislike_enabled,  # Wert an das Template übergeben
 
     }
@@ -198,12 +196,20 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
     comment_type = ContentType.objects.get_for_model(Comment)
     config = get_the_config()
 
+
+    # Prüfen, ob der Nutzer eine Bedingung hat
+    condition_tag = profile.condition.tag if profile.condition else None
+    print(f"Condition des Nutzers: {condition_tag}")  # Debugging
+
+
     # Primärkommentar-Aktionen berechnen
     comment.like_action = "unlike" if profile in comment.liked.all() else "like"
     comment.dislike_action = "undislike" if profile in comment.disliked.all() else "dislike"
 
     # Antworten (`replies`) abrufen
     reply_ids = comment.replies.filter(
+        Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)  # Filter für passende Tags
+    ).filter(
         Q(is_public=True) | Q(author=profile)
     ).values_list('id', flat=True)
 
@@ -250,7 +256,8 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
                 profile=profile,
                 article=article,
                 parent_comment=comment,
-                is_public=request.user.is_staff  # Antworten von Admins sind direkt öffentlich
+                is_public=request.user.is_staff,  # Antworten von Admins sind direkt öffentlich
+                is_secondary=True
             )
             # Neue Antwort in die Positionen einfügen
             max_position = UserContentPosition.objects.filter(
@@ -284,30 +291,57 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
 @login_required
 def like_unlike_comment(request):
     if request.method == 'POST':
-        comment_id = request.POST.get('comment_id')
+        body = json.loads(request.body)  # JSON-Body auslesen
+        comment_id = body.get('comment_id')  # Abruf der comment_id
+        if not comment_id:
+            return JsonResponse({'success': False, 'error': 'Comment ID not provided'}, status=400)
+
         comment = Comment.objects.get(id=comment_id)
         profile = Profile.objects.get(user=request.user)
 
-        # Call the updated toggle_like function with logging
-        toggle_like(profile, comment, request)
+        action = toggle_like(profile, comment, request)
 
-    return redirect(request.META.get('HTTP_REFERER', 'comments:article-comments'))
+        return JsonResponse({
+            "success": True,
+            "action": action,  # "like" oder "unlike"
+            "new_like_count": comment.liked.count(),
+            "new_dislike_count": comment.disliked.count(),
+            'user_has_liked': profile in comment.liked.all(),  # Benutzer hat geliked
+            'user_has_disliked': profile in comment.disliked.all()  # Benutzer hat disliked
+        })
 
 
 @login_required
 def dislike_undislike_comment(request):
     if request.method == 'POST':
-        comment_id = request.POST.get('comment_id')
+        body = json.loads(request.body)  # JSON-Body auslesen
+        comment_id = body.get('comment_id')  # Abruf der comment_id
+        if not comment_id:
+            return JsonResponse({'success': False, 'error': 'Comment ID not provided'}, status=400)
         comment = Comment.objects.get(id=comment_id)
         profile = Profile.objects.get(user=request.user)
 
-        # Call the updated toggle_dislike function with logging
-        toggle_dislike(profile, comment, request)
+        action = toggle_dislike(profile, comment, request)
 
-    return redirect(request.META.get('HTTP_REFERER', 'comments:article-comments'))
+        # JSON-Antwort für AJAX zurückgeben
+        return JsonResponse({
+            'success': True,
+            'action': action,
+            'new_like_count': comment.liked.count(),
+            'new_dislike_count': comment.disliked.count(),
+            'user_has_liked': profile in comment.liked.all(),  # Benutzer hat geliked
+            'user_has_disliked': profile in comment.disliked.all()  # Benutzer hat disliked
+        })
+
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 
 def toggle_like(profile, comment, request):
+
+    if comment.is_secondary:
+        raise ValidationError("Sekundäre Kommentare können nicht geliked werden.")
+
+
     action = "like"  # Standardaktion ist "like"
     if profile in comment.liked.all():
         # If already liked, remove like
@@ -328,6 +362,10 @@ def toggle_like(profile, comment, request):
 
 
 def toggle_dislike(profile, comment, request):
+    if comment.is_secondary:
+        raise ValidationError("Sekundäre Kommentare können nicht disliked werden.")
+
+
     action = "dislike"  # Standardaktion ist "dislike"
     if profile in comment.disliked.all():
         # If already disliked, remove dislike

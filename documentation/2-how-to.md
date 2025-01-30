@@ -629,6 +629,7 @@ python src/manage.py help
 # Hinweise für Versuchsleiter
 
 <details><summary>Umgang mit der Datenbank</summary>
+<br>
 
 # Django-Datenbank: Verständnis und Zugriff auf Modelle
 
@@ -743,7 +744,66 @@ Falls du weitere Fragen hast, schau gerne in die [Django-Dokumentation](https://
 
 ---
 
-<details><summary>❓ Fragetypen im `Question`-Modell</summary>
+<details><summary>Versuchsbedingungen anlegen und randomisierte Reihenfolge</summary>
+<br>
+
+# Verwendung von Condition Tags und Speicherung der Reihenfolge in der Experimentumgebung
+
+## 1. Was sind Condition Tags?
+Condition Tags sind optionale Zuordnungen, die genutzt werden, um Inhalte wie Artikel, Zeitungen oder Kommentare gezielt bestimmten Benutzergruppen anzuzeigen. Jeder Benutzer erhält bei der Anmeldung eine Experimentbedingung, die mit einem Tag verknüpft ist. Inhalte mit einem passenden Tag werden nur den Benutzern angezeigt, deren Bedingung mit diesem Tag übereinstimmt.
+
+- **Ohne Tag:** Inhalte, die keinen Tag besitzen, sind für alle Benutzer sichtbar, unabhängig von ihrer Bedingung.
+- **Mit Tag:** Inhalte mit einem spezifischen Tag werden nur Benutzern angezeigt, deren Experimentbedingung den gleichen Tag hat.
+
+Condition Tags ermöglichen so die gezielte Steuerung, welche Inhalte eine bestimmte Benutzergruppe im Rahmen eines Experiments sieht. Wichtig: Wenn eine Zeitung einem Tag zugeordnet ist (beispielsweise "Experimental1"), dann ist dies die niedrigste Filterstufe. Natürlicherweise sehen somit nur Versuchspersonen der Experimental1-Bedingung die Zeitung und ihre zugeordneten Artikel - auch wenn diese speziellen Artikel eventuell keine Tags erhalten haben. Für eine Filterung auf Artikel-Ebene kann die Zeitung ohne Tag verbleiben und dann werden die Artikel zugeordnet. Dieselbe Logik gilt auch für Kommentare und Sekundärkommentare (sog. "Replies"). 
+
+---
+
+## 2. Speicherung der Reihenfolge von Inhalten
+Um eine individuelle und reproduzierbare Reihenfolge von Artikeln, Zeitungen oder Kommentaren pro Benutzer zu gewährleisten, wird diese Reihenfolge in einer separaten Datenbanktabelle gespeichert. Bei der Anmeldung des Users wird die Reihenfolge randomisiert erstellt und dann in der Datenbanktabelle `usercontentposition` gespeichert.
+
+### Bedeutung der Reihenfolge:
+- **Individuell:** Jeder Benutzer erhält eine eigene Reihenfolge, die nur für ihn gilt.
+- **Dynamisch:** Inhalte werden beim ersten Laden zufällig sortiert und die Reihenfolge wird gespeichert.
+- **Konsistenz:** Die gespeicherte Reihenfolge bleibt für den Benutzer gleich, auch wenn Inhalte mehrfach abgerufen werden.
+
+### Ablauf:
+1. **Filterung der Inhalte:** Inhalte werden anhand des Tags des Benutzers gefiltert. Inhalte ohne Tag sind für alle sichtbar.
+2. **Überprüfung auf bestehende Reihenfolge:** Bevor Inhalte gespeichert werden, wird geprüft, ob für den Benutzer bereits eine Reihenfolge existiert.
+3. **Speicherung der Reihenfolge:** Falls keine existiert (beim ersten Login), werden die Inhalte zufällig sortiert und ihre Position wird gespeichert.
+4. **Ergänzung neuer Inhalte:** Neue Inhalte werden geprüft und in die bestehende Reihenfolge eingefügt.
+
+---
+
+## 3. Condition Tags für Kommentare
+Kommentare besitzen ebenfalls Condition Tags, um sie bestimmten Benutzergruppen zuzuordnen:
+- **Hauptkommentare:** Können unabhängig erstellt werden und sind die Grundlage für Sekundärkommentare.
+- **Sekundärkommentare:** Müssen einem Hauptkommentar zugeordnet sein, der zur gleichen Bedingung und zum gleichen Artikel gehört.
+- **Tags:** Kommentare ohne Tag sind für alle Benutzer sichtbar - sofern ebenfalls `ìs_public=True` gilt, während Kommentare mit einem Tag nur für Benutzer mit der passenden Experimentbedingung sichtbar sind.
+
+---
+
+## 4. Herausforderungen bei Änderungen
+Änderungen an Artikeln, Zeitungen oder Kommentaren können bestehende gespeicherte Reihenfolgen beeinflussen. Beispiele:
+- **Verschiebungen oder Löschungen:** Wenn Inhalte gelöscht oder einem anderen Tag zugeordnet werden, können gespeicherte Positionen ungültig werden.
+- **Neue Inhalte:** Neue Inhalte können die bestehende Reihenfolge erweitern, müssen aber korrekt integriert werden.
+
+---
+
+## 5. Empfehlungen für die Administration
+- **Vorsicht bei Änderungen:** Änderungen an Artikeln, Zeitungen oder Kommentaren sollten mit Bedacht erfolgen, da sie Auswirkungen auf die Benutzererfahrung haben können.
+- **Konsistenz sicherstellen:** Nach Änderungen sollten veraltete gespeicherte Positionen entfernt und die Reihenfolge bei Bedarf neu generiert werden.
+- **Einschränkungen beachten:** Sekundärkommentare dürfen nur Hauptkommentare desselben Artikels als Parent haben und keine unabhängigen Kommentare sein.
+- Grundsätzlich gilt: Um auf der sicheren Seite zu sein, sollten, sobald ein Experiment läuft, **keine Änderungen an der Datenbank** mehr erfolgen!
+---
+
+## Zusammenfassung
+Condition Tags und die Speicherung der Reihenfolge sind essenziell, um Inhalte gezielt und kontrolliert im Rahmen eines Experiments anzeigen zu können. Sie bieten Flexibilität bei der Zuordnung von Inhalten zu Benutzergruppen und gewährleisten eine konsistente Darstellung. Änderungen sollten jedoch immer mit Blick auf bestehende Daten erfolgen, um Inkonsistenzen zu vermeiden.
+</details>
+
+---
+
+<details><summary>Fragetypen: Welche gibt es und wie können sie angelegt werden?</summary>
 
 Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen Fragetypen (`question_type`) im `Question`-Modell ausgefüllt werden müssen.
 
@@ -903,7 +963,7 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 ---
 
 <details>
-<summary>"Texte" im `Question`-Modell</summary>
+<summary>Anpassbare Texte: Erstellen von Vorab-Hinweisen, Teilnehmerinformation, Consent-Form, etc.</summary>
 
 ### Anzeigen von VP-Hinweisen zur Experiment-Bearbeitung
 - Für einfache Vorab-Hinweise vor dem Experiment (oder auch danach) eignet sich das `Frage-Format "Single Choice"`. Beispielsweise ist es wichtig, dazuzusagen, dass die VP die tool-interne Navigation nutzen sollten und nicht die Browser-Navigation. Wird diese doch genutzt, kommt es im Normalfall **nicht** zu technischen Problemen, jedoch kann dies das Logging verfälschen.

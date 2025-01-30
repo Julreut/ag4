@@ -292,3 +292,118 @@ document.addEventListener("input", function (event) {
       logUserAction("input_change", logData);
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Funktion zum Abrufen des CSRF-Tokens
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  // Like-Button Event-Handler
+  document.querySelectorAll(".like-button").forEach((button) => {
+    button.addEventListener("click", function () {
+      const commentId = this.dataset.commentId;
+
+      fetch("/comments/liked/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({ comment_id: commentId }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Aktualisiere die Zähler
+            document.querySelector(`#like-count-${commentId}`).textContent =
+              data.new_like_count;
+            document.querySelector(`#dislike-count-${commentId}`).textContent =
+              data.new_dislike_count;
+
+            // Aktualisiere den Status
+            const likeButton = document.querySelector(
+              `.like-button[data-comment-id="${commentId}"]`
+            );
+            const dislikeButton = document.querySelector(
+              `.dislike-button[data-comment-id="${commentId}"]`
+            );
+
+            if (data.user_has_liked) {
+              likeButton.classList.add("liked");
+            } else {
+              likeButton.classList.remove("liked");
+            }
+
+            if (data.user_has_disliked) {
+              dislikeButton.classList.add("disliked");
+            } else {
+              dislikeButton.classList.remove("disliked");
+            }
+          } else {
+            console.error("Fehler beim Liken:", data.error);
+          }
+        })
+        .catch((error) => console.error("Fehler:", error));
+    });
+  });
+
+  // Dislike-Button Event-Handler
+  document.querySelectorAll(".dislike-button").forEach((button) => {
+    button.addEventListener("click", function () {
+      const commentId = this.dataset.commentId;
+
+      fetch("/comments/disliked/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({ comment_id: commentId }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Aktualisiere die Zähler
+            document.querySelector(`#like-count-${commentId}`).textContent =
+              data.new_like_count;
+            document.querySelector(`#dislike-count-${commentId}`).textContent =
+              data.new_dislike_count;
+
+            // Aktualisiere den Status
+            const likeButton = document.querySelector(
+              `.like-button[data-comment-id="${commentId}"]`
+            );
+            const dislikeButton = document.querySelector(
+              `.dislike-button[data-comment-id="${commentId}"]`
+            );
+
+            if (data.user_has_liked) {
+              likeButton.classList.add("liked");
+            } else {
+              likeButton.classList.remove("liked");
+            }
+
+            if (data.user_has_disliked) {
+              dislikeButton.classList.add("disliked");
+            } else {
+              dislikeButton.classList.remove("disliked");
+            }
+          } else {
+            console.error("Fehler beim Disliken:", data.error);
+          }
+        })
+        .catch((error) => console.error("Fehler:", error));
+    });
+  });
+});

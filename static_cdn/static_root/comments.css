@@ -142,6 +142,15 @@ body {
     /* Sanfte Übergänge */
 }
 
+button.liked {
+    color: green;
+    /* Farbe für "like" */
+}
+
+button.disliked {
+    color: red;
+    /* Farbe für "dislike" */
+}
 /* Hover-Effekte */
 .ui.icon.button:hover {
     background-color: #007bff;

@@ -37,7 +37,7 @@ def assign_condition_on_login(sender, request, user, **kwargs):
             profile.condition = assigned_condition
             profile.save()
         else:
-            first_condition = ExperimentCondition(name="FirstCond", description="Eine Test-Bedingung", tag="exp")
+            first_condition = ExperimentCondition(name="FirstCond", description="Eine Test-Bedingung", tag="ChangeMe")
             profile.condition = first_condition
             profile.save()
 

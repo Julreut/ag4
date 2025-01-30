@@ -10,6 +10,7 @@ class ProfileModelForm(forms.ModelForm):
     )
     avatar = forms.ImageField(
         label=_("Profilbild"),
+        help_text = "Empfehlung: 1x1 Format ",
         required=False,
         widget=forms.FileInput  # Überschreibe das Standard-Widget, damit man es nicht mehr zuruecksetzen kann
     )

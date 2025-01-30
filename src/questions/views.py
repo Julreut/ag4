@@ -84,7 +84,6 @@ def question_list(request, label):
                     )
             elif question.question_type == 'ampel_rating':
                 # Alle Antworten für die Frage sammeln
-                answers = []
                 for index, pair in enumerate(question.get_subchoice_pairs()):
                     field_name = f"question_{question.id}_{index + 1}"  # parentloop.counter startet bei 1!
                     print(field_name)
@@ -107,11 +106,7 @@ def question_list(request, label):
                         sub_question=f"Sub_choices:{pair}",
                         answer_text=answer_value
                     )
-
-                # Optional: Debug-Ausgabe
-                print("Antworten erfolgreich gespeichert:", answers)
-
-                                
+                            
             else:
                 answer_text = request.POST.get(field_name, '')
                 if question.required and not answer_text:
@@ -142,7 +137,7 @@ def question_list(request, label):
 
     # Alle Fragen beantwortet: Sofort weiterleiten
     if not unanswered_questions.exists():
-
+        messages.success(request, "Vielen Dank, Ihre Antworten wurden erfolgreich gespeichert!")
         if label == 'before':
             return redirect('articles:news-papers')
         elif label == 'after':
@@ -155,9 +150,16 @@ def question_list(request, label):
         {'question': q, 'subchoice_pairs': q.get_subchoice_pairs(), 'choices': q.get_choices()}
         for q in questions
     ]
-    range_10 = range(10)  # Generate a range from 0 to 9 - Standartwert
-    if question.range_value:
-        range_10 = [int(value) for value in question.range_value.split(';') if value.strip()]
+    
+    if question.range_value:  # Überprüfen, ob range_value nicht None ist
+        try:
+            range_10 = [int(value) for value in question.range_value.split(';') if value.strip()]
+        except ValueError:
+            messages.error(request, f"Ungültige Werte im Range für Frage: {question.question_text}")
+            range_10 = range(10)  # Standardwert setzen
+    else:
+        range_10 = range(10)  # Standardwert, falls range_value nicht gesetzt ist
+
 
     #Context
 

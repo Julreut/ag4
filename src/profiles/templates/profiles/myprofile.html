@@ -26,6 +26,7 @@ my profile
             {% csrf_token %}
             {{ form.avatar.label_tag }}<br>
             {{ form.avatar }}<br><br>
+            {{ form.avatar.help_text }}<br><br>
             {{ form.bio.label_tag }}<br>
             {{ form.bio }}<br>
             <button type="submit" class="ui positive button">Profil aktualisieren</button>

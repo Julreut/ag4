@@ -20,7 +20,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Bannerformat:1800 x 600 px")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    tag = models.CharField(max_length=50, default='Control')  # Tag für die Versuchsbedingung
+    tag = models.CharField(max_length=50, default='', blank=True)  #optional Tag für die Versuchsbedingung
     
     def save(self, *args, **kwargs):
         if not self.slug:  # Slug nur generieren, wenn es noch leer ist
@@ -45,7 +45,7 @@ class NewsPaper(models.Model):
     name = models.CharField(max_length=255)
     content = models.CharField(max_length=255, default = 'Change me: This is the short description of the newspaper content.')
     image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Format:900 x 600 px")
-    tag = models.CharField(max_length=50, default='Control')  # Tag für die Versuchsbedingung
+    tag = models.CharField(max_length=50, default='', blank=True)  #optional Tag für die Versuchsbedingung
     def get_id(self):
         return self.id
 
