@@ -63,11 +63,11 @@ Fertig! 🎉 Dein Projekt läuft jetzt lokal mit Docker. Falls Probleme auftrete
 ---
 
 # Erste Schritte nach dem Deployment
+<br>
 
-<details><summary> Erster Schritt </summary>
-Deine Instanz sollte nun unter der gewünschten Adresse und dem gewünschten Port laufen, z. B. `http://localhost:8001`. Bevor du nun loslegen kannst und Zeitungen und Artikel anlegen, benötigen wir einen Admin-Account. Anfangs gibt es noch keine Benutzerkonten im System, daher ist der **erste Schritt**, einen sogenannten **Superuser** zu erstellen:
+Deine Instanz sollte nun unter der gewünschten Adresse und dem gewünschten Port laufen, z. B. `http://localhost:8001`. Bevor du nun loslegen kannst und Zeitungen und Artikel anlegen, benötigen wir einen **Admin-Account**. Anfangs gibt es noch keine Benutzerkonten im System, daher ist der **erste Schritt**, einen sogenannten **Superuser** zu erstellen:
 
-Folge diesen Schritten:
+<details><summary> Den Superuser anlegen </summary>
 
 ### **Schritt 1: Shell im Docker-Container öffnen**
 - Identifiziere zunächst den Namen des Django-Containers, der deine Anwendung ausführt:
@@ -91,6 +91,16 @@ Du wirst aufgefordert, die folgenden Details einzugeben:
 **E-Mail:** Gib eine E-Mail-Adresse ein (optional).
 **Passwort:** Setze ein sicheres Passwort und bestätige es.
 
+Beispiel: 
+```bash
+Username (leave blank to use 'username'): admin
+Email address: admin@example.com
+Password: 
+Password (again): 
+Creating log: User=admin, Type=account_created, Data={'username': 'admin'}
+Superuser created successfully.
+```
+
 ### **Schritt 3: Mit dem neuen Superuser anmelden**
 
 Sobald der Superuser erstellt wurde, kannst du dich mit den neuen Anmeldedaten im Admin-Panel anmelden:
@@ -99,7 +109,6 @@ Sobald der Superuser erstellt wurde, kannst du dich mit den neuen Anmeldedaten i
 - Über das Admin-Panel kannst du Benutzer, Artikel, Kommentare und andere Daten verwalten.
 
 </details>
-
 
 ---
 
@@ -110,31 +119,36 @@ Reguläre Benutzerkonten können direkt über das Admin-Panel erstellt werden:
 - Gehe zu `http://localhost:8000/admin`.
 - Navigiere zum Abschnitt Users.
 - Klicke auf Add User.
-- Fülle die erforderlichen Details aus (Benutzername, Passwort usw.).
+- Fülle die erforderlichen Details aus (Benutzername, usw.).
 - Speichere den Benutzer.
+</details>
+
+---
+
+
+<details><summary> Die Datenbank weiter befüllen </summary>
+Die folgende Reihenfolge sollte aufgrund der Abhängigkeiten bei der Befüllung der Datenbank zunächst eingehalten werden:
+
+1. Experiment Conditions
+2. Configuration, Questions, Texts
+3. Benutzerkonten
+4. Zeitungen
+5. Artikel
+6. Kommentare
+7. Sekundärkommentare (Replies)
+
+<img src="images/AdminPanel.png" alt="Admin Panel" width="500">
 
 </details>
+
+---
+
+
 
 ### Weitere Dokumentation
 
 Weitere Details zur Nutzung der Plattform und des Admin-Panels findest du im [HOW TO](./2-how-to.md)-Dokument.
-Dort findest du Schritt-für-Schritt-Anleitungen und Details zum Aufbau der Software
-
-.
-
-Mirror Online is a web app and can be used with any modern Desktop or Mobile web browser.
-All administration functionality is available via the user interface admin route (https://example.com/admin) or via an API (https://example.com/api).
-
-
-## Using the software for a study
-
-From Fakebook: Important:
-
-- When using our tool for research purposes, please cite our paper: Voggenreiter, A; Brandt S; Putterer, F; Frings, A and Pfeffer J. The Role of Likes: How Online Feedback Impacts Users' Mental Health (2023).
-  https://arxiv.org/abs/2312.11914
-
-- Fakebook allows to setup a Social-Media-Environment, in which users can interact freely. Every interaction can be watched and controlled by the project maintainer (e.g. the researcher). The project maintainer is responsible for everything happening on his or her social media environment. The tool should be used in an ethical responsible manner. Study participants and other users of the social media environment have to be informed that all of their data can be inspected by the project maintainer. The project maintainers are responsible for clarifying the standards of acceptable and hatefree behavior and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behavior. Project maintainers have the right and responsibility to remove, edit, or reject posts and comments, or to ban temporarily or permanently any user for other behaviors that they deem inappropriate, threatening, offensive, illegal or harmful.
-
+Dort findest du Schritt-für-Schritt-Anleitungen und Details zum Aufbau der Software.
 
 ## Manuelles Deployment
 
@@ -189,4 +203,12 @@ Entwicklungsserver starten.
 python ./src/manage.py runserver 0.0.0.0:8000
 ```
 
-Mit diesen Schritten kannst du die Software manuell auf deinem lokalen System bereitstellen. Dies ist besonders nützlich für Entwicklungs- und Testzwecke. Stelle sicher, dass Python 3 und Virtualenv installiert sind, bevor du beginnst. Falls du Fragen hast oder auf Probleme stößt, konsultiere die Dokumentation oder wende dich an deinen Entwickler. 😊
+Mit diesen Schritten kannst du die Software manuell auf deinem lokalen System bereitstellen. Dies ist besonders nützlich für Entwicklungs-  und Testzwecke. Stelle sicher, dass Python 3 und Virtualenv installiert sind, bevor du beginnst. Falls du Fragen hast oder auf Probleme stößt, konsultiere die Dokumentation oder wende dich an deinen Entwickler. 😊
+
+
+### Hinweise der Fakebook Autoren zum Deployment:
+
+- When using our tool for research purposes, please cite our paper: Voggenreiter, A; Brandt S; Putterer, F; Frings, A and Pfeffer J. The Role of Likes: How Online Feedback Impacts Users' Mental Health (2023).
+  https://arxiv.org/abs/2312.11914
+
+- Fakebook allows to setup a Social-Media-Environment, in which users can interact freely. Every interaction can be watched and controlled by the project maintainer (e.g. the researcher). The project maintainer is responsible for everything happening on his or her social media environment. The tool should be used in an ethical responsible manner. Study participants and other users of the social media environment have to be informed that all of their data can be inspected by the project maintainer. The project maintainers are responsible for clarifying the standards of acceptable and hatefree behavior and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behavior. Project maintainers have the right and responsibility to remove, edit, or reject posts and comments, or to ban temporarily or permanently any user for other behaviors that they deem inappropriate, threatening, offensive, illegal or harmful.

@@ -1,9 +1,9 @@
 # Aufbau der Software+
 
-### Tipps für Laien:
-- Wenn du nicht sicher bist, wo du anfangen sollst, lies zuerst die Abschnitte "First Steps After Deployment" und "Umgang mit der Datenbank".
-- Verwende das Glossar, um unbekannte Begriffe nachzuschlagen.
-- Wenn du auf Probleme stößt, wende dich an deinen Entwickler oder konsultiere die Django-Dokumentation.
+### Erste Tipps:
+- Wenn du nicht sicher bist, wo du anfangen sollst, lies schau zuerst in die Datei [Deployment-Dokumentation](./7-deployment.md) oder lies die [Hinweise für Versuchsleiter](#hinweise-für-versuchsleiter)
+- Verwende das [Glossar](./1-glossary-and-tools.md), um unbekannte Begriffe nachzuschlagen.
+- Wenn du auf Probleme stößt, konsultiere ggf. die [Django-Dokumentation](https://docs.djangoproject.com/de/3.2/) oder kontaktiere das Entwicklerteam.
 
 <details> <summary>Feature-Überblick</summary>
 

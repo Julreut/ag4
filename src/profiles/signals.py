@@ -30,22 +30,31 @@ def assign_condition_on_login(sender, request, user, **kwargs):
     # Hole das zugehörige Profile-Objekt
     profile = Profile.objects.filter(user=user).first()
 
-    if profile and not profile.condition:  # Überprüfe, ob noch keine Bedingung zugewiesen wurde
+    if profile and not profile.condition:
         conditions = ExperimentCondition.objects.all()
+        condition_assigned = None  # Initialisierung
+
         if conditions.exists():
-            assigned_condition = random.choice(conditions)  # Wähle zufällig eine Bedingung aus
-            profile.condition = assigned_condition
-            profile.save()
+            condition_assigned = random.choice(conditions)
+            profile.condition = condition_assigned
         else:
-            first_condition = ExperimentCondition(name="FirstCond", description="Eine Test-Bedingung", tag="ChangeMe")
+            # 1. Condition erstellen UND speichern
+            first_condition = ExperimentCondition(
+                name="FirstCond", 
+                description="Eine Test-Bedingung", 
+                tag="ChangeMe"
+            )
+            first_condition.save()  #WICHTIG: Speichern vor Zuweisung
+            condition_assigned = first_condition  #Für das Logging
             profile.condition = first_condition
-            profile.save()
+
+        profile.save()  # 2. Profil erst NACH dem Speichern der Condition speichern
 
         # Logge das Zuweisungsereignis
         create_event_log(
             user=user,
             event_type="condition_assigned",
-            event_data={"condition": assigned_condition.name}
+            event_data={"condition": condition_assigned.name}
         )
 
     # Setze die Login-Zeit
