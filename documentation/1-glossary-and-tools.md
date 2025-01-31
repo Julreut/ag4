@@ -1,6 +1,6 @@
 # Übersicht über verwendete Tools
 
-**Mirror Online** ist ein simuliertes, kontrollierbares Online-Forum, das auf dem Django-Webframework basiert.
+**Mirror Online** ist ein simuliertes, kontrollierbares Online-Forum, das auf dem Django-Webframework basiert. Es wurde auf Basis des [Fakebook Social Media Tools](https://github.com/jpfefferlab/Fakebook/tree/master/src) entwickelt.
 
 Diese Dokumentation soll dir helfen, das Projekt zu verstehen, es lokal einzurichten, zu nutzen und weiterzuentwickeln, auch wenn du keine Vorkenntnisse hast.
 
