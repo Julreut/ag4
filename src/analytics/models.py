@@ -22,9 +22,9 @@ class UserContentPosition(models.Model):
         unique_together = ('user', 'content_type', 'object_id')  # Eindeutige Zuordnung für jeden Benutzer und Inhalt
 
 class ExperimentCondition(models.Model):
-    name = models.CharField(max_length=100)  # Name der Bedingung
-    description = models.TextField(blank=True)  # Beschreibung der Bedingung
-    tag = models.CharField(max_length=50)  # Tag zur Kennzeichnung (z.B. 'exp' oder 'control')
-    
+
+    name = models.CharField(max_length=100, help_text="Der Name der Bedingung (z.B. 'Kontrolle', 'Experimentell'). Maximale Länge beträgt 100 Zeichen.")
+    description = models.TextField(blank=True, help_text="Eine detaillierte Beschreibung der Bedingung. Dieses Feld ist optional.")
+    tag = models.CharField(max_length=50, help_text="Ein kurzer Tag zur Identifizierung der Bedingung (z.B. 'exp' für experimentell, 'control' für Kontrolle). Wird auch für die Zuordnung von Inhalten (Zeitungen, Artikel, Kommentare) verwendet.")
     def __str__(self):
         return self.name

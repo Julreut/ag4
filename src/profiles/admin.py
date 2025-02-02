@@ -6,7 +6,7 @@ from fakebook.downloads import get_csv
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     actions = ['download_csv']
-    list_display = ['id', 'user', 'bio', 'slug']  # Adjusted fields to match the simplified Profile model
+    list_display = ['user', 'condition', 'bio', 'slug', 'id']  # Adjusted fields to match the simplified Profile model
 
     def download_csv(self, request, queryset):
         response = get_csv(self.list_display, queryset, 'profiles.csv')

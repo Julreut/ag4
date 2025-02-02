@@ -126,8 +126,8 @@ Reguläre Benutzerkonten können direkt über das Admin-Panel erstellt werden:
 ---
 
 
-<details><summary> Die Datenbank weiter befüllen </summary>
-Die folgende Reihenfolge sollte aufgrund der Abhängigkeiten bei der Befüllung der Datenbank zunächst eingehalten werden:
+<details><summary>Die Datenbank weiter befüllen & Information zu Demo-Daten</summary>
+Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfolge:
 
 1. Experiment Conditions
 2. Configuration, Questions, Texts
@@ -139,11 +139,60 @@ Die folgende Reihenfolge sollte aufgrund der Abhängigkeiten bei der Befüllung 
 
 <img src="images/AdminPanel.png" alt="Admin Panel" width="500">
 
+  ### Demo-Daten
+
+  Um das Tool und seine Möglichkeiten zu erkunden, sind im Ordner `data.demo` bereits Demo-Daten enthalten. Diese beinhalten:
+
+  1. **Experiment Conditions**:
+    - `ChangeMe`: Wird automatisch erstellt, wenn sich der Admin anmeldet und noch keine Bedingungen festgelegt wurden. Diese sollte umbenannt werden und dient nur zu Übungszwecken.
+    - `Experiment 1`
+    - `Experiment 2`
+
+  2. **Standardkonfiguration, Beispiel-Fragen und deutsche Versuchstexte**:
+    - Drei Fragen: Slider, Ampel und Multiple Likert mit unterschiedlichen Labels (before und after).
+    - Einverständniserklärung (Deutsch)
+    - Abschluss-Header (Deutsch)
+    - Abschluss-Nachricht (Deutsch)
+    - Keine Einwilligung (Deutsch)
+    - Teilnehmerinformationen-Header (Deutsch)
+    - Teilnehmerinformationen-Nachricht (Deutsch)
+
+  3. **Benutzer**:
+    - `adminuser`
+    - `testuser`
+    - `tom`
+    - `matella`
+    - Passwort für alle Benutzer: `fb_apfel`
+
+  4. **Zeitungen**:
+    - Zwei Zeitungen ohne Condition-Zuweisung
+
+  5. **Artikel**:
+    - Drei Artikel pro Zeitung ohne Condition-Zuweisung
+
+  6. **Kommentare**:
+    - Unterschiedliche Kommentare je nach Versuchsbedingung.
+    - Tom (Versuchsbedingung `exp2`) kann den Kommentar von Matella (Tag `exp2`) lesen.
+    - TestUser (Versuchsbedingung `exp 1`) kann diesen Kommentar nicht sehen.
+
+  7. **Sekundärkommentare**:
+    - Ein Sekundärkommentar von Tom, zugeordnet zur Bedingung `exp2`.
+
+  ### Media Ordner:
+  - `avatar_default.png`: Standard-Profilbild
+  - `articles`: Ordner für Artikel
+  - `profile_pictures`: Ordner für Profilbilder
+
+  ### `db_sqlite3` Datenbank:
+  - Enthält die oben genannten Demo-Daten.
+
+
+</details>
+
+
 </details>
 
 ---
-
-
 
 ### Weitere Dokumentation
 

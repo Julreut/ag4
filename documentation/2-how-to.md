@@ -44,7 +44,7 @@ Admin-Zugriff:
 <br> TL;DR: Hier werden Nutzerdaten getrackt (User Event Log, Content Position) und Experimentalbedingung festgelegt.
 
 - Admin Panel: 
-    - Experiment Conditions: Hier werden die Experiment-Conditions festgelegt (falls vorhanden). Bisher werden nur die Zeitungen nach den Conditions gefiltert.
+    - Experiment Conditions: Hier werden die Experiment-Conditions festgelegt (falls vorhanden). Zeitungen, Artikel und Kommentare können nach den Conditions gefiltert werden.
 
 - Dateien: 
     - ```admin.py``` legt fest, wie die Conditions bearbeitet werden können.
@@ -96,13 +96,15 @@ Admin-Zugriff:
 
 <details> <summary>💬 Comments App</summary>
 
-<br> **TL;DR:** Die Comments App ermöglicht es Benutzern, Kommentare zu Artikeln zu verfassen, zu liken/disliken, und in einer strukturierten Ansicht darzustellen. Es werden sowohl Haupt- als auch Sekundärkommentare (Antworten) unterstützt.
+<br> 
+
+**TL;DR:** Die Comments App ermöglicht es Benutzern, Kommentare zu Artikeln zu verfassen, zu liken/disliken, und in einer strukturierten Ansicht darzustellen. Es werden sowohl Haupt- als auch Sekundärkommentare (Replies) unterstützt. Kommentare, die von Nutzern (also Versuchspersonen) erstellt wurden, sind per default nicht öffentlich. Im Admin Panel können durch den Admin öffentliche Kommentare mit der Checkbox `is_public` erstellt werden, die dann für alle sichtbar sind. Weiterhin kann ein Condition `tag` ausgewählt werden, um nur Nutzern in einer bestimmten Versuchsbedingung den spezifischen Kommentar anzuzeigen.
 
 - **Admin Panel:**
     - Kommentare verwalten:
         - Kommentare können als öffentlich oder privat markiert werden. Öffentliche Kommentare sind sichtbar für alle Nutzer. Private Kommentare sind nur für den jeweiligen Autor selbst sichtbar.
-        - Experimentelle Bedingungen (`tag`) können dynamisch zugewiesen werden. (Still TODO das in den views zu hinterlegen)
-        - Likes und Dislikes werden detailliert angezeigt und gefiltert.
+        - Experimentelle Bedingungen (`tag`) können dynamisch zugewiesen werden.
+        - Likes und Dislikes werden angezeigt und gefiltert.
 
 - **Dateien:**
     - **`article_comments.html`**: Template für die Haupt-Kommentarseite eines Artikels. 
@@ -127,10 +129,10 @@ Admin-Zugriff:
             - Like/Dislike-Aktionen.
     - **`views.py`**:
         - `article_comments_view`: 
-            - Lädt Hauptkommentare in zufälliger, aber stabiler Reihenfolge.
+            - Lädt Hauptkommentare in zufälliger, aber stabiler Reihenfolge. Die Reihenfolge wird nach dem ersten Laden gespeichert.
             - Unterstützt das Hinzufügen von Haupt- und Sekundärkommentaren.
         - `detailed_comment_view`: 
-            - Zeigt Details eines einzelnen Kommentars und seiner Antworten an.
+            - Zeigt den gesamten Inhalt eines einzelnen Kommentars an sowie seine Antworten.
             - Ermöglicht das Antworten auf Kommentare.
         - `like_unlike_comment` & `dislike_undislike_comment`:
             - Verarbeiten Like/Dislike-Aktionen und loggen Änderungen.
@@ -309,7 +311,7 @@ Definiert Routen für verschiedene Funktionen:
    - Anpassbar über das `SessionConfig` Modell im Admin-Panel.
 
 2. **Profilverwaltung**:
-   - Automatisches Anlegen von Benutzerprofilen bei der Registrierung.
+   - Anlegen von Benutzerprofilen bei der Registrierung.
    - Verwaltung der Profilbilder und anderer Benutzerdaten.
 
 3. **Export-Tools**:
@@ -323,7 +325,9 @@ Definiert Routen für verschiedene Funktionen:
 
 <details> <summary>👤 Profiles App</summary>
 
-<br> **TL;DR:** Die Profiles App ermöglicht die Verwaltung von Benutzerprofilen, einschließlich Biografie, Profilbild und experimentellen Bedingungen. Sie bietet Funktionen zur Ansicht und Bearbeitung des eigenen Profils, zur Anzeige anderer Profile sowie zur automatischen Zuweisung von experimentellen Bedingungen bei der Anmeldung.
+<br> 
+
+**TL;DR:** Die Profiles App ermöglicht die Verwaltung von Benutzerprofilen, einschließlich Biografie, Profilbild und experimentellen Bedingungen. Sie bietet Funktionen zur Ansicht und Bearbeitung des eigenen Profils, zur Anzeige anderer Profile sowie zur automatischen Zuweisung von experimentellen Bedingungen bei der Anmeldung. Profile können im Online-Forum **nicht** gesucht werden. Zu jedem (durch den Admin auf `public` gestellten) Kommentar gibt es aber ein Autor-Profil, auf das geklickt werden kann. Dort sind dann Username, Profilbild und Bio zu sehen.
 
 - **Admin Panel:**
     - **Profile Management:** 
@@ -352,7 +356,7 @@ Definiert Routen für verschiedene Funktionen:
         - **Benutzererstellung**:
             - Automatische Erstellung eines Profils und einer Zustimmungserklärung (`Consent`) bei Registrierung.
         - **Experimentbedingungen**:
-            - Zuweisung einer zufälligen experimentellen Bedingung bei Login, falls noch nicht zugewiesen.
+            - Zuweisung einer zufälligen experimentellen Bedingung bei Login, falls noch nicht zugewiesen. Sofern noch keine Bedingungen durch den Admin erstellt wurden, wird bei Login die `Change Me` Bedingung zugewiesen. Diese kann im Anschluss im Admin Panel problemlos umbenannt werden. 
         - **Logging**:
             - Ereignisprotokollierung bei Benutzeranmeldung und -abmeldung, einschließlich IP-Tracking.
     - **`utils.py`**:
@@ -428,7 +432,7 @@ Definiert Routen für verschiedene Funktionen:
 
 #### Anpassbare Texte:
 - Texte für Consent-Formulare, Endnachrichten und Teilnehmerinformationen können im Admin-Bereich (Modell `Text`) bearbeitet werden.
-- Die Sichtbarkeit (`visibility`) steuert, welche Texte im Frontend angezeigt werden.
+- Die Sichtbarkeit (`visibility`) steuert, welche Texte im Frontend angezeigt werden. So können alle Texte gleichzeitig angelegt werden.
 
 #### Timer und Sitzungskonfiguration:
 - Sitzungsdauer (`max_duration`) und Timer können über das Modell `SessionConfig` angepasst werden.
@@ -628,6 +632,7 @@ python src/manage.py help
 
 # Hinweise für Versuchsleiter
 
+
 <details><summary>Umgang mit der Datenbank</summary>
 <br>
 
@@ -645,7 +650,7 @@ Kurz erklärt:
 3. Klicke auf `Exportieren` und wähle das Excel-Format.
 4. Die Daten werden als Excel-Datei heruntergeladen.
 
---- 
+---
 
 ## 1. **Datenbankstruktur**
 
@@ -755,7 +760,9 @@ Condition Tags sind optionale Zuordnungen, die genutzt werden, um Inhalte wie Ar
 - **Ohne Tag:** Inhalte, die keinen Tag besitzen, sind für alle Benutzer sichtbar, unabhängig von ihrer Bedingung.
 - **Mit Tag:** Inhalte mit einem spezifischen Tag werden nur Benutzern angezeigt, deren Experimentbedingung den gleichen Tag hat.
 
-Condition Tags ermöglichen so die gezielte Steuerung, welche Inhalte eine bestimmte Benutzergruppe im Rahmen eines Experiments sieht. Wichtig: Wenn eine Zeitung einem Tag zugeordnet ist (beispielsweise "Experimental1"), dann ist dies die niedrigste Filterstufe. Natürlicherweise sehen somit nur Versuchspersonen der Experimental1-Bedingung die Zeitung und ihre zugeordneten Artikel - auch wenn diese speziellen Artikel eventuell keine Tags erhalten haben. Für eine Filterung auf Artikel-Ebene kann die Zeitung ohne Tag verbleiben und dann werden die Artikel zugeordnet. Dieselbe Logik gilt auch für Kommentare und Sekundärkommentare (sog. "Replies"). 
+Condition Tags ermöglichen so die gezielte Steuerung, welche Inhalte eine bestimmte Benutzergruppe im Rahmen eines Experiments sieht. Wichtig: Wenn eine Zeitung einem Tag zugeordnet ist (beispielsweise "Experimental1"), dann ist dies die niedrigste Filterstufe. Natürlicherweise sehen somit nur Versuchspersonen der Experimental1-Bedingung die Zeitung und ihre zugeordneten Artikel - auch wenn diese spetifischen Artikel eventuell keine Tags erhalten haben. Für eine Filterung auf Artikel-Ebene kann die Zeitung ohne Tag verbleiben und dann werden die Artikel zugeordnet. Dieselbe Logik gilt auch für Kommentare und Sekundärkommentare (sog. "Replies").
+
+
 
 ---
 

@@ -65,7 +65,7 @@ class Question(models.Model):
         max_length=100,
         blank=True,
         null=True,
-        help_text="Geben Sie die Werte für die Range ein, getrennt durch Semikolons (z. B. '0;1;2;3;4;5;6;7;8;9;10')."
+        help_text="<strong>NUR für Ampel-Frage. </strong>Geben Sie die Werte für die Range ein, getrennt durch Semikolons (z. B. '0;1;2;3;4;5;6;7;8;9;10')."
     )
 
     required = models.BooleanField(

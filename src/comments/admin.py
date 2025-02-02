@@ -38,10 +38,6 @@ class CommentAdminForm(forms.ModelForm):
         # Hauptkommentar darf keinen Parent-Kommentar haben
         if not is_secondary and parent_comment:
             raise ValidationError("Ein Hauptkommentar darf keinen übergeordneten Kommentar haben.")
-        
-        # Sekundärkommentar darf nicht geliked oder disliked werden
-        if is_secondary and ('liked' in cleaned_data or 'disliked' in cleaned_data):
-            raise ValidationError("Sekundäre Kommentare können nicht geliked oder disliked werden.")
 
 
         return cleaned_data

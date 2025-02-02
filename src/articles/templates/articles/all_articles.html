@@ -23,11 +23,11 @@ Articles
           <div class="article-content">
             <h3 class="ui left aligned header">{{ article.title }}</h3>
             <h5 class="ui left aligned header">
-              <span>Published on: {{ article.created_at|date:"F j, Y" }}</span>
+              <span>Veröffentlicht am: {{ article.created_at|date:"F j, Y" }}</span>
             </h5>
             <p class="article-description">{{ article.content|truncatewords:20 }}</p>
             <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="ui button read-more">
-              Read more
+              Mehr lesen
             </a>
           </div>
         </div>

@@ -9,11 +9,11 @@ Diese Dokumentation soll dir helfen, das Projekt zu verstehen, es lokal einzuric
 
 ### **Was ist Django?**
 
-Django ist ein leistungsstarkes, hochgradig konfigurierbares Webframework für Python. Es erleichtert die schnelle Entwicklung von sicheren und wartbaren Webseiten. [Offizielle Django-Dokumentation](https://docs.djangoproject.com/de/3.2/)
+Django ist ein Werkzeug, das dir hilft, Webseiten mit der Programmiersprache Python zu erstellen. Es macht es einfacher, gut funktionierende Webseiten schnell zu entwickeln. [Offizielle Django-Dokumentation](https://docs.djangoproject.com/de/3.2/)
 
 ### **Was ist das Admin Panel?**
 
-Das Django Admin Panel ist eine automatisch generierte Web-Oberfläche, die es Administratoren ermöglicht, Datenmodelle zu verwalten, ohne eigenen Code schreiben zu müssen. Es bietet eine benutzerfreundliche Oberfläche zum Hinzufügen, Bearbeiten und Löschen von Daten.
+Das Django Admin Panel ist eine automatisch erstellte Webseite, die es Administratoren ermöglicht, Daten zu verwalten, ohne selbst programmieren zu müssen. Es bietet eine einfache Oberfläche zum Hinzufügen, Bearbeiten und Löschen von Daten.
 
 ### Installation von Python und Django
 
@@ -49,16 +49,16 @@ django-admin --version
 
 ### Verzeichnis- und Dateistruktur eines Django-Projekts
 
-- **manage.py**: Ein Kommandozeilen-Tool zur Verwaltung des Django-Projekts.
+- **manage.py**: Ein Werkzeug zur Verwaltung des Django-Projekts.
 - **project_name/**: Hauptverzeichnis des Projekts, enthält Einstellungen und Konfigurationen.
   - **settings.py**: Konfigurationsdatei für das Django-Projekt.
-  - **urls.py**: URL-Routing für das Projekt.
-  - **wsgi.py**: WSGI-Konfigurationsdatei für Deployment.
+  - **urls.py**: Datei, die bestimmt, welche Webseiten aufgerufen werden können.
+  - **wsgi.py**: Datei für den Einsatz des Projekts auf einem Server.
 - **app_name/**: Verzeichnis einer Django-App innerhalb des Projekts.
-  - **models.py**: Datenmodelle der jeweiligen App.
-  - **views.py**: Logik für die Darstellung der Daten.
-- **templates/**: HTML-Vorlagen.
-- **static/**: Statische Dateien wie CSS, JS und Bilder.
+  - **models.py**: Datei, die die Struktur der Datenbank beschreibt.
+  - **views.py**: Datei, die bestimmt, wie Daten angezeigt werden.
+- **templates/**: Verzeichnis für HTML-Dateien.
+- **static/**: Verzeichnis für statische Dateien wie CSS, JS und Bilder.
 
 </details>
 
@@ -151,7 +151,53 @@ python3 src/manage.py migrate
 
 # Glossar
 
-- **User**: Ein Benutzerkonto, das für die Anmeldung verwendet wird.
-- **Profile**: Enthält zusätzliche Informationen über den Benutzer, wie Biografie und Profilbild.
-- **Superuser**: Ein Administrator, der vollen Zugriff auf das Admin-Panel hat.
-- **Template**: Eine HTML-Datei, die das Layout einer Seite definiert.
+| Begriff             | Beschreibung                                                                                       |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| **User**            | Ein Benutzerkonto, das für die Anmeldung verwendet wird.                                            |
+| **Profile**         | Enthält zusätzliche Informationen über den Benutzer, wie Biografie und Profilbild.                  |
+| **Superuser**       | Ein Administrator, der vollen Zugriff auf das Admin-Panel hat.                                      |
+| **Session**         | Eine Möglichkeit, Benutzerdaten zwischen verschiedenen HTTP-Anfragen zu speichern.                  |
+
+## Datenbank
+
+| Begriff             | Beschreibung                                                                                       |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| **Model**           | Eine Klasse, die die Struktur der Datenbank beschreibt.                                             |
+| **QuerySet**        | Eine Sammlung von Datenbankabfragen, die von einem Model zurückgegeben werden.                      |
+| **Fixture**         | Eine Datei, die initiale Daten für die Datenbank enthält.                                           |
+
+## Templates
+
+| Begriff             | Beschreibung                                                                                       |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| **Template**        | Eine HTML-Datei, die das Layout einer Seite definiert.                                              |
+| **Template Tag**    | Ein spezieller Befehl in einem Template, der dynamische Inhalte einfügt.                            |
+| **Template Filter** | Eine Funktion, die den Wert einer Template-Variable verändert.                                      |
+| **Context**         | Ein Wörterbuch von Variablen, die an ein Template übergeben werden.                                 |
+| **Context Processor** | Eine Funktion, die zusätzliche Kontextdaten für alle Templates bereitstellt.                      |
+
+## Views und URLs
+
+| Begriff             | Beschreibung                                                                                       |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| **View**            | Eine Funktion oder Klasse, die eine HTTP-Anfrage entgegennimmt und eine HTTP-Antwort zurückgibt.    |
+| **URLconf**         | Eine Datei, die URL-Muster und deren zugehörige Views definiert.                                    |
+
+## Middleware und Caching
+
+| Begriff             | Beschreibung                                                                                       |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| **Middleware**      | Eine Klasse, die die Verarbeitung von HTTP-Anfragen und -Antworten beeinflusst.                     |
+| **Cache**           | Ein Mechanismus zur Zwischenspeicherung von Daten, um die Leistung zu verbessern.                   |
+| **GET-Anfrage**     | Eine HTTP-Anfrage, die Daten vom Server anfordert.                                                  |
+| **POST-Anfrage**    | Eine HTTP-Anfrage, die Daten an den Server sendet, um sie zu verarbeiten.                           |
+| **HTTP**            | Ein Protokoll zur Übertragung von Daten im Web.                                                     |
+
+## Sonstiges
+
+| Begriff             | Beschreibung                                                                                       |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| **Form**            | Eine Klasse, die HTML-Formulare und deren Validierung verwaltet.                                    |
+| **Static Files**    | Dateien wie CSS, JavaScript und Bilder, die von der Webseite verwendet werden.                      |
+| **Signal**          | Ein Mechanismus, um bestimmte Aktionen auszulösen, wenn bestimmte Ereignisse eintreten.             |
+| **Management Command** | Ein benutzerdefiniertes Kommandozeilen-Tool für administrative Aufgaben.                         |

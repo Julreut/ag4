@@ -40,8 +40,8 @@ def assign_condition_on_login(sender, request, user, **kwargs):
         else:
             # 1. Condition erstellen UND speichern
             first_condition = ExperimentCondition(
-                name="FirstCond", 
-                description="Eine Test-Bedingung", 
+                name="ChangeMe", 
+                description="Achtung: Es gibt noch keine Conditions. Dies ist die erste Bedingung, die für den Admin erstellt wurde. Bitte ändere diese Condition, damit sie sinnvoll ist. Sie zählt ab jetzt in die Liste der zu vergebenden Conditions rein!", 
                 tag="ChangeMe"
             )
             first_condition.save()  #WICHTIG: Speichern vor Zuweisung

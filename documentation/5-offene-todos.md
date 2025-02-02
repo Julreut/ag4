@@ -1,29 +1,13 @@
 # Weiterentwicklungs-Möglichkeiten
-<details><summary>Languages über locale-Ordner (de/en)</summary>
 
-### Internationalization (I18n) / Translation (T9n)
-The project uses django's internationalization mechanism for translation.
+Du hast Lust, die Software weiterzuentwickeln? Super! Der folgende Befehl hilft dir, offene Aufgaben zu finden:
 
-HTML Template files and dynamically generated content in python code refer to keys for each string literal that has to be translated using the `translate` and `blocktranslate`tags and the `gettext` methods. The translation for each specific language and each key can be found in `./src/{appdir}/locale/{lang}/LC_MESSAGES/django.po`.
-
-After new keys for translation have been created using the html template tags `translate` and `blocktranslate` or the python `ugettext_lazy` method in code, the translation files need to be regenerated. This can be achieved my navigating to the app's directory and running the following commands:
-
+```bash
+grep -r "TODO" ./src 
 ```
-cd ./src/{appdir}/
-django-admin makemessages -l en
-django-admin makemessages -l de
-```
+Damit werden alle TODO-Markierungen im Code aufgespürt, sodass du offene Punkte direkt findest. Einige mögliche Erweiterungen sind:
 
-`django-admin` is installed alongside django if you are using the pip dependency manager. You might have to enable your virtual environment.
-
-You should now have all the new message keys in your translation files. You can now manually edit their translations in the `django.po` files. Once you are satisfied, just run
-
-```
-django-admin compilemessages
-```
-
-in the same directory to compile them to `django.mo` files which will then be used by the actual application.
-You also have to do this if you modify them later on.
+<details><summary>Mehrsprachigkeit über den locale-Ordner (de/en)</summary>
 
 # Locale-Ordner und Sprachen in Django
 
@@ -35,7 +19,6 @@ Jeder `locale`-Ordner wird im Projekt oder in einer App erstellt und folgt dem S
 `<app_name>/locale/<language_code>/LC_MESSAGES/`
 Beispiel für Deutsch und Englisch:
 `myapp/locale/de/LC_MESSAGES/ myapp/locale/en/LC_MESSAGES/`
-
 
 ## 2. Übersetzungsdateien
 
@@ -83,29 +66,28 @@ MIDDLEWARE = [
     ...
 ]
 ```
-
 </details>
 
-<details><summary>Auswertungsskript für die Datenbank mit Lesezeiten</summary>
-TODO
-
-</details>
+<details><summary>Auswertungsskript für die Datenbank</summary>
+Offene Aufgabe (TODO): Es fehlt noch ein Skript zur automatischen Analyse der erfassten Daten wie Verweildauer, Klicks und weiteres Nutzerverhalten.
+Aktuell können die Daten zwar exportiert, aber nicht direkt innerhalb des Systems ausgewertet werden. Die Analyse muss derzeit manuell in Python oder R erfolgen. Ein Skript, das diese Auswertung direkt übernimmt, wäre eine sinnvolle Erweiterung.</details>
 
 <details><summary>Browser Navigation ermöglichen</summary>
-Möglicherweise über Javascript. Bis dahin ermöglicht eine interne Navigation über Vor- und Zurück-Buttons das Navigieren auf der Seite.
-
+Aktuell gibt es eine interne Navigation über einen JavaScript "Zurück"-Button. Allerdings funktioniert der "Vor"-Button nicht immer zuverlässig, da der "Zurück"-Button in manchen Fällen absichtlich doppelt springt (z. B. nach dem Schreiben eines Kommentars). Dies geschieht durch den session-pop-Befehl, der dann aber den "Vor"-Button durcheinanderbringt.
 </details>
 
 <details><summary>Responsivität ausbauen</summary>
+Die Anwendung funktioniert bereits auf unterschiedlichen Bildschirmgrößen, benötigt aber noch einige Anpassungen für die mobile Nutzung.
+</details>
+
+<details><summary>API ausbauen</summary>
+
+- Momentan können über die API Kommentare und Profile erstellt werden. Langfristig wäre es möglich, die gesamte Funktionalität über die API zugänglich zu machen.
+
+- Aktuell erfolgen Admin-Tätigkeiten über das /admin-Panel, was für den Start ausreicht.
+- Eine API ist bereits angelegt (im api-Ordner).
+- Es gibt eine API-Dokumentation (.yaml-Datei), die im Swagger Editor geöffnet werden kann.
+- Auch eine Postman-Anbindung ist vorhanden.
 
 </details>
 
-<details><summary>API testen</summary>
-TODO
-
-</details>
-
-<details><summary>Conditions für Artikel und Kommentare anlegen</summary>
-Aktuell ist es nur möglich, Conditions für Newspapers anzulegen. Falls gewünscht, kann diese Logik auf Articles und Comments erweitert werden. Denkbar wären Extra Conditions pro Abschnitt - also Newspaper-Condition, Article-Condition, Comment-Condition. Jeder Versuchsperson werden dann Control oder Experimental tags <i>pro Condition</i> zugeordnet.
-
-</details>

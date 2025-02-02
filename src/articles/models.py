@@ -16,7 +16,7 @@ class Article(models.Model):
     news_paper_id = models.IntegerField()
     title = models.CharField(max_length=255)
     content = models.TextField()
-    slug = models.SlugField(unique=True, blank=True)  # Slug-Feld hinzugefügt
+    slug = models.SlugField(unique=True, blank=True, help_text="Ein eindeutiger, URL-freundlicher Text, der zum Titel passt. Zum Beispiel: rationalist-1 wenn die Zeitung Rationalist heißt.")  # Slug-Feld 
     image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Bannerformat:1800 x 600 px")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,9 +41,9 @@ class Article(models.Model):
 
     
 class NewsPaper(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=255)
-    content = models.CharField(max_length=255, default = 'Change me: This is the short description of the newspaper content.')
+    id = models.IntegerField(primary_key=True, help_text= "Zahlenwert der für Zuordnung von Artikeln verwendet wird.")
+    name = models.CharField(max_length=255, default = "Ändere mich: Titel der Zeitung")
+    content = models.CharField(max_length=255, default = "Ändere mich: Kurzbeschreibung der Zeitung")
     image = models.ImageField(upload_to='articles', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=False, help_text= "Format am besten einheitlich. Empfehlung Format:900 x 600 px")
     tag = models.CharField(max_length=50, default='', blank=True)  #optional Tag für die Versuchsbedingung
     def get_id(self):

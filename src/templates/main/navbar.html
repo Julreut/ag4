@@ -37,7 +37,7 @@
 
       <!-- Home-Button -->
       <a href="{{ path_to_news_papers }}" class="item {% if request.path == path_to_news_papers %}active{% endif %}">
-        <i class="home icon"></i> Home
+        <i class="home icon"></i> Zeitungsübersicht
       </a>
 
       <!-- Rechte Seite der Navigation -->
@@ -57,12 +57,12 @@
 
         <!-- After Questions -->
         <a href="{{ questions_after }}" class="item">
-          <i class="question circle outline icon"></i>&nbsp; Complete and Submit
+          <i class="check circle icon"></i>&nbsp; Studie abschließen 
         </a>
 
         <!-- Cancel Experiment -->
         <a href="{% url 'account_logout' %}" class="item">
-          <i class="sign-out alternate icon"></i>&nbsp; Cancel (Quit Experiment)
+          <i class="ban icon"></i>&nbsp;Experiment abbrechen
         </a>
       </div>
     </div>

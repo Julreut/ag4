@@ -5,7 +5,7 @@
 Newspapers {% endblock title %}
 {% block content %}
 <div class="ui container" style="padding: 20px">
- <div class="ui huge header">Newspapers</div>
+ <div class="ui huge header">Zeitungsübersicht</div>
 
   {% if news_papers %}
   <div class="newspaper-grid">
@@ -26,7 +26,7 @@ Newspapers {% endblock title %}
     {% endfor %}
   </div>
   {% else %}
-  <p style="text-align: center; color: #777">No newspapers available.</p>
+  <p style="text-align: center; color: #777">Keine Zeitungen verfügbar.</p>
   {% endif %}
 </div>
 {% endblock content %}
