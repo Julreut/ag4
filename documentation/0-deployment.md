@@ -141,7 +141,28 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
   ### Demo-Daten
 
-  Um das Tool und seine Möglichkeiten zu erkunden, sind im Ordner `data.demo` bereits Demo-Daten enthalten. Diese beinhalten:
+  Um das Tool und seine Möglichkeiten zu erkunden, sind im Ordner `data.demo` bereits Demo-Daten enthalten. 
+  
+  ####  Volumes in der `docker-compose.yml`
+
+  In der `docker-compose.yml` Datei definiert der `volumes` Abschnitt, welche Verzeichnisse zwischen dem Host-System und dem Container geteilt werden. In unserem Fall:
+
+  ```yaml
+  volumes:
+    - ./data.demo:/ag4/data
+  ```
+
+  bedeutet dies, dass das Verzeichnis `data.demo` auf deinem Host-System in das Verzeichnis `/ag4/data` im Container eingebunden wird.
+
+  Hier ist eine detaillierte Erklärung:
+
+  - **`data.demo`**: Dies ist der Pfad auf deinem Host-System. Das `./` bedeutet, dass es relativ zum Verzeichnis ist, in dem sich die `docker-compose.yml` Datei befindet.
+  - **`/ag4/data`**: Dies ist der Pfad im Container, in den das Host-Verzeichnis eingebunden wird.
+
+  Wenn du die Demo-Daten nicht mehr nutzen möchtest und stattdessen ein eigenes Projekt starten willst, musst du den `data.demo` Ordner durch einen eigenen Ordner auf deinem System ersetzen. Dieser Ordner wird dann in den Container gespiegelt. Wenn du den Container killst, bleiben die Daten in dem ausgewählten Ordner auf deinem System erhalten, da sie nur gespiegelt werden.
+  
+  
+  Die bereitgestellten Demo Daten beinhalten:
 
   1. **Experiment Conditions**:
     - `ChangeMe`: Wird automatisch erstellt, wenn sich der Admin anmeldet und noch keine Bedingungen festgelegt wurden. Diese sollte umbenannt werden und dient nur zu Übungszwecken.
@@ -189,7 +210,28 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
 </details>
 
+<details><summary> Debug Mode / Static Files </summary
+>
+### 
 
+Die Anwendung wird statische Dateien im Produktionsmodus mit der WhiteNoise-Middleware bereitstellen. Damit dies funktioniert, müssen die statischen Dateien vorher gesammelt werden.
+
+Für Entwicklungszwecke wird empfohlen, den `DEBUG_MODE` zu verwenden. Dies wird automatisch alle statischen Dateien ohne vorherige Sammlung bereitstellen, sodass sie während der Entwicklung sofort geändert und aktualisiert werden können. Zusätzlich wird im Fehlerfall eine detaillierte Fehlerbeschreibung angezeigt.
+`DEBUG_MODE` kann aktiviert werden, indem die Umgebungsvariable `DEBUG_MODE=1` gesetzt oder in der `settings.py` geschrieben wird.
+
+Alternativ kann der Produktionsmodus verwendet werden. Dies erfordert, dass du den folgenden Befehl ausführst:
+
+```
+python3 src/manage.py collectstatic
+```
+
+vorher und jedes Mal, wenn du eine Datei aktualisierst.
+
+Der Docker-Build führt diesen Befehl automatisch aus (siehe hierzu `Dockerfile`)
+
+**Verwende immer den Produktionsmodus in Produktionsumgebungen.**
+
+</details>
 </details>
 
 ---

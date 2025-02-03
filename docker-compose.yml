@@ -1,14 +1,6 @@
 version: "3.9"
 
 services:
-
-  # demo:
-  #   image: mirroronline
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - ./data/demo:/ag4/data
-
   prod:
     build: ./
     image: mirroronline:latest
@@ -16,4 +8,4 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ./data:/ag4/data
+      - ./data.demo:/ag4/data
