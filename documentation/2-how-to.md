@@ -1,7 +1,7 @@
 # Aufbau der Software+
 
 ### Erste Tipps:
-- Wenn du nicht sicher bist, wo du anfangen sollst, lies schau zuerst in die Datei [Deployment-Dokumentation](./7-deployment.md) oder lies die [Hinweise für Versuchsleiter](#hinweise-für-versuchsleiter)
+- Wenn du nicht sicher bist, wo du anfangen sollst, lies schau zuerst in die Datei [Deployment-Dokumentation](./0-deployment.md) für Informationen zum Deployment, lies in [Glossary and Tools](./1-glossary-and-tools.md) nach, welche Tools du benötigst oder lies die [Hinweise für Versuchsleiter](#hinweise-für-versuchsleiter)
 - Verwende das [Glossar](./1-glossary-and-tools.md), um unbekannte Begriffe nachzuschlagen.
 - Wenn du auf Probleme stößt, konsultiere ggf. die [Django-Dokumentation](https://docs.djangoproject.com/de/3.2/) oder kontaktiere das Entwicklerteam.
 
@@ -15,7 +15,7 @@ User:
 - Andere Benutzerprofile und deren Bio ansehen.
 
 Forschende:
-- Hosting der Website: Anleitung dazu in Datei: ```deployment.md```.
+- Hosting der Website: Anleitung dazu in Datei: [Deployment-Dokumentation](./0-deployment.md)`.
 - Nutzerinformationen einsehen: Name, User ID etc. (Passwörter sind nicht einsehbar).
 - Nutzerverwaltung: Nutzer hinzufügen, entfernen und bearbeiten.
 - Inhalte einsehen und bearbeiten: Zugriff auf Artikel, Kommentare, Likes und alle Interaktionen (über das Admin-Panel).
@@ -682,7 +682,7 @@ Die Django-Datenbank besteht aus mehreren Tabellen, die miteinander verknüpft s
 
 ### **Über das Django Admin-Panel**
 - Du kannst auf alle Tabellen über das Django Admin-Panel zugreifen. Gehe dazu auf: `http://127.0.0.1:8000/admin/`
-- Melde dich mit deinem Superuser-Account an. Wie du den Superuser erstellst, ist in der [Deployment-Dokumentation](./7-deployment.md) beschrieben.
+- Melde dich mit deinem Superuser-Account an. Wie du den Superuser erstellst, ist in der [Deployment-Dokumentation](./0-deployment.md) beschrieben.
 - Jede Tabelle (Modell) wird als Eintrag im Admin-Panel angezeigt. Du kannst die Daten anzeigen, herunterladen oder löschen.
 
 ### **Daten als Excel exportieren**

@@ -133,9 +133,9 @@ WSGI_APPLICATION = 'fakebook.wsgi.application'
 ASGI_APPLICATION = 'fakebook.asgi.application'
 
 #for demo data usage: 
-# DATA_DIRECTORY = "data.demo" #Local debugging
+DATA_DIRECTORY = "data.demo" #Local debugging
 # Data directory
-DATA_DIRECTORY = os.environ['DATA_DIRECTORY'] if 'DATA_DIRECTORY' in os.environ else "data"
+# DATA_DIRECTORY = os.environ['DATA_DIRECTORY'] if 'DATA_DIRECTORY' in os.environ else "data"
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

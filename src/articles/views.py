@@ -19,6 +19,7 @@ from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from .models import NewsPaper
 from analytics.models import UserContentPosition
+
 @login_required
 def get_newspapers(request):
     user = request.user

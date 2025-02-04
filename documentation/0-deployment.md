@@ -5,20 +5,30 @@ Diese Anleitung beschreibt, wie du das Projekt auf deinem Rechner startest.
 ## Voraussetzungen
 
 - **Git** muss installiert sein.
+
+Falls Git noch nicht installiert ist, lade es hier herunter und installiere es:  
+[https://git-scm.com/downloads](https://git-scm.com/downloads)
+
 - **Docker** muss installiert sein.
 
 Falls Docker noch nicht installiert ist, lade es hier herunter und installiere es:  
 [https://www.docker.com/get-started](https://www.docker.com/get-started)
 
+Für das Deployment mit Docker benötigst du nur Git und Docker. Stelle sicher, dass beide korrekt installiert sind, bevor du beginnst.
+Weitere Tools, die du benötigst, um an der Software zu arbeiten, findest du in [Glossary and Tools](./1-glossary-and-tools.md).
+
 ---
+
+Sind Docker und Git installiert? Dann kann es jetzt losgehen! Öffne einen Editor deiner Wahl (z.B. Visual Studio Code):  
+[https://code.visualstudio.com/](https://code.visualstudio.com/). 
 
 ### 1. Repository klonen
 
 Öffne ein Terminal und gib folgenden Befehl ein, um das Repo zu klonen und ins Projektverzeichnis wechseln
 
 ```sh
-git clone [https://the-git.server/mirroronline.git] mirroronline
-cd mirroronline
+git clone [https://github.com/Julreut/ag4.git] ag4
+cd ag4
 ```
 
 ### 2. Docker-Compose verwenden:
@@ -91,7 +101,8 @@ Du wirst aufgefordert, die folgenden Details einzugeben:
 **E-Mail:** Gib eine E-Mail-Adresse ein (optional).
 **Passwort:** Setze ein sicheres Passwort und bestätige es.
 
-Beispiel: 
+Beispiel:
+
 ```bash
 Username (leave blank to use 'username'): admin
 Email address: admin@example.com
@@ -141,7 +152,7 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
   ### Demo-Daten
 
-  Um das Tool und seine Möglichkeiten zu erkunden, sind im Ordner `data.demo` bereits Demo-Daten enthalten. 
+  Um das Tool und seine Möglichkeiten zu erkunden, sind im Ordner `data.demo` bereits Demo-Daten enthalten.
   
   ####  Volumes in der `docker-compose.yml`
 
@@ -193,7 +204,7 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
   6. **Kommentare**:
     - Unterschiedliche Kommentare je nach Versuchsbedingung.
-    - Tom (Versuchsbedingung `exp2`) kann den Kommentar von Matella (Tag `exp2`) lesen.
+    - Jack (zugeordnet zu Versuchsbedingung `exp2`) kann als einziger User den Kommentar von Matella (Tag `exp2`) lesen.
     - TestUser (Versuchsbedingung `exp 1`) kann diesen Kommentar nicht sehen.
 
   7. **Sekundärkommentare**:
@@ -287,14 +298,33 @@ Sammle die statischen Dateien, damit sie in einer Produktionsumgebung bereitgest
 python ./src/manage.py collectstatic
 ```
 
-#### 5. Server starten
+#### 6. Demo Daten nutzen
+// Um die Demo Daten im manuellen Deployment zu nutzen, gehe in die `settings.py` File und setze `DATA_DIRECTORY` auf `data.demo`:
+
+```python
+# für die Nutzung der Demo-Daten:
+DATA_DIRECTORY = "data.demo" # Lokales Debugging
+# Datenverzeichnis
+# DATA_DIRECTORY = os.environ['DATA_DIRECTORY'] if 'DATA_DIRECTORY' in os.environ else "data"
+
+# Datenbank
+# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': os.path.join(DATA_DIRECTORY, 'db.sqlite3'),
+  }
+```
+
+#### 7. Server starten
 
 Entwicklungsserver starten.
 ```sh
 python ./src/manage.py runserver 0.0.0.0:8000
 ```
 
-Mit diesen Schritten kannst du die Software manuell auf deinem lokalen System bereitstellen. Dies ist besonders nützlich für Entwicklungs-  und Testzwecke. Stelle sicher, dass Python 3 und Virtualenv installiert sind, bevor du beginnst. Falls du Fragen hast oder auf Probleme stößt, konsultiere die Dokumentation oder wende dich an deinen Entwickler. 😊
+Mit diesen Schritten kannst du die Software manuell auf deinem lokalen System bereitstellen. Dies ist besonders nützlich für Entwicklungs-  und Testzwecke. Stelle sicher, dass Python 3 und Virtualenv installiert sind, bevor du beginnst. Falls du Fragen hast oder auf Probleme stößt, konsultiere die Dokumentation oder wende dich an das Entwicklerteam. 😊
 
 
 ### Hinweise der Fakebook Autoren zum Deployment:

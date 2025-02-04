@@ -3,8 +3,9 @@
 Du hast Lust, die Software weiterzuentwickeln? Super! Der folgende Befehl hilft dir, offene Aufgaben zu finden:
 
 ```bash
-grep -r "TODO" ./src 
+grep -r "TODO" ./src
 ```
+
 Damit werden alle TODO-Markierungen im Code aufgespürt, sodass du offene Punkte direkt findest. Einige mögliche Erweiterungen sind:
 
 <details><summary>Mehrsprachigkeit über den locale-Ordner (de/en)</summary>
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     ...
 ]
 ```
+
 </details>
 
 <details><summary>Auswertungsskript für die Datenbank</summary>
@@ -89,5 +91,14 @@ Die Anwendung funktioniert bereits auf unterschiedlichen Bildschirmgrößen, ben
 - Es gibt eine API-Dokumentation (.yaml-Datei), die im Swagger Editor geöffnet werden kann.
 - Auch eine Postman-Anbindung ist vorhanden.
 
-</details>
+### OpenAPI documentation
 
+An up to date OpenApi documentation can be found [here](/docs/api-openapi.yaml).
+
+The documentation can be interactively visualized using [Swagger](https://editor.swagger.io/).
+
+### Postman collection
+
+An up to date postman collection documenting the API can be found [here](/docs/api-postman.json).
+
+</details>
