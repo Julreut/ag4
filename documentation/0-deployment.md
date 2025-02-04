@@ -195,6 +195,7 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
     - `tom`
     - `jack`
     - `matella`
+    - `juliane`
     - Passwort für alle Benutzer: `fb_apfel`
 
     - `juliane` simuliert eine Versuchsperson inkl. Event-Log
