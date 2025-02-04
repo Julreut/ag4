@@ -1,25 +1,49 @@
-{% extends "base.html" %}
-
-{% load i18n %}
-
-{% block title %} Abbruch {% endblock %}
-
-{% block content %}
-<h1>Experiment abbrechen</h1>
-
-<a href="javascript:history.back()" class="back-link">← Zurück</a>
-
-<p>Sind Sie sich sicher, dass Sie das <strong>Experiment abbrechen</strong> möchten?</p>
-<p>Hinweis: Ihr Account und Ihre Daten werden nicht in der Datenerhebung betrachtet. Diese Aktion kann nicht rückgängig gemacht werden.</p>
-
-
-<form method="post" action="{% url 'account_logout' %}">
-  {% csrf_token %}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-  {% endif %}
-  <button type="submit" class="ui button red">Ja! Ausloggen und Experiment abbrechen!</button>
-</form>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment abbrechen</title>
+      <!-- jQuery -->
+    {% include "lib-jquery.html" %}
+    <!--Custom css -->
+    <link rel="stylesheet" type="text/css" href={% static 'style.css' %}>
+    <link rel="stylesheet" type="text/css" href={% static 'end.css' %}>
+    <link rel="stylesheet" type="text/css" href={% static 'articles.css' %}>
+    <link rel="stylesheet" type="text/css" href={% static 'newspaper.css' %}>
+    <link rel="stylesheet" type="text/css" href={% static 'comments.css' %}>    
+    <link rel="stylesheet" type="text/css" href={% static 'experiment.css' %}>    
+    <link rel="stylesheet" type="text/css" href={% static 'questions.css' %}>    
 
 
-{% endblock %}
+
+    <link rel="shortcut icon" href={% static 'favicon.ico' %}>
+
+    {% include 'ui-template-stylesheets.html' %}
+</head>
+<body>
+  <div class="experiment-wrapper">
+    <div class="experiment-container">
+
+      <h1>Experiment abbrechen</h1>
+
+
+      <p>Sind Sie sich sicher, dass Sie das <strong>Experiment abbrechen</strong> möchten?</p>
+      <p>Hinweis: Ihr Account und Ihre Daten werden nicht in der Datenerhebung betrachtet. Diese Aktion kann nicht rückgängig gemacht werden.</p>
+
+      <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <button type="submit" class="negative ui button">Ja! Ausloggen und Experiment abbrechen!</button>
+        <br> <br>
+        <a href="javascript:history.back()" class="ui secondary basic button">← Zurück und Experiment fortführen.</a>
+
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+

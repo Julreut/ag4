@@ -22,9 +22,11 @@
     <div class="ui container">
 
       <!-- Home-Button -->
+       {% if not is_questions_page %}
       <a href="{{ path_to_news_papers }}" class="item {% if request.path == path_to_news_papers %}active{% endif %}">
         <i class="home icon"></i> Zeitungsübersicht
       </a>
+      {% endif %}
 
       <!-- Rechte Seite der Navigation -->
       <div class="right menu">
@@ -32,17 +34,19 @@
         {% if request.session.newspaper_entry_time %}
         <div class="item" id="timer">
           <i class="clock outline icon"></i>
-          <span>Remaining Time: <span id="timer-countdown">Calculating...</span></span>
+          <span>Verbleibende Zeit: <span id="timer-countdown">Berechnung...</span></span>
         </div>
         {% endif %}
 
         <!-- Profil-Link -->
+      {% if not is_questions_page %}
         <a href="{{ path_to_my_profile }}" class="item {% if request.path == path_to_my_profile %}active{% endif %}">
           <img src="{{ picture.url }}" class="ui avatar image" alt="Profilbild">&nbsp; {{ request.user }}
         </a>
+      {% endif %}
 
         <!-- After Questions -->
-        {% if not request.session.newspaper_entry_time %}
+        {% if not is_questions_page and not request.session.newspaper_entry_time %}
         <a href="{{ questions_after }}" class="item">
           <i class="check circle icon"></i>&nbsp; Studie abschließen 
         </a>
@@ -83,10 +87,21 @@
         const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
         timerElement.textContent = `${minutes}m ${seconds}s`;
       } else {
-        timerElement.textContent = "Time's up!";
+        timerElement.textContent = "Zeit ist abgelaufen!";
         if (!window.location.href.includes("/questions/after/")) {
-          window.location.href = "/questions/after/?redirected_from_timer=true";
           
+        // Logging, dass der Nutzer umgeleitet wurde
+        logUserAction("session_timeout_redirect", {
+          url: window.location.href, // Aktuelle Seite vor Umleitung
+          redirected_to: "/questions/after/?redirected_from_timer=true"
+        });
+
+        // Umleitung zur Abschlussseite
+        // Verzögerung der Weiterleitung um 500ms, damit Logging gesendet wird
+        setTimeout(() => {
+          window.location.href = "/questions/after/?redirected_from_timer=true";
+        }, 1000);
+                  
         }
       }
     }

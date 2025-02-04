@@ -1,15 +1,11 @@
 from django.contrib import admin
-
-# Register your models here.
 from configuration.models import Configuration
 
-
-# unloading modules to hide them from the admin panel, this app is loaded AFTER allauth, so it can unregister
+# Entferne unnötige Allauth-Modelle aus dem Admin
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
-from django.contrib import admin
 
 admin.site.unregister(Group)
 admin.site.unregister(Site)
@@ -18,15 +14,15 @@ admin.site.unregister(SocialAccount)
 admin.site.unregister(SocialApp)
 admin.site.unregister(SocialToken)
 
-
 @admin.register(Configuration)
 class ConfigurationAdmin(admin.ModelAdmin):
     list_display = [
         "like_dislike_enabled",
         "registration_enabled",
-        "is_timer_enabled",  # Timer aktiviert?
-        "max_session_duration",  # Maximale Sitzungsdauer
+        "is_timer_enabled",
+        "max_session_duration",
         "management_token",
+        "is_active",
     ]
     fields = [
         "like_dislike_enabled",
@@ -34,8 +30,21 @@ class ConfigurationAdmin(admin.ModelAdmin):
         "is_timer_enabled",
         "max_session_duration",
         "management_token",
+        "is_active",
     ]
+    actions = ["set_as_active"]
 
-    def change_configuration(self, configuration):
-        return "change configuration"
+    def set_as_active(self, request, queryset):
+        """Setzt genau eine ausgewählte Konfiguration als aktiv."""
+        if queryset.count() != 1:
+            self.message_user(request, "Bitte wähle genau eine Konfiguration aus.", level="error")
+            return
+        
+        # Setzt die gewählte Konfiguration als aktiv und deaktiviert alle anderen
+        config = queryset.first()
+        Configuration.objects.update(is_active=False)
+        config.is_active = True
+        config.save()
+        self.message_user(request, "Die Konfiguration wurde erfolgreich als aktiv gesetzt.")
 
+    set_as_active.short_description = "Diese Konfiguration als aktiv setzen"

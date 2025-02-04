@@ -193,8 +193,11 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
     - `adminuser`
     - `testuser`
     - `tom`
+    - `jack`
     - `matella`
     - Passwort für alle Benutzer: `fb_apfel`
+
+    - `juliane` simuliert eine Versuchsperson inkl. Event-Log
 
   4. **Zeitungen**:
     - Zwei Zeitungen ohne Condition-Zuweisung
@@ -204,11 +207,11 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
   6. **Kommentare**:
     - Unterschiedliche Kommentare je nach Versuchsbedingung.
-    - Jack (zugeordnet zu Versuchsbedingung `exp2`) kann als einziger User den Kommentar von Matella (Tag `exp2`) lesen.
-    - TestUser (Versuchsbedingung `exp 1`) kann diesen Kommentar nicht sehen.
+    - Jack (zugeordnet zu Versuchsbedingung `exp2`) kann als einziger User den Kommentar von Matella (ebenfalls Tag `exp2`) lesen.
+    - TestUser (Versuchsbedingung `exp 1`) kann diesen Kommentar bspw. nicht sehen.
 
   7. **Sekundärkommentare**:
-    - Ein Sekundärkommentar von Tom, zugeordnet zur Bedingung `exp2`.
+    - Ein Sekundärkommentar von Tom, zugeordnet zur Bedingung `exp2`. Diesen kann folglich ebenfalls nur Jack lesen.
 
   ### Media Ordner:
   - `avatar_default.png`: Standard-Profilbild
@@ -217,7 +220,6 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
   ### `db_sqlite3` Datenbank:
   - Enthält die oben genannten Demo-Daten.
-
 
 </details>
 

@@ -5,7 +5,11 @@
 
 {% block content %}
 <div class="ui container">
-    {% comment %} <h1 class="ui header">{{ label|title }} Questions</h1> {% endcomment %}
+    {% if label == "before" %}
+        <h1 class="ui header">Fragebogen vor Start des Experiments</h1>
+    {% elif label == "after" %}
+        <h1 class="ui header">Abschließender Fragebogen</h1>
+    {% endif %}
     <form class="ui form" method="post">
         {% csrf_token %}
 

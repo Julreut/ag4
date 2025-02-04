@@ -167,7 +167,8 @@ def question_list(request, label):
     'questions': unanswered_questions,
     'label': label,
     'range_10': range_10,
-    'questions_with_pairs': questions_with_pairs
+    'questions_with_pairs': questions_with_pairs, 
+    'is_questions_page': request.path.startswith("/questions/")
 }
 
     # Offene Fragen anzeigen
