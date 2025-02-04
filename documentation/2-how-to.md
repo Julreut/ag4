@@ -1027,7 +1027,7 @@ Dieser Abschnitt der Dokumentation beschreibt, welche Felder für die einzelnen 
 <summary>Anpassbare Texte: Erstellen von Vorab-Hinweisen, Teilnehmerinformation, Consent-Form, etc.</summary>
 
 ### Anzeigen von VP-Hinweisen zur Experiment-Bearbeitung
-- Für einfache Vorab-Hinweise vor dem Experiment (oder auch danach) eignet sich das `Frage-Format "Single Choice"`. Beispielsweise ist es wichtig, dazuzusagen, dass die VP die tool-interne Navigation nutzen sollten und nicht die Browser-Navigation. Wird diese doch genutzt, kommt es im Normalfall **nicht** zu technischen Problemen, jedoch kann dies das Logging verfälschen.
+- Für einfache Vorab-Hinweise vor dem Experiment (oder auch danach) eignet sich das `Frage-Format "Single Choice"`. Beispielsweise ist es wichtig, dazuzusagen, dass die VP die tool-internen Navigationsbuttons nutzen sollten und nicht die Browser-Navigation. Wird diese doch genutzt, kommt es im Normalfall **nicht** zu technischen Problemen, jedoch kann dies das Logging verfälschen.
 
 
 - **Hinweis:** Durch Angabe von `<h4 class="large-label">{{ question.question_text | safe }}</h4>` im HTML Template `question_list.hmtl` kann im Fragetext mit HTML gearbeitet werden. Dies ist stark zu empfehlen!! Sh. hierzu folgendes Beispiel mit HTML Text:
@@ -1069,7 +1069,7 @@ HTML Text sorgt dafür, dass der Content deutlich besser lesbar ist. Hierfür ei
       <p>Liebe Teilnehmerin, lieber Teilnehmer,</p>
       <p>bevor Sie mit der Bearbeitung beginnen, bitten wir Sie, die folgenden Hinweise zu beachten:</p>
       <ul>
-          <li><strong>Verwendung der Buttons:</strong> Bitte nutzen Sie ausschließlich die in der Versuchsoberfläche bereitgestellten „Weiter“- und „Zurück“-Buttons, um zwischen den Seiten zu navigieren. Verwenden Sie <em>nicht</em> die Vor- und Zurück-Funktionen Ihres Browsers, da dies zu technischen Problemen führen kann.</li>
+          <li><strong>Verwendung der Buttons:</strong> Bitte nutzen Sie ausschließlich die in der Versuchsoberfläche bereitgestellten "Zurück"- und "Mehr Lesen"-Buttons, um zwischen den Seiten zu navigieren. Verwenden Sie <em>nicht</em> die Vor- und Zurück-Funktionen Ihres Browsers, da dies zu technischen Problemen führen kann.</li>
           <li><strong>Bearbeitungszeit:</strong> Planen Sie genügend ungestörte Zeit für die Bearbeitung ein, um die Aufgaben vollständig abschließen zu können.</li>
           <li><strong>Unterbrechungen vermeiden:</strong> Bitte versuchen Sie, die Bearbeitung nicht zu unterbrechen, da dies die Qualität der Ergebnisse beeinflussen könnte.</li>
           <li><strong>Technische Hinweise:</strong> Sollten technische Probleme auftreten, notieren Sie diese bitte und setzen Sie sich mit der Versuchsleitung in Verbindung.</li>
