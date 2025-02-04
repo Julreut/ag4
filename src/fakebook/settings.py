@@ -30,11 +30,11 @@ SECRET_KEY = 'n*vms&0n)98o4py0vpydyu1l3-qt2%g*hm8c5n31fg+)8bh@zy'
 # SECURITY WARNING: don't run with debug turned on in production! ##aenderungJuliane
 DEBUG_MODE = False
 
-DEBUG = False
-# DEBUG = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
+# DEBUG = False
+DEBUG = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
 
-# if DEBUG:
-#     print("Enabling debug mode")
+if DEBUG:
+    print("Enabling debug mode")
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "*"]
 

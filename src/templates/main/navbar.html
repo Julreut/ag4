@@ -20,20 +20,6 @@
   
   <div class="ui top fixed menu">
     <div class="ui container">
-      <!-- Zurück-Button -->
-      <div class="item">
-        <button class="ui icon button" onclick="goBackAndReload()" aria-label="Go Back">
-          <i class="arrow left icon"></i> Zurück
-        </button>
-      </div>
-
-      {% comment %} <!-- Vor-Button -->
-      <div class="item">
-        <button class="ui icon button" onclick="goForwardAndReload()" aria-label="Go Forward">
-          <i class="arrow right icon"></i> Vor
-        </button>
-      </div> {% endcomment %}
-
 
       <!-- Home-Button -->
       <a href="{{ path_to_news_papers }}" class="item {% if request.path == path_to_news_papers %}active{% endif %}">
@@ -56,9 +42,11 @@
         </a>
 
         <!-- After Questions -->
+        {% if not request.session.newspaper_entry_time %}
         <a href="{{ questions_after }}" class="item">
           <i class="check circle icon"></i>&nbsp; Studie abschließen 
         </a>
+        {% endif %}
 
         <!-- Cancel Experiment -->
         <a href="{% url 'account_logout' %}" class="item">
@@ -106,55 +94,5 @@
     setInterval(updateTimer, 1000);
     updateTimer();
   });
-  {% comment %} Auskommentiert weil der Button nicht so läuft wie er soll: Still TODO {% endcomment %}
-{% comment %} function goForwardAndReload() {
-    let historyStack = JSON.parse(sessionStorage.getItem('historyStack')) || [];
-    let currentIndex = historyStack.indexOf(window.location.href);
-
-    if (currentIndex < historyStack.length - 1) {
-        let nextUrl = historyStack[currentIndex + 1];
-        history.pushState(null, null, nextUrl); // Update browser history
-        location.reload(); // Reload to reflect the new URL
-    } else {
-        console.warn("No forward page available.");
-    }
-} {% endcomment %}
-
-function goBackAndReload() {
-    let historyStack = JSON.parse(sessionStorage.getItem('historyStack')) || [];
-    let currentIndex = historyStack.indexOf(window.location.href);
-
-    if (currentIndex > 0) {
-        let previousUrl = historyStack[currentIndex - 1];
-        history.pushState(null, null, previousUrl); // Update browser history
-        location.reload(); // Reload to reflect the new URL
-    } else {
-        console.warn("No previous page available.");
-    }
-}
-
-// Track history using pushState to keep browser history and sessionStorage in sync
-(function trackHistory() {
-    let historyStack = JSON.parse(sessionStorage.getItem('historyStack')) || [];
-    let currentUrl = window.location.href;
-
-    // Add the current URL if it's not the last entry
-    if (historyStack[historyStack.length - 1] !== currentUrl) {
-        historyStack.push(currentUrl);
-        sessionStorage.setItem('historyStack', JSON.stringify(historyStack));
-    }
-
-    // Ensure initial pushState to avoid duplicate entries
-    if (history.state === null) {
-        history.replaceState({ index: historyStack.length - 1 }, '');
-    }
-
-    // Listen for popstate events (back/forward navigation)
-    window.addEventListener('popstate', function(e) {
-        // Reload the page to ensure content matches the URL
-        location.reload();
-    });
-})();
-
 
 </script>

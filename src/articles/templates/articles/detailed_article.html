@@ -5,7 +5,7 @@
 {% endblock title %}
 
 {% block content %}
-{% comment %} <a href="{% url 'articles:all-articles' news_paper_id=newspaper.id %}" class="back-link">← Zurück zur Artikelübersicht</a> {% endcomment %}
+<a href="{% url 'articles:all-articles' news_paper_id=newspaper.id %}" class="back-link">← Zurück zur Artikelübersicht</a>
 <div class="styled-article-container">
   <!-- Header mit Bild, Titel und Metadaten -->
   <div class="article-header">
@@ -13,7 +13,7 @@
       <img src="{{ article.image.url }}" alt="{{ article.title }}" />
     </div>
     <h1 class="ui header">{{ article.title }}</h1>
-    <p class="article-meta">Published on: {{ article.created_at|date:"F j, Y" }}</p>
+    <p class="article-meta">Veröffentlicht am: {{ article.created_at|date:"F j, Y" }}</p>
   </div>
 
   <!-- Hauptinhalt des Artikels -->

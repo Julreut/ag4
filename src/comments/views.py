@@ -111,6 +111,12 @@ def article_comments_view(request, news_paper_id, article_id):
                     position=index
                 )
 
+            # Update positions for all users
+            for new_comment in new_comments:
+                for user_position in UserContentPosition.objects.filter(content_type=comment_type, object_id=new_comment.id):
+                    user_position.position += len(new_comments)
+                    user_position.save()
+
     # 3. Hauptkommentare in gespeicherter Reihenfolge laden
     user_positions = UserContentPosition.objects.filter(
         user=user, content_type=comment_type, object_id__in=main_comment_ids

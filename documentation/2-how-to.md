@@ -1,21 +1,21 @@
-# Aufbau der Software+
+# Aufbau der Software
 
-### Erste Tipps:
-- Wenn du nicht sicher bist, wo du anfangen sollst, lies schau zuerst in die Datei [Deployment-Dokumentation](./0-deployment.md) für Informationen zum Deployment, lies in [Glossary and Tools](./1-glossary-and-tools.md) nach, welche Tools du benötigst oder lies die [Hinweise für Versuchsleiter](#hinweise-für-versuchsleiter)
+### Erste Schritte
+- Wenn du nicht sicher bist, wo du anfangen sollst, schau zuerst in die Datei [Deployment-Dokumentation](./0-deployment.md) für Informationen zum Deployment. 
 - Verwende das [Glossar](./1-glossary-and-tools.md), um unbekannte Begriffe nachzuschlagen.
-- Wenn du auf Probleme stößt, konsultiere ggf. die [Django-Dokumentation](https://docs.djangoproject.com/de/3.2/) oder kontaktiere das Entwicklerteam.
+- Konsultiere die [Django-Dokumentation](https://docs.djangoproject.com/de/3.2/) oder kontaktiere das Entwicklerteam, wenn du auf Probleme stößt.
 
 <details> <summary>Feature-Überblick</summary>
 
-User:
+**User:**
 - Artikel lesen: Zugriff auf veröffentlichte Zeitungsartikel.
 - Kommentare schreiben: Artikel können kommentiert werden.
 - Reaktionen: Kommentare können geliked und kommentiert werden.
 - Benutzerprofile bearbeiten (Bio ändern).
 - Andere Benutzerprofile und deren Bio ansehen.
 
-Forschende:
-- Hosting der Website: Anleitung dazu in Datei: [Deployment-Dokumentation](./0-deployment.md)`.
+**Forschende:**
+- Hosting der Website: Anleitung dazu in der Datei [Deployment-Dokumentation](./0-deployment.md).
 - Nutzerinformationen einsehen: Name, User ID etc. (Passwörter sind nicht einsehbar).
 - Nutzerverwaltung: Nutzer hinzufügen, entfernen und bearbeiten.
 - Inhalte einsehen und bearbeiten: Zugriff auf Artikel, Kommentare, Likes und alle Interaktionen (über das Admin-Panel).
@@ -25,71 +25,68 @@ Forschende:
 
 ---
 
-<details> <summary>Nutzerverwaltung für Forscher </summary>
-Registrierung:
+<details> <summary>Nutzerverwaltung für Forscher</summary>
 
+**Registrierung:**
 - Jede/r Nutzende kann sich direkt über die Registrierungsseite anmelden.
-Nach dem Login haben Nutzende Zugriff auf die oben beschriebenen Features.
+- Nach dem Login haben Nutzende Zugriff auf die oben beschriebenen Features.
 
-Admin-Zugriff:
-- Forscher können über <URL>/admin auf die Administrationsseite zugreifen. 
+**Admin-Zugriff:**
+- Forscher können über `<URL>/admin` auf die Administrationsseite zugreifen.
 - Login erfolgt mit Superuser-Zugangsdaten, die während der Einrichtung festgelegt wurden. Über die Admin-Seite können alle Module eingesehen und bearbeitet werden.
 </details>
 
 ---
 
-<details> <summary>🚀 Analytics App
-</summary>
+<details> <summary>🚀 Analytics App</summary>
 
-<br> TL;DR: Hier werden Nutzerdaten getrackt (User Event Log, Content Position) und Experimentalbedingung festgelegt.
+**TL;DR:** Hier werden Nutzerdaten getrackt (User Event Log, Content Position) und Experimentalbedingungen festgelegt.
 
-- Admin Panel: 
-    - Experiment Conditions: Hier werden die Experiment-Conditions festgelegt (falls vorhanden). Zeitungen, Artikel und Kommentare können nach den Conditions gefiltert werden.
+**Admin Panel:**
+- Experiment Conditions: Hier werden die Experiment-Conditions festgelegt (falls vorhanden). Zeitungen, Artikel und Kommentare können nach den Conditions gefiltert werden.
 
-- Dateien: 
-    - ```admin.py``` legt fest, wie die Conditions bearbeitet werden können.
-    - ```models.py``` definiert Datenbanktabellen fuer 1. allgemeinen User Event Log, 2. Content Position (Anzeigeposition Artikel, Zeitung etc.) fuer jeweiligen User, 3. ExperimentCondition
-    - ```urls.py``` enthaelt URL fuer Javascript User Event Logging
-    - ```utils.py``` create_event_log erstellt einen UserEventLog-Eintrag mit validierten JSON-Daten
-    - ```views.py``` log_user_action loggt Javascript User Actions
+**Dateien:**
+- `admin.py`: Legt fest, wie die Conditions bearbeitet werden können.
+- `models.py`: Definiert Datenbanktabellen für:
+  1. Allgemeinen User Event Log.
+  2. Content Position (Anzeigeposition Artikel, Zeitung etc.) für jeweiligen User.
+  3. Experiment Conditions.
+- `urls.py`: Enthält URL für Javascript User Event Logging.
+- `utils.py`: `create_event_log` erstellt einen UserEventLog-Eintrag mit validierten JSON-Daten.
+- `views.py`: `log_user_action` loggt Javascript User Actions.
 </details>
 
 ---
 
-<details> <summary> 🗞️ Articles App (Zeitungen und Artikel)
-</summary>
-<br> TL;DR: Hier passiert die Verwaltung und Darstellung von Zeitungen und Artikeln. Das Admin-Panel ermöglicht die dynamische Anpassung und CSV-Exporte. Die Models definieren die Struktur von Zeitungen und Artikeln, und die Templates sorgen für die Anzeige von Listen und Details.
+<details> <summary>🗞️ Articles App (Zeitungen und Artikel)</summary>
 
-## Admin Panel:
-- **Zeitungen und Artikel verwalten**: Hier können Zeitungen und Artikel bearbeitet und verwaltet werden. Zusätzlich können Experiment-Conditions für Tags dynamisch aus einer separaten Tabelle (`ExperimentCondition`) geladen werden.
-- **CSV-Export**: Es ist möglich, Daten zu Zeitungen und Artikeln als CSV-Datei herunterzuladen.
+**TL;DR:** Hier passiert die Verwaltung und Darstellung von Zeitungen und Artikeln. Das Admin-Panel ermöglicht die dynamische Anpassung und CSV-Exporte. Die Models definieren die Struktur von Zeitungen und Artikeln, und die Templates sorgen für die Anzeige von Listen und Details.
 
-## Dateien:
-- ```admin.py```: 
+**Admin Panel:**
+- Zeitungen und Artikel verwalten: Hier können Zeitungen und Artikel bearbeitet und verwaltet werden. Zusätzlich können Experiment-Conditions für Tags dynamisch aus einer separaten Tabelle (`ExperimentCondition`) geladen werden.
+- CSV-Export: Es ist möglich, Daten zu Zeitungen und Artikeln als CSV-Datei herunterzuladen.
+
+**Dateien:**
+- `admin.py`: 
   - Legt fest, wie Zeitungen und Artikel im Admin-Panel bearbeitet werden können.
   - Ermöglicht den CSV-Export von Artikeln und Zeitungen.
   - Dynamische Dropdown-Menüs für Tags basierend auf den `ExperimentCondition`-Daten.
-
-- ```models.py```:
+- `models.py`: 
   - Definiert die Datenbanktabellen für:
     1. **NewsPaper**: Enthält Informationen zu Zeitungen wie Name, Bild und Tag.
     2. **Article**: Enthält Informationen zu Artikeln wie Titel, Inhalt, Slug, Bild und zugehörige Zeitung.
   - Beide Modelle bieten Methoden zur Generierung von `absolute_url`-Links und zur automatischen Erstellung von Slugs.
-
-- ```urls.py```:
+- `urls.py`: 
   - Enthält die URLs für:
     1. **Alle Zeitungen anzeigen** (`/`).
     2. **Artikel einer Zeitung auflisten** (`/article_list/<int:news_paper_id>/`).
     3. **Detailansicht eines Artikels** (`/<int:news_paper_id>/<slug:slug>/`).
+- `apps.py`: Registriert die App unter dem Namen `'articles'`.
 
-- ```apps.py```:
-  - Registriert die App unter dem Namen `'articles'`.
-
-## Templates:
-- **`all_articles.html`**: Listet alle Artikel einer spezifischen Zeitung.
-- **`detailed_article.html`**: Zeigt die Detailansicht eines Artikels.
-- **`news_papers.html`**: Zeigt eine Übersicht aller Zeitungen.
-
+**Templates:**
+- `all_articles.html`: Listet alle Artikel einer spezifischen Zeitung.
+- `detailed_article.html`: Zeigt die Detailansicht eines Artikels.
+- `news_papers.html`: Zeigt eine Übersicht aller Zeitungen.
 </details>
 
 ---
@@ -283,7 +280,7 @@ Definiert Routen für verschiedene Funktionen:
   - **Statische Dateien**:
     - Statische Inhalte (CSS, JS) und Mediendateien sind konfigurierbar.
   - **Zeitzonen und Sprache**:
-    - Standardmäßig `en` als Sprache und UTC als Zeitzone. Sprache sollte noch weiter angepasst werden
+    - Standardmäßig `en` als Sprache und UTC als Zeitzone. Sprache sollte noch weiter angepasst werden.
   - **Externe Authentifizierung**:
     - Integration von `django-allauth` für Benutzerverwaltung.
 
@@ -320,9 +317,6 @@ Definiert Routen für verschiedene Funktionen:
 ---
 
 </details>
-
----
-
 <details> <summary>👤 Profiles App</summary>
 
 <br> 
@@ -531,7 +525,7 @@ Das `static_project`-Verzeichnis ist für die Bereitstellung und Verwaltung von 
     - **`{% block scripts %}`**: Ermöglicht das Einfügen von seitenabhängigen JavaScript-Funktionen.
 
 4. **Navbar**:
-    - Das Template bindet die Navigationsleiste (`navbar.html`) ein, die auf jeder Seite angezeigt wird. Enthalten darin ist eine Plattform-eigene Navigation (Vor und Zurück-Buttons).
+    - Das Template bindet die Navigationsleiste (`navbar.html`) ein, die auf jeder Seite angezeigt wird.
 
 5. **CSRF und URLs**:
     - Die **CSRF-Token** und wichtige URLs (z. B. `analytics:log_user_action`) werden als JavaScript-Variablen definiert, damit sie für Frontend-Skripte verfügbar sind.
@@ -546,18 +540,81 @@ Das `static_project`-Verzeichnis ist für die Bereitstellung und Verwaltung von 
 
 #### **Funktionalität der Navbar:**
 1. **Benutzerstatus**:
-    - Wenn der Benutzer **nicht eingeloggt** ist, zeigt die Navbar nur eine Login-Option an.
-    - Wenn der Benutzer **eingeloggt** ist:
-        - Zeigt Links zu wichtigen Bereichen, wie **News-Papers**, **Profil** und **Experiment-Ende**.
-        - Das Profilbild des Benutzers wird angezeigt.
-        - Links zum Logout und zum Abbruch des Experiments stehen zur Verfügung.
+  - Wenn der Benutzer **nicht eingeloggt** ist, zeigt die Navbar nur eine Login-Option an.
+  - Wenn der Benutzer **eingeloggt** ist:
+    - Zeigt Links zu wichtigen Bereichen, wie **News-Papers**, **Profil** und **Experiment-Ende**.
+    - Das Profilbild des Benutzers wird angezeigt.
+    - Links zum Logout und zum Abbruch des Experiments stehen zur Verfügung.<br>
+     → Profil und Home-Button sind immer sichtbar (Ausnahme: Nicht eingeloggt).
 
 2. **Timer-Funktion**:
-    - Zeigt die verbleibende Zeit des Experiments an.
-    - Wenn die Zeit abgelaufen ist, wird der Benutzer automatisch auf die Seite für **Nach-Experiment-Fragen** umgeleitet.
+  - Zeigt die verbleibende Zeit des Experiments an.
+  - Wenn die Zeit abgelaufen ist, wird der Benutzer automatisch auf die Seite für **Nach-Experiment-Fragen** umgeleitet.
 
-3. **Flexibilität**:
-    - Die Navbar passt sich dynamisch basierend auf dem Benutzerstatus und der Sitzungskonfiguration (`MAX_SESSION_DURATION`) an.
+#### **Experiment-Typen im Überblick**
+
+Die Navbar unterscheidet zwischen zwei Experiment-Varianten, abhängig vom Vorhandensein eines Timers:
+
+| Experiment-Typ | Trigger | Zweck |
+| --- | --- | --- |
+| Timer-basiert | `request.session.newspaper_entry_time` existiert | Zeitgesteuerte Studie. |
+| Timer-los | Kein `newspaper_entry_time` in der Session | Freie Exploration ohne Zeitdruck. |
+
+<details><summary>1. Timer-basiertes Experiment</summary>
+
+  - **Start**:
+    - Nutzer ist fertig mit Beantwortung der Fragen → `newspaper_entry_time` wird gesetzt → Timer startet.
+
+  - **Timer-Anzeige**:
+    - Zweck: Zeigt die verbleibende Zeit des Experiments an.
+    - Technik:
+      - Startzeit wird in der Session (`newspaper_entry_time`) gespeichert.
+      - JavaScript berechnet Countdown basierend auf `MAX_SESSION_DURATION`, welche in der Config gesetzt wird.
+  - **Ende/ Ablauf des Timers**:
+    - Automatisch: Timer läuft ab → Weiterleitung + Löschen der Session.
+    - Automatische Weiterleitung zur Nachbefragung (`/questions/after/`).
+
+    - VP hat jederzeit die Möglichkeit, das Experiment abzubrechen: Klick auf "Abbrechen" → Session löschen → Zurück zum Login.
+
+  #### **User-Journey-Beispiele**
+  - Nutzer wählt eine Zeitung → Timer startet (30 Minuten).
+  - Navbar zeigt Countdown und "Abbrechen"-Option.
+  - Nach 30 Minuten: Automatische Weiterleitung zur Nachbefragung.
+</details>
+
+<details><summary>2. Timer-loses Experiment</summary>
+
+  - **Start**:
+    - Nutzer startet direkt die Studie → Keine Zeit wird gespeichert → "Abschließen"-Button erscheint.
+
+  - **Studie abschließen (Abschließen-Button)**:
+    - Zweck: Manueller Abschluss des Experiments.
+    - Aktion: Direkte Weiterleitung zur Nachbefragung, ohne Timer-Überwachung.
+
+  - **Profil & Zeitungsübersicht**:
+    - Profil-Link: Identitätsdarstellung (wie bei Timer-basiertem Experiment).
+    - Home-Button: Konsistente Navigation zur Startseite.
+
+  - **Ende**:
+    - Klick auf "Abschließen" → Weiterleitung zur Nachbefragung.
+
+
+- **Experiment abbrechen (Abbrechen-Button)**:
+  - Zweck: Vorzeitiger Abbruch der Studie (z. B. bei technischen Problemen).
+  - Aktion: Löscht die Session → Keine Daten werden gespeichert.
+
+- **Profil & Zeitungsübersicht**:
+  - Profil-Link: Zeigt Benutzeravatar und -name.
+  - Home-Button: Ermöglicht Rückkehr zur Zeitungsauswahl.
+
+#### **User-Journey-Beispiele**
+- Nutzer startet Demo-Modus → Kein Timer.
+- Navbar zeigt "Abschließen"-Button.
+- Klick auf "Abschließen" → Direkt zur Nachbefragung.
+
+</details>
+
+<br>
 
 ---
 
@@ -631,7 +688,6 @@ python src/manage.py help
 <br>
 
 # Hinweise für Versuchsleiter
-
 
 <details><summary>Umgang mit der Datenbank</summary>
 <br>
@@ -761,8 +817,6 @@ Condition Tags sind optionale Zuordnungen, die genutzt werden, um Inhalte wie Ar
 - **Mit Tag:** Inhalte mit einem spezifischen Tag werden nur Benutzern angezeigt, deren Experimentbedingung den gleichen Tag hat.
 
 Condition Tags ermöglichen so die gezielte Steuerung, welche Inhalte eine bestimmte Benutzergruppe im Rahmen eines Experiments sieht. Wichtig: Wenn eine Zeitung einem Tag zugeordnet ist (beispielsweise "Experimental1"), dann ist dies die niedrigste Filterstufe. Natürlicherweise sehen somit nur Versuchspersonen der Experimental1-Bedingung die Zeitung und ihre zugeordneten Artikel - auch wenn diese spetifischen Artikel eventuell keine Tags erhalten haben. Für eine Filterung auf Artikel-Ebene kann die Zeitung ohne Tag verbleiben und dann werden die Artikel zugeordnet. Dieselbe Logik gilt auch für Kommentare und Sekundärkommentare (sog. "Replies").
-
-
 
 ---
 
