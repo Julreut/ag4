@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
-{% load i18n %}
 {% load static %}  <!-- Hinzufügen des static Tags -->
 {% block title %}
-my profile
+Mein Profil
 {% endblock title %}
 
 {% block content %}
@@ -11,7 +10,7 @@ my profile
 <div class="ui modal mymodal">
     <i class="close icon"></i>
     <div class="header">
-        {% trans 'profile-update-title' %}
+        Profil aktualisieren
     </div>
     <div class="image content">
         <div class="ui small image">
@@ -22,7 +21,7 @@ my profile
             {% endif %}
         </div>
         <div class="description">
-            <div class="ui header">{% trans 'profile-update-dialog-title' %}</div>
+            <div class="ui header">Profil aktualisieren</div>
         <form id="profile-update-form" action="" method="POST" class="ui form" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.avatar.label_tag }}<br>
@@ -30,7 +29,7 @@ my profile
             {{ form.avatar.help_text }}<br><br>
             {{ form.bio.label_tag }}<br>
             {{ form.bio }}<br>
-            <button type="submit" class="ui positive button">Profil aktualisieren</button>
+            <button type="submit" class="ui positive button">Profil bearbeiten</button>
         </form>
 
         </div>
@@ -40,9 +39,9 @@ my profile
 <!-- MAIN PROFILE SECTION -->
 <div class="ui segment">
     {% if confirm %}
-        <div class="ui green message">{% trans 'profile-updated' %}</div>
+        <div class="ui green message">Profil wurde aktualisiert</div>
     {% endif %}
-    <h3>{% trans 'my-profile' %} {{ request.user }}</h3>
+    <h3>Mein Profil {{ request.user }}</h3>
     <div class="ui grid">
         <div class="row">
             <div class="six wide column">
@@ -56,17 +55,17 @@ my profile
                 <table class="ui table">
                     <tbody>
                         <tr>
-                            <td>{% trans 'username' %}</td>
+                            <td>Benutzername</td>
                             <td>{{ profile.user.username }}</td>
                         </tr>
                         <tr>
-                            <td>{% trans 'my-profile-biography' %}</td>
+                            <td>Biografie</td>
                             <td>{{ profile.bio }}</td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="row mt-5">
-                    <button class="ui secondary button" id="modal-btn">{% trans 'myprofile-view-update-button' %}</button>
+                    <button class="ui secondary button" id="modal-btn">Profil aktualisieren</button>
                 </div>
             </div>
         </div>
@@ -92,7 +91,7 @@ my profile
                         </div>
                         <div class="meta">
                             <a href="{{ comment.get_absolute_url }}" class="ui button">
-                                {% trans 'Zum Kommentar' %}
+                                Zum Kommentar
                             </a>
                         </div>
                     </div>
@@ -102,7 +101,7 @@ my profile
         </div>
     {% else %}
         <div class="ui message">
-            {% trans 'no-comments-message' %}
+            Keine Kommentare vorhanden
         </div>
     {% endif %}
 </div>

@@ -220,11 +220,16 @@
 
         // Funktion zur Aktualisierung der Fortschrittsanzeige
         function updateProgress(index) {
-            const percent = ((index + 1) / steps.length) * 100;
-            progressBar.setAttribute('data-percent', percent);
-            progressBar.querySelector('.bar').style.width = percent + '%';
-            progressBar.querySelector('.label').innerText = `Fortschritt: ${Math.round(percent)}%`;
+            const currentStep = index + 1;  // Weil Index bei 0 startet
+            const totalSteps = steps.length;
+
+            // Aktualisiere den Fortschrittsbalken mit Prozentangabe
+            const percentComplete = ((currentStep / totalSteps) * 100).toFixed(0);
+            progressBar.setAttribute('data-percent', percentComplete);
+            progressBar.querySelector('.bar').style.width = percentComplete + '%';
+            progressBar.querySelector('.label').innerText = `Frage ${currentStep} von ${totalSteps} (${percentComplete}%)`;
         }
+
 
         // Funktion zur Anzeige einer bestimmten Frage
         function showStep(index) {
