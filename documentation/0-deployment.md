@@ -27,7 +27,7 @@ Sind Docker und Git installiert? Dann kann es jetzt losgehen! Öffne einen Edito
 Öffne ein Terminal und gib folgenden Befehl ein, um das Repo zu klonen und ins Projektverzeichnis wechseln
 
 ```sh
-git clone [https://github.com/Julreut/ag4.git] ag4
+git clone https://github.com/Julreut/ag4.git
 cd ag4
 ```
 
@@ -35,7 +35,7 @@ cd ag4
 
    - Starte die Anwendung mit Docker-Compose:
      ```sh
-     docker-compose up --build
+     docker-compose up --build -d
      ```
    - Dieser Befehl startet die Container und baut sie neu, falls sich etwas am Code geändert hat. Das kann einige Minuten dauern, da alle benötigten Abhängigkeiten installiert werden.
 
@@ -281,7 +281,7 @@ Die Installation hängt von deinem Betriebssystem ab. Unter Linux (z. B. Ubuntu)
 
 ```shell
 sudo apt install python3 python3-pip
-sudo pip3 install virtualenv
+sudo pip install virtualenv
 ```
 
 #### 2. Repository klonen
@@ -289,8 +289,8 @@ sudo pip3 install virtualenv
 Öffne ein Terminal und gib folgenden Befehl ein, um das Repo zu klonen und ins Projektverzeichnis wechseln
 
 ```sh
-git clone [https://the-git.server/mirroronline.git] mirroronline
-cd mirroronline
+git clone https://github.com/Julreut/ag4.git
+cd ag4
 ```
 → Dieser Befehl lädt den Quellcode von GitHub herunter und wechselt in das Projektverzeichnis.
 
