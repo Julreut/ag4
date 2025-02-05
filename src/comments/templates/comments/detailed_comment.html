@@ -21,13 +21,13 @@
                 
                 {% if profile.user == request.user %}
                     <strong class="comment-author">
-                        by <a href="{% url 'profiles:my-profile-view' comment.author.slug %}">
+                        von <a href="{% url 'profiles:my-profile-view' comment.author.slug %}">
                             {{ comment.author.user.username }}
                         </a>
                     </strong>
                 {%else%}
                     <strong class="comment-author">
-                        by <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
+                        von <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
                             {{ comment.author.user.username }}
                         </a>
                     </strong>
@@ -65,6 +65,8 @@
                 <span id="dislike-count-{{ comment.id }}">{{ comment.disliked.count }}</span>
             </div>
             {% endif %}
+            <br>
+
 
 
         <!-- Replies Section -->

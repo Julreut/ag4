@@ -23,7 +23,7 @@
                         <div class="comment-header">
                             <h3 class="comment-title">{{ comment.title }}</h3>
                             <strong class="comment-author">
-                                by <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
+                                von <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
                                     {{ comment.author.user.username }}
                                 </a>
                             </strong>

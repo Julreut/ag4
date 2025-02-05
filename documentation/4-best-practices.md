@@ -1,5 +1,4 @@
 # Best Practices & Tipps zum Fehler beheben
-
 Hier findest du eine strukturierte Übersicht über Best Practices und Tipps zur Fehlerbehebung in Django-Projekten.
 
 ---
@@ -144,5 +143,22 @@ Jetzt sollte Django URLs mit der richtigen Domain generieren.
 **Problem:** Docker-Container startet nicht  
 **Lösung:**  
 - Stelle sicher, dass Docker läuft und führe `docker ps` aus, um laufende Container zu überprüfen.
+
+</details>
+
+---
+
+<details>
+<summary>403 Fehler nach Login (CSRF-Token)</summary>
+
+**Problem:** Nach dem Login tritt ein 403-Fehler auf, da das CSRF-Token nicht akzeptiert wird.
+
+**Lösung:**
+- Lösche die Cookies im Browser, um sicherzustellen, dass ein neues CSRF-Token generiert wird.
+  - In Chrome: F12 → Application → Cookies → 127.0.0.1:8000 → `csrftoken` löschen.
+  - Alternativ: Shift + F5 drücken oder den Inkognito-Modus nutzen.
+- Überprüfe, ob das CSRF-Token korrekt im HTML-Formular eingebettet ist.
+- Stelle sicher, dass die Middleware `django.middleware.csrf.CsrfViewMiddleware` in den `MIDDLEWARE`-Einstellungen aktiviert ist.
+- Falls der Fehler weiterhin besteht, starte den Server neu und überprüfe die CSRF-Einstellungen in den Django-Einstellungen.
 
 </details>

@@ -36,7 +36,10 @@ DEBUG = False
 # if DEBUG:
 #     print("Enabling debug mode")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "*"]
+if not DEBUG:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "*"]
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -81,10 +84,8 @@ ACCOUNT_FORMS = {
 ACCOUNT_AUTHENTICATION_METHOD = "username"  # Nur Username für Authentifizierung
 ACCOUNT_EMAIL_REQUIRED = False  # Email wird nicht benötigt
 ACCOUNT_USERNAME_REQUIRED = True  # Username bleibt Pflichtfeld
-# ACCOUNT_EMAIL_VERIFICATION = "optional"  # Email-Verifikation deaktivieren
 
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -98,6 +99,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'fakebook.middleware.NewspaperTimerMiddleware',
 ]
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8001', 'http://localhost:8001']
+
+##fuer deployment auf server: 
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://meinserver.com',
+#     'https://www.meinserver.com'
+# ]
+
 
 # MAX_SESSION_DURATION = 3600  # 1 Stunde in Sekunden # not needed anymore
 
@@ -130,7 +140,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 WSGI_APPLICATION = 'fakebook.wsgi.application'
-ASGI_APPLICATION = 'fakebook.asgi.application'
 
 #for demo data usage: 
 # DATA_DIRECTORY = "data.demo" #einkommentieren fuer local debugging in development
@@ -182,7 +191,7 @@ LANGUAGES = (
     ('de', 'Deutsch')
 )
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'de'
 
 
 # Static files (CSS, JavaScript, Images)
