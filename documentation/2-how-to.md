@@ -5,6 +5,7 @@
 - Verwende das [Glossar](./1-glossary-and-tools.md), um unbekannte Begriffe nachzuschlagen.
 - Falls du auf Probleme stößt, findest du Hilfe in der [Django-Dokumentation](https://docs.djangoproject.com/de/3.2/) oder kannst das Entwicklerteam kontaktieren.
 
+
 <details> <summary>Feature-Überblick</summary>
 
 **User:**
@@ -20,7 +21,7 @@
 - Nutzerverwaltung: Nutzer hinzufügen, entfernen und bearbeiten.
 - Inhalte einsehen und bearbeiten: Zugriff auf Artikel, Kommentare, Likes und alle Interaktionen (über das Admin-Panel).
 - Tracking-Daten einsehen: Verweildauer und Klickverhalten der Nutzer.
-- Datenexport: Export der Daten als .xlsx-Datei (ausgewählte Tabellen oder gesamte Datenbank).
+- Datenexport: Export der Daten als .xlsx-Datei (ausgewählte Tabellen oder gesamte Datenbank sqlite).
 </details>
 
 ---
@@ -38,7 +39,7 @@
 
 ---
 
-<details> <summary>🚀 Analytics App</summary>
+<details> <summary>🚀 Analytics App: Nutzertracking & Experimentsteuerung </summary>
 
 **TL;DR:** Hier werden Nutzerdaten getrackt (User Event Log, Content Position) und Experimentalbedingungen festgelegt.
 

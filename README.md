@@ -1,6 +1,6 @@
 # Mirronline
 
-Dies ist das Haupt-Repository des Mirror-Online-Projekts, einer Plattform, die eine Online-Forum-Umgebung ähnlich Spiegel Online für Forschungszwecke simuliert. Die Plattform ermöglicht es Forschenden, komplexe Interaktionen und Verhaltensmuster in einer kontrollierten und anpassbaren Umgebung zu analysieren.
+Dies ist das Haupt-Repository des Mirror-Online-Projekts, einer Plattform, die eine Online-Forum-Umgebung für Forschungszwecke simuliert. Inspiriert von Spiegel Online, ermöglicht sie Forschenden die Analyse komplexer Interaktionen und Verhaltensmuster in einer kontrollierten Umgebung.
 
 ## Nutzung des Tools
 
@@ -24,7 +24,7 @@ cd ag4
 ```
 → Dieser Befehl lädt den Quellcode von GitHub herunter und wechselt in das Projektverzeichnis.
 
-#### 3. Virtuelle Umgebung erstellen und aktivieren
+#### 3. Virtuelle Umgebung erstellen, aktivieren und Abhängigkeiten installieren
 
 Erstelle eine virtuelle Umgebung und aktiviere sie:
 
@@ -32,8 +32,6 @@ Erstelle eine virtuelle Umgebung und aktiviere sie:
 virtualenv .venv
 source .venv/bin/activate
 ```
-
-#### 4. Virtuelle Umgebung erstellen und aktivieren
 
 Installiere die erforderlichen Abhängigkeiten:
 
@@ -50,7 +48,7 @@ python ./src/manage.py collectstatic
 ```
 
 #### 6. Demo Daten nutzen
-// Um die Demo Daten im manuellen Deployment zu nutzen, gehe in die `settings.py` File und setze `DATA_DIRECTORY` auf `data.demo`:
+// Um die Demo Daten in der manuellen Ausführung des Programms zu nutzen, gehe in die `settings.py` File und setze `DATA_DIRECTORY` auf `data.demo`:
 
 ```python
 # für die Nutzung der Demo-Daten:
@@ -68,7 +66,14 @@ DATABASES = {
   }
 ```
 
-#### 7. Server starten
+#### 7. Migrations ausführen
+
+Führe die Datenbankmigrationen aus, um die Datenbanktabellen zu erstellen:
+
+```sh
+python ./src/manage.py migrate
+```
+#### 8. Server starten
 
 Entwicklungsserver starten.
 ```sh
@@ -78,7 +83,7 @@ python ./src/manage.py runserver 127.0.0.1:8000
 Mit diesen Schritten kannst du die Software manuell auf deinem lokalen System bereitstellen. Dies ist besonders nützlich für Entwicklungs-  und Testzwecke. Stelle sicher, dass Python 3 und Virtualenv installiert sind, bevor du beginnst. Falls du Fragen hast oder auf Probleme stößt, konsultiere die Dokumentation oder wende dich an das Entwicklerteam. 😊
 
 
-### Hinweise der Fakebook Autoren zum Deployment:
+### Hinweise der Fakebook-Autoren zum Deployment:
 
 - When using our tool for research purposes, please cite our paper: Voggenreiter, A; Brandt S; Putterer, F; Frings, A and Pfeffer J. The Role of Likes: How Online Feedback Impacts Users' Mental Health (2023).
   https://arxiv.org/abs/2312.11914

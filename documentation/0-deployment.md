@@ -11,7 +11,7 @@ Falls Git noch nicht installiert ist, lade es hier herunter und installiere es:
 
 - **Docker** muss installiert sein und ausgeführt werden.
 
-Eventuell kann es zu Fehlern kommen, wenn das Pyhton 3.8 Image nicht vorhanden ist. Um dies zu verhindern, führe diesen Befehl aus:
+Eventuell kann es zu Fehlern kommen, wenn das Python 3.8 Image nicht vorhanden ist. Um dies zu verhindern, führe diesen Befehl aus:
 ```
 docker pull python:3.8
 ```
@@ -37,16 +37,19 @@ git clone https://github.com/Julreut/ag4.git
 cd ag4
 ```
 
-### 2. Docker-Compose verwenden:
+### 2. Anwendung mit Docker-Compose starten:
 
    - Starte die Anwendung mit Docker-Compose:
      ```sh
      docker-compose up --build -d
      ```
-   - Dieser Befehl startet die Container und baut sie neu, falls sich etwas am Code geändert hat. Das kann einige Minuten dauern, da alle benötigten Abhängigkeiten installiert werden.
+     Dieser Befehl:
+    - Erstellt und startet die Container.
+    - Baut das Image neu, falls sich der Code geändert hat.
+    - Läuft im Hintergrund (-d steht für „detached mode“).
+    - Das kann einige Minuten dauern, da alle benötigten Abhängigkeiten installiert werden.
 
-
-### 3. Anwendung im Browser aufrufen:*
+### 3. Anwendung im Browser aufrufen:
    - Öffne einen Browser und gehe zu:
      ```
      http://127.0.0.1:8001/
@@ -82,7 +85,16 @@ Fertig! 🎉 Dein Projekt läuft jetzt lokal mit Docker. Falls Probleme auftrete
 # Erste Schritte nach dem Deployment
 <br>
 
-Deine Instanz sollte nun unter der gewünschten Adresse und dem gewünschten Port laufen, z. B. `http://localhost:8001`. Bevor du nun loslegen kannst und Zeitungen und Artikel anlegen, benötigen wir einen **Admin-Account**. Anfangs gibt es noch keine Benutzerkonten im System, daher ist der **erste Schritt**, einen sogenannten **Superuser** zu erstellen:
+Deine Instanz sollte nun unter der gewünschten Adresse und dem gewünschten Port laufen, z. B. `http://localhost:8001`. 
+
+Bevor du nun loslegen kannst und Zeitungen und Artikel anlegen, benötigen wir einen **Admin-Account**. Es gibt zwei Möglichkeiten:
+
+1. **Leere Datenbank**: Wenn du mit einer leeren Datenbank startest, gibt es noch keine Benutzerkonten im System. Der **erste Schritt** ist daher, einen sogenannten **Superuser** zu erstellen:
+  - Folge den Anweisungen im Abschnitt "Den Superuser anlegen", um einen neuen Superuser zu erstellen.
+
+2. **Nutzung von Demo-Daten**: Wenn du die bereitgestellten Demo-Daten verwendest, sind bereits Benutzerkonten im System vorhanden, und du kannst diesen Schritt überspringen. Die Demo-Daten beinhalten bereits einen Admin-Account sowie mehrere Testbenutzer.
+
+Wähle die für dich passende Option und folge den entsprechenden Anweisungen.
 
 <details><summary> Den Superuser anlegen </summary>
 
@@ -91,6 +103,7 @@ Deine Instanz sollte nun unter der gewünschten Adresse und dem gewünschten Por
 ```sh
   docker ps
 ```
+- Kopiere den Namen des Containers (Spalte NAMES).
 - Öffne eine Shell im Container:
 ```sh
 docker exec -it <container_name> bash
@@ -134,7 +147,7 @@ Sobald der Superuser erstellt wurde, kannst du dich mit den neuen Anmeldedaten i
 
 Reguläre Benutzerkonten können direkt über das Admin-Panel erstellt werden:
 
-- Gehe zu `http://localhost:8000/admin`.
+- Gehe zu `http://localhost:8001/admin`.
 - Navigiere zum Abschnitt Users.
 - Klicke auf Add User.
 - Fülle die erforderlichen Details aus (Benutzername, usw.).
@@ -227,6 +240,11 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
   7. **Sekundärkommentare**:
     - Ein Sekundärkommentar von Tom, zugeordnet zur Bedingung `exp2`. Diesen kann folglich ebenfalls nur Jack lesen.
+
+  8. **Configuration**
+  - Drei verschiedene Beispiel Configuration Optionen. Eine davon ist auf `is_active` gesetzt. Der Timer läuft nach drei Minuten ab. 
+  
+  <img src="images/Configuration.png" alt="Configuration" width="1000">
 
   ### Media Ordner:
   - `avatar_default.png`: Standard-Profilbild
