@@ -1,6 +1,6 @@
 # Deployment-Anleitung
 
-Diese Anleitung beschreibt, wie du das Projekt auf deinem Rechner startest. 
+Diese Anleitung richtet sich an Nutzer, die das Projekt lokal mit Docker (oder auch manuell) ausführen möchten. Sie führt Schritt für Schritt durch den Prozess – von der Installation der benötigten Tools bis hin zum Starten der Anwendung.
 
 ## Voraussetzungen
 
@@ -34,10 +34,10 @@ cd ag4
 ### 2. Docker-Compose verwenden:
 
    - Starte die Anwendung mit Docker-Compose:
-     ```bash
+     ```sh
      docker-compose up --build
      ```
-   - Dieser Befehl baut die Docker-Images und startet die Container. Das kann einige Minuten dauern, da alle benötigten Abhängigkeiten installiert werden.
+   - Dieser Befehl startet die Container und baut sie neu, falls sich etwas am Code geändert hat. Das kann einige Minuten dauern, da alle benötigten Abhängigkeiten installiert werden.
 
 
 ### 3. Anwendung im Browser aufrufen:*
@@ -50,12 +50,13 @@ cd ag4
 #### Alternative: Docker-Images ohne Docker-Compose starten
 
 - Du kannst die Docker-Images auch ohne Docker-Compose starten. Kopiere dazu den folgenden Befehl ins Terminal:
-  ```bash
-  docker run -d \
-    --name mirroronline \
-    -p 8001:8000 \
-    -v $(pwd)/data/:/ag4/data \
-    mirroronline:latest
+```sh
+docker run -d \
+  --name mirroronline \
+  -p 8001:8000 \
+  -v $(pwd)/data/:/ag4/data \
+  mirroronline:latest
+```
 
     Erklärung der Parameter:
 	•	-d: Startet den Container im Hintergrund.
@@ -81,18 +82,18 @@ Deine Instanz sollte nun unter der gewünschten Adresse und dem gewünschten Por
 
 ### **Schritt 1: Shell im Docker-Container öffnen**
 - Identifiziere zunächst den Namen des Django-Containers, der deine Anwendung ausführt:
-```bash
+```sh
   docker ps
 ```
 - Öffne eine Shell im Container:
-``` bash
+```sh
 docker exec -it <container_name> bash
 ```
-Ersetze <container_name> durch den Namen deines Django-Containers.
+Hiermit öffnest du eine Shell im Container und startest danach den Befehl zum Anlegen eines Admin-Kontos. Ersetze <container_name> durch den Namen deines Django-Containers.
 
 ### **Schritt 2: Superuser erstellen**
 Führe den folgenden Befehl aus, um einen neuen Superuser zu erstellen:
-```bash
+```sh
 python manage.py createsuperuser
 ```
 
@@ -103,7 +104,7 @@ Du wirst aufgefordert, die folgenden Details einzugeben:
 
 Beispiel:
 
-```bash
+```sh
 Username (leave blank to use 'username'): admin
 Email address: admin@example.com
 Password: 
@@ -136,7 +137,6 @@ Reguläre Benutzerkonten können direkt über das Admin-Panel erstellt werden:
 
 ---
 
-
 <details><summary>Die Datenbank weiter befüllen & Information zu Demo-Daten</summary>
 Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfolge:
 
@@ -153,10 +153,11 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
   ### Demo-Daten
 
   Um das Tool und seine Möglichkeiten zu erkunden, sind im Ordner `data.demo` bereits Demo-Daten enthalten.
-  
-  ####  Volumes in der `docker-compose.yml`
 
-  In der `docker-compose.yml` Datei definiert der `volumes` Abschnitt, welche Verzeichnisse zwischen dem Host-System und dem Container geteilt werden. In unserem Fall:
+  #### Volumes in der `docker-compose.yml`
+  Volumes ermöglichen es, Daten dauerhaft zu speichern, auch wenn der Container gelöscht wird.
+
+  In der `docker-compose.yml` Datei definiert der `volumes` Abschnitt, welche Verzeichnisse zwischen dem Host-System (deinem Computer) und dem Container geteilt werden. In unserem Fall:
 
   ```yaml
   volumes:
@@ -167,12 +168,19 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
   Hier ist eine detaillierte Erklärung:
 
-  - **`data.demo`**: Dies ist der Pfad auf deinem Host-System. Das `./` bedeutet, dass es relativ zum Verzeichnis ist, in dem sich die `docker-compose.yml` Datei befindet.
-  - **`/ag4/data`**: Dies ist der Pfad im Container, in den das Host-Verzeichnis eingebunden wird.
+  - `data.demo`: Dies ist ein Ordner auf deinem Computer (Host-System). Das `./` zeigt an, dass er sich im gleichen Verzeichnis wie die `docker-compose.yml` Datei befindet. Der Ordner wurde erstellt, als du das Repository geklont hast.
+  - `/ag4/data`: Dies ist der Ordner innerhalb des Containers, in den `data.demo` eingebunden wird. Der Container kann dadurch auf die Dateien zugreifen, als wären sie direkt in `/ag4/data` vorhanden.
 
-  Wenn du die Demo-Daten nicht mehr nutzen möchtest und stattdessen ein eigenes Projekt starten willst, musst du den `data.demo` Ordner durch einen eigenen Ordner auf deinem System ersetzen. Dieser Ordner wird dann in den Container gespiegelt. Wenn du den Container killst, bleiben die Daten in dem ausgewählten Ordner auf deinem System erhalten, da sie nur gespiegelt werden.
-  
-  
+  **Warum ist das wichtig?**
+
+  Alles, was du in `data.demo` auf deinem Computer speicherst, ist automatisch auch im Container verfügbar. Umgekehrt bleiben die Daten erhalten, wenn der Container gestoppt oder gelöscht wird, da sie auf deinem Computer gespeichert sind und nicht nur innerhalb des Containers existieren.
+
+  **Wie kann ich die Demo-Daten durch eigene Daten ersetzen?**
+
+  Wenn du die Demo-Daten nicht mehr nutzen möchtest, kannst du den Ordner `data.demo` auf deinem Computer durch einen eigenen Ordner ersetzen. Ändere den `volumes`-Eintrag entsprechend in der `docker-compose.yml` Datei, damit dein neuer Ordner in den Container eingebunden wird.
+
+  Dieser Ordner wird dann in den Container gespiegelt. Wenn du den Container killst, bleiben die Daten in dem ausgewählten Ordner auf deinem System **erhalten**, da sie nur gespiegelt werden.
+  <br>
   Die bereitgestellten Demo Daten beinhalten:
 
   1. **Experiment Conditions**:
@@ -224,14 +232,23 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
 
 </details>
 
-<details><summary> Debug Mode / Static Files </summary
->
-### 
+---
 
-Die Anwendung wird statische Dateien im Produktionsmodus mit der WhiteNoise-Middleware bereitstellen. Damit dies funktioniert, müssen die statischen Dateien vorher gesammelt werden.
+<details><summary> Weiterentwicklung im DEBUG Mode / Static Files </summary>
+
+Die Anwendung wird statische Dateien im Produktionsmodus mit der WhiteNoise-Middleware bereitstellen. Damit dies funktioniert, müssen die statischen Dateien vorher mit `collectstatic` gesammelt werden.
 
 Für Entwicklungszwecke wird empfohlen, den `DEBUG_MODE` zu verwenden. Dies wird automatisch alle statischen Dateien ohne vorherige Sammlung bereitstellen, sodass sie während der Entwicklung sofort geändert und aktualisiert werden können. Zusätzlich wird im Fehlerfall eine detaillierte Fehlerbeschreibung angezeigt.
 `DEBUG_MODE` kann aktiviert werden, indem die Umgebungsvariable `DEBUG_MODE=1` gesetzt oder in der `settings.py` geschrieben wird.
+
+Um die Demo_daten im Development zu nutzen, muss in der settings.py folgendes ein- bzw. auskommentiert werden:
+
+```python
+#for demo data usage: 
+# DATA_DIRECTORY = "data.demo" #einkommentieren fuer local debugging in development
+# Data directory
+DATA_DIRECTORY = os.environ['DATA_DIRECTORY'] if 'DATA_DIRECTORY' in os.environ else "data"
+```
 
 Alternativ kann der Produktionsmodus verwendet werden. Dies erfordert, dass du den folgenden Befehl ausführst:
 
@@ -275,6 +292,7 @@ sudo pip3 install virtualenv
 git clone [https://the-git.server/mirroronline.git] mirroronline
 cd mirroronline
 ```
+→ Dieser Befehl lädt den Quellcode von GitHub herunter und wechselt in das Projektverzeichnis.
 
 #### 3. Virtuelle Umgebung erstellen und aktivieren
 

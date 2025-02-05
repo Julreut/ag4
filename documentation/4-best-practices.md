@@ -138,7 +138,11 @@ Jetzt sollte Django URLs mit der richtigen Domain generieren.
 
 ---
 
+<details>
+<summary>Docker Probleme</summary>
 
+**Problem:** Docker-Container startet nicht  
+**Lösung:**  
+- Stelle sicher, dass Docker läuft und führe `docker ps` aus, um laufende Container zu überprüfen.
 
-
-
+</details>

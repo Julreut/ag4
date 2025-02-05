@@ -1,9 +1,9 @@
 # Aufbau der Software
 
 ### Erste Schritte
-- Wenn du nicht sicher bist, wo du anfangen sollst, schau zuerst in die Datei [Deployment-Dokumentation](./0-deployment.md) für Informationen zum Deployment. 
+- Starte hier: Lies zuerst die [Deployment-Dokumentation](./0-deployment.md) für Informationen zum Deployment. 
 - Verwende das [Glossar](./1-glossary-and-tools.md), um unbekannte Begriffe nachzuschlagen.
-- Konsultiere die [Django-Dokumentation](https://docs.djangoproject.com/de/3.2/) oder kontaktiere das Entwicklerteam, wenn du auf Probleme stößt.
+- Falls du auf Probleme stößt, findest du Hilfe in der [Django-Dokumentation](https://docs.djangoproject.com/de/3.2/) oder kannst das Entwicklerteam kontaktieren.
 
 <details> <summary>Feature-Überblick</summary>
 
@@ -52,7 +52,7 @@
   2. Content Position (Anzeigeposition Artikel, Zeitung etc.) für jeweiligen User.
   3. Experiment Conditions.
 - `urls.py`: Enthält URL für Javascript User Event Logging.
-- `utils.py`: `create_event_log` erstellt einen UserEventLog-Eintrag mit validierten JSON-Daten.
+- `utils.py`: `create_event_log` speichert User-Events als JSON in der Datenbank; erstellt einen *UserEventLog-Eintrag* mit validierten JSON-Daten.
 - `views.py`: `log_user_action` loggt Javascript User Actions.
 </details>
 
@@ -95,7 +95,12 @@
 
 <br> 
 
-**TL;DR:** Die Comments App ermöglicht es Benutzern, Kommentare zu Artikeln zu verfassen, zu liken/disliken, und in einer strukturierten Ansicht darzustellen. Es werden sowohl Haupt- als auch Sekundärkommentare (Replies) unterstützt. Kommentare, die von Nutzern (also Versuchspersonen) erstellt wurden, sind per default nicht öffentlich. Im Admin Panel können durch den Admin öffentliche Kommentare mit der Checkbox `is_public` erstellt werden, die dann für alle sichtbar sind. Weiterhin kann ein Condition `tag` ausgewählt werden, um nur Nutzern in einer bestimmten Versuchsbedingung den spezifischen Kommentar anzuzeigen.
+**TL;DR:** Die Comments App ermöglicht es Benutzern, Kommentare zu Artikeln zu verfassen, zu liken/disliken, und in einer strukturierten Ansicht darzustellen. Es werden sowohl Haupt- als auch Sekundärkommentare (Replies) unterstützt. 
+**💬 Kommentare & Sichtbarkeit:**
+
+  - Private Kommentare: Standardmäßig nur für den Verfasser sichtbar. Kommentare, die von Nutzern (also Versuchspersonen) erstellt wurden, sind per default nicht öffentlich. 
+  - Öffentliche Kommentare: Admins können im Admin Panel `is_public` Checkbox bei der Kommentarerstellung aktivieren. Diese Kommentare sind dann für alle sichtbar. 
+  - Experimentelle Bedingungen: Ein Condition `tag` kann ausgewählt werden, um nur Nutzern in einer bestimmten Versuchsbedingung den spezifischen Kommentar anzuzeigen.
 
 - **Admin Panel:**
     - Kommentare verwalten:
