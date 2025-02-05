@@ -6,63 +6,81 @@ Dies ist das Haupt-Repository des Mirror-Online-Projekts, einer Plattform, die e
 
 Mehr Informationen zu verwendeten Tools, Software-Aufbau, Deployment uvm. befinden sich im Ordner [Dokumentation](./Dokumentation) dieses Repositories.
 
-### Requirements installieren
+#### 1. **Virtualenv und Python 3 installieren**
+Die Installation hängt von deinem Betriebssystem ab. Unter Linux (z. B. Ubuntu) kannst du folgende Befehle verwenden:
 
-```bash
+```shell
+sudo apt install python3 python3-pip
+sudo pip install virtualenv
+```
+
+#### 2. Repository klonen
+
+Öffne ein Terminal und gib folgenden Befehl ein, um das Repo zu klonen und ins Projektverzeichnis wechseln
+
+```sh
+git clone https://github.com/Julreut/ag4.git
+cd ag4
+```
+→ Dieser Befehl lädt den Quellcode von GitHub herunter und wechselt in das Projektverzeichnis.
+
+#### 3. Virtuelle Umgebung erstellen und aktivieren
+
+Erstelle eine virtuelle Umgebung und aktiviere sie:
+
+```sh
+virtualenv .venv
+source .venv/bin/activate
+```
+
+#### 4. Virtuelle Umgebung erstellen und aktivieren
+
+Installiere die erforderlichen Abhängigkeiten:
+
+```sh
 pip install -r requirements.txt
 ```
 
-### Virtuelle Umgebung verwalten
+#### 5. Static Files einsammeln
 
-Es wird empfohlen, eine virtuelle Umgebung zu verwenden, um Abhängigkeiten isoliert zu halten.
+Sammle die statischen Dateien, damit sie in einer Produktionsumgebung bereitgestellt werden können:
 
-#### Virtuelle Umgebung erstellen
-
-Erstelle eine virtuelle Umgebung namens `env`:
-
-```bash
-python3 -m venv env
+```sh
+python ./src/manage.py collectstatic
 ```
 
-#### Virtuelle Umgebung aktivieren
+#### 6. Demo Daten nutzen
+// Um die Demo Daten im manuellen Deployment zu nutzen, gehe in die `settings.py` File und setze `DATA_DIRECTORY` auf `data.demo`:
 
-- **Windows:**
+```python
+# für die Nutzung der Demo-Daten:
+DATA_DIRECTORY = "data.demo" # Lokales Debugging
+# Datenverzeichnis
+# DATA_DIRECTORY = os.environ['DATA_DIRECTORY'] if 'DATA_DIRECTORY' in os.environ else "data"
 
-```
-env\Scripts\activate
-```
+# Datenbank
+# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-- **macOS/Linux:**
-
-```
-source env/bin/activate
-```
-
-#### Virtuelle Umgebung deaktivieren
-
-Deaktiviere die virtuelle Umgebung mit:
-
-```
-deactivate
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': os.path.join(DATA_DIRECTORY, 'db.sqlite3'),
+  }
 ```
 
-### Server starten:
+#### 7. Server starten
 
+Entwicklungsserver starten.
+```sh
+python ./src/manage.py runserver 127.0.0.1:8000
 ```
-python3 src/manage.py runserver
-```
 
-Öffne dann deinen Webbrowser und gehe zu `http://127.0.0.1:8000/`, um die Anwendung zu sehen.
+Mit diesen Schritten kannst du die Software manuell auf deinem lokalen System bereitstellen. Dies ist besonders nützlich für Entwicklungs-  und Testzwecke. Stelle sicher, dass Python 3 und Virtualenv installiert sind, bevor du beginnst. Falls du Fragen hast oder auf Probleme stößt, konsultiere die Dokumentation oder wende dich an das Entwicklerteam. 😊
 
-The docker build process will not run database migrations. The application will repopulate its data folder using the template on startup if it detects its data to be missing. You will therefore have to **copy your migrated database file over to the** `data.template` folder when you migrate the database during development.
-This also means that you will have to run them manually in case you want to update the database of a deployed instance to a new schema.
 
-#### Database migration for deployed instance
+### Hinweise der Fakebook Autoren zum Deployment:
 
-The docker container and application do not migrate an existing DB automatically when upgraded. You will therefore have to manually migrate the database when updating the version / schema on a deployed instance.
+- When using our tool for research purposes, please cite our paper: Voggenreiter, A; Brandt S; Putterer, F; Frings, A and Pfeffer J. The Role of Likes: How Online Feedback Impacts Users' Mental Health (2023).
+  https://arxiv.org/abs/2312.11914
 
-This can be achieved by downloading the database and running migrations locally.
-Another option is to run the migrations using the deployed instance in the docker container. This can be achieved by e.g. manipulating the start command of the deployed docker container to run the migration command. The application itself mustn't be running during the migration.
-
-in the same directory to compile them to `django.mo` files which will then be used by the actual application.
-You also have to do this if you modify them later on.
+- Fakebook allows to setup a Social-Media-Environment, in which users can interact freely. Every interaction can be watched and controlled by the project maintainer (e.g. the researcher). The project maintainer is responsible for everything happening on his or her social media environment. The tool should be used in an ethical responsible manner. Study participants and other users of the social media environment have to be informed that all of their data can be inspected by the project maintainer. The project maintainers are responsible for clarifying the standards of acceptable and hatefree behavior and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behavior. Project maintainers have the right and responsibility to remove, edit, or reject posts and comments, or to ban temporarily or permanently any user for other behaviors that they deem inappropriate, threatening, offensive, illegal or harmful.
