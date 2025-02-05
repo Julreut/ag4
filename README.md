@@ -46,6 +46,12 @@ Deaktiviere die virtuelle Umgebung mit:
 deactivate
 ```
 
+### Static Files einsammeln
+
+```
+python3 ./src/manage.py collectstatic
+```
+
 ### Server starten:
 
 ```
