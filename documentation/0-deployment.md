@@ -9,7 +9,13 @@ Diese Anleitung richtet sich an Nutzer, die das Projekt lokal mit Docker (oder a
 Falls Git noch nicht installiert ist, lade es hier herunter und installiere es:  
 [https://git-scm.com/downloads](https://git-scm.com/downloads)
 
-- **Docker** muss installiert sein.
+- **Docker** muss installiert sein und ausgeführt werden.
+
+Eventuell kann es zu Fehlern kommen, wenn das Pyhton 3.8 Image nicht vorhanden ist. Um dies zu verhindern, führe diesen Befehl aus:
+```
+docker pull python:3.8
+```
+
 
 Falls Docker noch nicht installiert ist, lade es hier herunter und installiere es:  
 [https://www.docker.com/get-started](https://www.docker.com/get-started)
