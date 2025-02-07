@@ -1,6 +1,6 @@
 # Deployment-Anleitung
 
-Diese Anleitung richtet sich an Nutzer, die das Projekt lokal mit Docker (oder auch manuell) ausführen möchten. Sie führt Schritt für Schritt durch den Prozess – von der Installation der benötigten Tools bis hin zum Starten der Anwendung.
+Diese Anleitung richtet sich an Forschende, die das Projekt lokal mit Docker (oder auch manuell) ausführen möchten. Sie führt Schritt für Schritt durch den Prozess – von der Installation der benötigten Tools bis hin zum Starten der Anwendung.
 
 ## Voraussetzungen
 
@@ -225,7 +225,7 @@ Um die Datenbank korrekt zu befüllen, halte dich bitte an die folgende Reihenfo
     - `juliane`
     - Passwort für alle Benutzer: `fb_apfel`
 
-    - `juliane` simuliert eine Versuchsperson inkl. Event-Log
+    - `juliane` simuliert eine Versuchsperson (inkl. Event-Log)
 
   4. **Zeitungen**:
     - Zwei Zeitungen ohne Condition-Zuweisung

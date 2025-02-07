@@ -12,28 +12,28 @@
 - Artikel lesen: Zugriff auf veröffentlichte Zeitungsartikel.
 - Kommentare schreiben: Artikel können kommentiert werden.
 - Reaktionen: Kommentare können geliked und kommentiert werden.
-- Benutzerprofile bearbeiten (Bio ändern).
-- Andere Benutzerprofile und deren Bio ansehen.
+- Userprofile bearbeiten (Bio ändern).
+- Andere Userprofile und deren Bio ansehen.
 
 **Forschende:**
 - Hosting der Website: Anleitung dazu in der Datei [Deployment-Dokumentation](./0-deployment.md).
 - Nutzerinformationen einsehen: Name, User ID etc. (Passwörter sind nicht einsehbar).
-- Nutzerverwaltung: Nutzer hinzufügen, entfernen und bearbeiten.
+- Nutzerverwaltung: User hinzufügen, entfernen und bearbeiten.
 - Inhalte einsehen und bearbeiten: Zugriff auf Artikel, Kommentare, Likes und alle Interaktionen (über das Admin-Panel).
-- Tracking-Daten einsehen: Verweildauer und Klickverhalten der Nutzer.
+- Tracking-Daten einsehen: Verweildauer und Klickverhalten der User.
 - Datenexport: Export der Daten als .xlsx-Datei (ausgewählte Tabellen oder gesamte Datenbank sqlite).
 </details>
 
 ---
 
-<details> <summary>Nutzerverwaltung für Forscher</summary>
+<details> <summary>Nutzerverwaltung für Forschende</summary>
 
 **Registrierung:**
 - Jede/r Nutzende kann sich direkt über die Registrierungsseite anmelden.
 - Nach dem Login haben Nutzende Zugriff auf die oben beschriebenen Features.
 
 **Admin-Zugriff:**
-- Forscher können über `<URL>/admin` auf die Administrationsseite zugreifen.
+- Forschende können über `<URL>/admin` auf die Administrationsseite zugreifen.
 - Login erfolgt mit Superuser-Zugangsdaten, die während der Einrichtung festgelegt wurden. Über die Admin-Seite können alle Module eingesehen und bearbeitet werden.
 </details>
 
@@ -96,7 +96,9 @@
 
 <br> 
 
-**TL;DR:** Die Comments App ermöglicht es Benutzern, Kommentare zu Artikeln zu verfassen, zu liken/disliken, und in einer strukturierten Ansicht darzustellen. Es werden sowohl Haupt- als auch Sekundärkommentare (Replies) unterstützt. 
+**TL;DR:** Die Comments App ermöglicht es Usern, Kommentare zu Artikeln zu verfassen, zu liken/disliken, und in einer strukturierten Ansicht darzustellen. Es werden sowohl Haupt- als auch Sekundärkommentare (Replies) unterstützt.
+<br>
+
 **💬 Kommentare & Sichtbarkeit:**
 
   - Private Kommentare: Standardmäßig nur für den Verfasser sichtbar. Kommentare, die von Nutzern (also Versuchspersonen) erstellt wurden, sind per default nicht öffentlich. 
@@ -105,7 +107,7 @@
 
 - **Admin Panel:**
     - Kommentare verwalten:
-        - Kommentare können als öffentlich oder privat markiert werden. Öffentliche Kommentare sind sichtbar für alle Nutzer. Private Kommentare sind nur für den jeweiligen Autor selbst sichtbar.
+        - Kommentare können als öffentlich oder privat markiert werden. Öffentliche Kommentare sind sichtbar für alle User. Private Kommentare sind nur für jeweilige Autor*innen selbst sichtbar.
         - Experimentelle Bedingungen (`tag`) können dynamisch zugewiesen werden.
         - Likes und Dislikes werden angezeigt und gefiltert.
 
@@ -150,7 +152,6 @@
 **TL; DR:**
 Die **Configuration App** ermöglicht die zentrale Verwaltung wichtiger Einstellungen der Versuchsumgebung. Diese Konfigurationen können flexibel angepasst werden, ohne den Code selbst zu verändern.
 
----
 
 ### Features
 
@@ -165,7 +166,6 @@ Die **Configuration App** ermöglicht die zentrale Verwaltung wichtiger Einstell
 3. **Automatische Token-Generierung:**
    - Verwaltungstoken (`management_token`) regenerieren, um zusätzliche Sicherheit zu gewährleisten.
 
----
 
 ### Admin.py
 
@@ -177,6 +177,8 @@ Die `admin.py` definiert, wie die Konfiguration im Django Admin angezeigt und ve
   - `is_timer_enabled`: Steuert, ob der Sitzungs-Timer aktiv ist.
   - `max_session_duration`: Maximale Sitzungsdauer in Sekunden.
   - `management_token`: Ein zufälliger Token für Verwaltungsaufgaben.
+  - `is_active`: Boolean: True aktiviert Configuration.
+
 
 ### Models.py
 
@@ -187,6 +189,7 @@ Die **Configuration-Modellklasse** definiert die Konfigurationsparameter und der
 2. **is_timer_enabled**: Aktiviert oder deaktiviert den Sitzungs-Timer.
 3. **max_session_duration**: Maximale Dauer der Sitzung in Sekunden (Standard: 3600 Sekunden = 1 Stunde).
 4. **management_token**: Verwaltungstoken, das für administrative Zwecke generiert wird.
+5. **is_active**: Bestimmt, welche Configuration gerade aktiv sein soll. Maximal eine gleichzeitig.
 
 ### Methoden
 - **regenerate_mgmt_token()**:
@@ -196,8 +199,8 @@ Die **Configuration-Modellklasse** definiert die Konfigurationsparameter und der
 - **ensure_config_exists()**:
   - Stellt sicher, dass eine Konfiguration in der Datenbank existiert.
 
-## Hinweis: 
-Wenn mehrere Configurations bestehen, wird einfach über `Configuration.objects.first()` die erste Konfiguration aus der Datenbank zurückgegeben (nach der Spalte id).
+### Hinweis: 
+Wenn mehrere Konfigurationen bestehen, kann man auswählen, welche Konfiguration aktiv sein soll. Dies erfolgt über das Admin-Panel, indem die gewünschte Konfiguration als aktiv markiert wird. Die aktive Konfiguration wird dann über `Configuration.objects.filter(is_active=True).first()` aus der Datenbank abgerufen.
 
 Wenn keine Konfiguration vorhanden ist (config is None), erstellt der Code eine neue Konfiguration mit Standardwerten:
 
@@ -213,19 +216,18 @@ max_session_duration=1800 (30 Minuten).
 
 ---
 
-
 <details> 
 <summary>📘 Fakebook App</summary>
 
-<br> **TL;DR:** **TL;DR:** Kernstück der Anwendung im Backend src-folder zur Verwaltung von Benutzerdaten, Interaktionen und Experimentbedingungen.
+<br> 
 
----
+**TL;DR:** Kernstück der Anwendung im Backend src-folder zur Verwaltung von Userdaten, Interaktionen und Experimentbedingungen.
 
 ### **Funktionalitäten**
 
-- **Benutzerverwaltung**:
-  - Registrierung und Anmeldung mit optionaler Anpassung von Benutzerprofilen.
-  - Benutzer können über das Admin-Panel manuell erstellt werden.
+- **Userverwaltung**:
+  - Registrierung und Anmeldung mit optionaler Anpassung von Userprofilen.
+  - User können über das Admin-Panel manuell erstellt werden.
 
 - **Interaktionen**:
   - Beiträge (Posts), Kommentare, Likes und Dislikes sind zentrale Funktionen.
@@ -236,13 +238,13 @@ max_session_duration=1800 (30 Minuten).
   - Exportiert auch hochgeladene Bilder oder andere Mediendateien.
 
 - **Zeiterfassung**:
-  - Ein Middleware-basierter Timer erfasst die Verweildauer der Benutzer auf spezifischen Seiten und leitet bei Überschreiten der Zeit zur nächsten Experimentphase weiter.
+  - Ein Middleware-basierter Timer erfasst die Verweildauer der User auf spezifischen Seiten und leitet bei Überschreiten der Zeit zur nächsten Experimentphase weiter.
 
 ---
 
 ### **Admin Panel:**
 - **Nutzererstellung**:
-  - Admins können Benutzer und Profile direkt über ein spezielles Interface erstellen.
+  - Admins können User und Profile direkt über ein spezielles Interface erstellen.
 - **Datenexport**:
   - Tools zum Herunterladen der Datenbank und spezifischer Tabellen.
 - **Sitzungskonfiguration**:
@@ -254,8 +256,8 @@ max_session_duration=1800 (30 Minuten).
 
 #### **`urls.py`**
 Definiert Routen für verschiedene Funktionen:
-- **Benutzererstellung**:
-  - `/admin/user_creation_view` – Formular für die Benutzererstellung.
+- **Usererstellung**:
+  - `/admin/user_creation_view` – Formular für die Usererstellung.
 - **Datenexport**:
   - `/admin/download_xlsx` – Export von Datenbanktabellen als XLSX.
   - `/admin/download_database` – Download der gesamten SQLite-Datenbank.
@@ -265,9 +267,9 @@ Definiert Routen für verschiedene Funktionen:
 
 #### **`views.py`**
 - **`home_view`**:
-  - Startpunkt der App, leitet Benutzer basierend auf ihrem Status (z. B. Admin oder Teilnehmer) weiter.
+  - Startpunkt der App, leitet User basierend auf ihrem Status (z. B. Admin oder Versuchsperson) weiter.
 - **`user_creation_view`**:
-  - Ansicht zur Benutzererstellung durch Admins.
+  - Ansicht zur Usererstellung durch Admins.
 - **`download_xlsx`**:
   - Generiert eine XLSX-Datei mit ausgewählten Datenbanktabellen.
 - **`download_database`**:
@@ -277,7 +279,7 @@ Definiert Routen für verschiedene Funktionen:
 
 #### **`middleware.py`**
 - **NewspaperTimerMiddleware**:
-  - Verfolgt die Verweildauer von Benutzern ab Start des Experiments (nach Beantwortung der Fragen mit Label "before").
+  - Verfolgt die Verweildauer von Usern ab Start des Experiments (nach Beantwortung der Fragen mit Label "before").
   - Automatische Weiterleitung zu "after" Fragen bzw. Ende des Experiments nach Ablauf der maximalen Sitzungszeit.
 
 #### **`settings.py`**
@@ -288,7 +290,7 @@ Definiert Routen für verschiedene Funktionen:
   - **Zeitzonen und Sprache**:
     - Standardmäßig `en` als Sprache und UTC als Zeitzone. Sprache sollte noch weiter angepasst werden.
   - **Externe Authentifizierung**:
-    - Integration von `django-allauth` für Benutzerverwaltung.
+    - Integration von `django-allauth` für Userverwaltung.
 
 ---
 
@@ -307,32 +309,34 @@ Definiert Routen für verschiedene Funktionen:
 
 ---
 
-### **Wichtige Features für Versuchsleiter**
+### **Wichtige Features für Versuchsleitende**
 
 1. **Timer und Weiterleitung**:
    - Überwachung der Sitzungszeit mit automatischer Weiterleitung zu spezifischen Seiten.
    - Anpassbar über das `SessionConfig` Modell im Admin-Panel.
 
 2. **Profilverwaltung**:
-   - Anlegen von Benutzerprofilen bei der Registrierung.
-   - Verwaltung der Profilbilder und anderer Benutzerdaten.
+   - Anlegen von Userprofilen bei der Registrierung.
+   - Verwaltung der Profilbilder und anderer Userdaten.
 
 3. **Export-Tools**:
    - Datenbanktabellen, Mediendateien und andere Daten können direkt heruntergeladen werden.
 
+</details>
+
 ---
 
-</details>
+
 <details> <summary>👤 Profiles App</summary>
 
 <br> 
 
-**TL;DR:** Die Profiles App ermöglicht die Verwaltung von Benutzerprofilen, einschließlich Biografie, Profilbild und experimentellen Bedingungen. Sie bietet Funktionen zur Ansicht und Bearbeitung des eigenen Profils, zur Anzeige anderer Profile sowie zur automatischen Zuweisung von experimentellen Bedingungen bei der Anmeldung. Profile können im Online-Forum **nicht** gesucht werden. Zu jedem (durch den Admin auf `public` gestellten) Kommentar gibt es aber ein Autor-Profil, auf das geklickt werden kann. Dort sind dann Username, Profilbild und Bio zu sehen.
+**TL;DR:** Die Profiles App ermöglicht die Verwaltung von Userprofilen, einschließlich Biografie, Profilbild und experimentellen Bedingungen. Sie bietet Funktionen zur Ansicht und Bearbeitung des eigenen Profils, zur Anzeige anderer Profile sowie zur automatischen Zuweisung von experimentellen Bedingungen bei der Anmeldung. Profile können im Online-Forum **nicht** gesucht werden. Zu jedem (durch den Admin auf `public` gestellten) Kommentar gibt es aber ein Autor-Profil, auf das geklickt werden kann. Dort sind dann Username, Profilbild und Bio zu sehen.
 
 - **Admin Panel:**
     - **Profile Management:** 
-        - Benutzerprofile können angezeigt, bearbeitet und als CSV exportiert werden.
-        - Anzeigen von Details wie Benutzername, Biografie, Slug und experimentelle Bedingung.
+        - Userprofile können angezeigt, bearbeitet und als CSV exportiert werden.
+        - Anzeigen von Details wie Username, Biografie, Slug und experimentelle Bedingung.
 
 - **Dateien:**
     - **`urls.py`**:
@@ -342,23 +346,23 @@ Definiert Routen für verschiedene Funktionen:
     - **`views.py`**:
         - **`my_profile_view`**:
             - Ermöglicht die Ansicht und Bearbeitung des eigenen Profils.
-            - Zeigt alle Kommentare des Nutzers an (nur explizit öffentliche für andere Benutzer).
+            - Zeigt alle Kommentare des Users an (nur explizit öffentliche für andere User).
         - **`ProfileDetailView`**:
             - Detailansicht eines Profils, inklusive Biografie und Kommentare.
     - **`models.py`**:
         - **`Profile`**:
-            - Modell für Benutzerprofile mit Feldern wie `bio`, `avatar`, `slug` und `condition`.
+            - Modell für Userprofile mit Feldern wie `bio`, `avatar`, `slug` und `condition`.
             - Automatische Slug-Generierung für eindeutige Profil-URLs.
     - **`forms.py`**:
         - **`ProfileModelForm`**:
             - Formular zur Bearbeitung von Biografie und Profilbild.
     - **`signals.py`**:
-        - **Benutzererstellung**:
+        - **Usererstellung**:
             - Automatische Erstellung eines Profils und einer Zustimmungserklärung (`Consent`) bei Registrierung.
         - **Experimentbedingungen**:
             - Zuweisung einer zufälligen experimentellen Bedingung bei Login, falls noch nicht zugewiesen. Sofern noch keine Bedingungen durch den Admin erstellt wurden, wird bei Login die `Change Me` Bedingung zugewiesen. Diese kann im Anschluss im Admin Panel problemlos umbenannt werden. 
         - **Logging**:
-            - Ereignisprotokollierung bei Benutzeranmeldung und -abmeldung, einschließlich IP-Tracking.
+            - Ereignisprotokollierung bei Useranmeldung und -abmeldung, einschließlich IP-Tracking.
     - **`utils.py`**:
         - **`get_random_string`**:
             - Generiert zufällige Zeichenfolgen zur Sicherstellung eindeutiger Slugs.
@@ -370,8 +374,9 @@ Definiert Routen für verschiedene Funktionen:
 ---
 
 <details> <summary>❓ Questions App</summary>
+<br> 
 
-<br> **TL;DR:** Die Questions App ist unser SoSciSurvey-Nachbau. Sie ermöglicht es, Fragebögen zu erstellen und zu verwalten, die vor und nach dem Experiment ausgefüllt werden. Sie unterstützt verschiedene Fragetypen, Einverständniserklärungen und benutzerdefinierte Endnachrichten. 
+**TL;DR:** Die Questions App ist mein "kleiner" SoSciSurvey-Nachbau. Sie ermöglicht es, Fragebögen zu erstellen und zu verwalten, die vor und nach dem Experiment ausgefüllt werden. Sie unterstützt verschiedene Fragetypen, Einverständniserklärungen und Userdefinierte Endnachrichten. 
 
 - **Admin Panel:**
     - **Question Management**:
@@ -453,27 +458,31 @@ Definiert Routen für verschiedene Funktionen:
 
 <details> <summary>🗂️ Static Project & Templates</summary>
 
+### **Static Project & Templates**
+
+**TL;DR:** Das `static_project`-Verzeichnis enthält alle statischen Dateien wie CSS, JavaScript und Bilder, die für das Frontend benötigt werden. Das `templates`-Verzeichnis enthält HTML-Dateien, die das Frontend der Anwendung definieren. Der Befehl `collectstatic` sammelt alle statischen Dateien für die Produktion.
+
 ### **Static Project**
-Das Verzeichnis `static_project` enthält alle statischen Dateien, die für das Frontend benötigt werden, einschließlich CSS, JavaScript und Bilder. Statische Dateien werden genutzt, um Styles, Interaktivität und visuelle Assets bereitzustellen, die für die Benutzererfahrung relevant sind.
+Das Verzeichnis `static_project` enthält alle statischen Dateien, die für das Frontend benötigt werden, einschließlich CSS, JavaScript und Bilder. Statische Dateien werden genutzt, um Styles, Interaktivität und visuelle Assets bereitzustellen, die für die Usererfahrung relevant sind.
 
 #### **Unterverzeichnisse:**
 1. **`css/`**:
-    - Enthält Stylesheets für verschiedene Bereiche und Funktionen der Anwendung:
-        - **`articles.css`**: Styling für Artikelansichten.
-        - **`base.css`**: Basis-Styling für die gesamte Anwendung.
-        - **`comments.css`**: Styling für die Kommentaransichten.
-        - **`experiment.css`**: Spezielle Styles für Experiment-bezogene Seiten.
-        - **`login-signup-custom-style.css`**: Anpassungen für die Login- und Registrierungsseiten.
-        - **`newspaper.css`**: Styling für Zeitungsansichten.
-        - **`questions.css`**: Styles für Fragebögen.
-        - **`style.css`**: Generelle Styles.
-        - **`grid.css`**: Grid-Layout-Styles für die Anordnung von Elementen.
-    - **Favicons**:
-        - `favicon.ico` und `favicon2.ico` dienen als kleine Icons für den Browser-Tab der Website.
+  - Enthält Stylesheets für verschiedene Bereiche und Funktionen der Anwendung:
+    - **`articles.css`**: Styling für Artikelansichten.
+    - **`base.css`**: Basis-Styling für die gesamte Anwendung.
+    - **`comments.css`**: Styling für die Kommentaransichten.
+    - **`experiment.css`**: Spezielle Styles für Experiment-bezogene Seiten.
+    - **`login-signup-custom-style.css`**: Anpassungen für die Login- und Registrierungsseiten.
+    - **`newspaper.css`**: Styling für Zeitungsansichten.
+    - **`questions.css`**: Styles für Fragebögen.
+    - **`style.css`**: Generelle Styles.
+    - **`grid.css`**: Grid-Layout-Styles für die Anordnung von Elementen.
+  - **Favicons**:
+    - `favicon.ico` und `favicon2.ico` dienen als kleine Icons für den Browser-Tab der Website.
 
 2. **`js/`**:
-    - **`log.js`**: JavaScript-Datei für Logging-Funktionen (z. B. Nutzerinteraktionen).
-    - **`main.js`**: Haupt-JavaScript-Datei für allgemeine Interaktivität und Logik.
+  - **`log.js`**: JavaScript-Datei für Logging-Funktionen (z. B. Nutzerinteraktionen).
+  - **`main.js`**: Haupt-JavaScript-Datei für allgemeine Interaktivität und Logik.
 
 ---
 
@@ -490,16 +499,16 @@ Das `templates`-Verzeichnis enthält HTML-Dateien, die das Frontend der Anwendun
 
 ### **Django und `collectstatic`**
 - **Statische Dateien in Django**:
-    - Alle statischen Ressourcen, wie CSS, JavaScript und Bilder, werden im Entwicklungsmodus direkt aus dem `static_project`-Verzeichnis geladen.
-    - Im Produktionsmodus werden alle statischen Dateien an einem zentralen Speicherort gesammelt.
+  - Alle statischen Ressourcen, wie CSS, JavaScript und Bilder, werden im Entwicklungsmodus direkt aus dem `static_project`-Verzeichnis geladen.
+  - Im Produktionsmodus werden alle statischen Dateien an einem zentralen Speicherort gesammelt.
 
 - **Befehl `collectstatic`**:
-    - Mit dem Befehl `python manage.py collectstatic` werden alle Dateien aus den `static`-Verzeichnissen in den in der `settings.py` definierten `STATIC_ROOT`-Ordner kopiert.
-    - Dieser zentrale Speicherort ermöglicht die effiziente Bereitstellung der statischen Ressourcen durch einen Webserver (z. B. Nginx).
+  - Mit dem Befehl `python manage.py collectstatic` werden alle Dateien aus den `static`-Verzeichnissen in den in der `settings.py` definierten `STATIC_ROOT`-Ordner kopiert.
+  - Dieser zentrale Speicherort ermöglicht die effiziente Bereitstellung der statischen Ressourcen durch einen Webserver (z. B. Nginx).
 
-- **Wichtig für den Versuchsleiter:**
-    - Änderungen an den CSS- oder JavaScript-Dateien im `static_project`-Verzeichnis erfordern einen erneuten Aufruf von `collectstatic`, damit die aktualisierten Dateien auf dem Produktionsserver verfügbar sind.
-    - Der Speicherort für die statischen Dateien wird in den Django-Einstellungen mit `STATIC_ROOT` festgelegt.
+- **Wichtig für Versuchsleitende:**
+  - Änderungen an den CSS- oder JavaScript-Dateien im `static_project`-Verzeichnis erfordern einen erneuten Aufruf von `collectstatic`, damit die aktualisierten Dateien auf dem Produktionsserver verfügbar sind.
+  - Der Speicherort für die statischen Dateien wird in den Django-Einstellungen mit `STATIC_ROOT` festgelegt.
 
 ---
 
@@ -511,8 +520,9 @@ Das `static_project`-Verzeichnis ist für die Bereitstellung und Verwaltung von 
 ---
 
 <details> <summary> 🧭 Base Template und Navbar</summary>
+<br> 
 
-<br> TL;DR: Das Base Template `base.html` dient als <strong> Grundgerüst für alle HTML-Dateien </strong> der Anwendung. Es enthält allgemeine Layout- und Design-Elemente, die in anderen Templates wiederverwendet werden. Alle spezifischen Seiten basieren auf diesem Template und ergänzen oder überschreiben dessen Inhalte mithilfe von **`{% block ... %}` und `{% endblock %}`**. Die Navigationsleiste `navbar.html` bietet Zugriff auf zentrale Funktionen wie die Navigation und wird ebenfalls auf allen Seiten eingebunden.
+**TL;DR:** Das Base Template `base.html` dient als <strong> Grundgerüst für alle HTML-Dateien </strong> der Anwendung. Es enthält allgemeine Layout- und Design-Elemente, die in anderen Templates wiederverwendet werden. Alle spezifischen Seiten basieren auf diesem Template und ergänzen oder überschreiben dessen Inhalte mithilfe von **`{% block ... %}` und `{% endblock %}`**. Die Navigationsleiste `navbar.html` bietet Zugriff auf zentrale Funktionen wie die Navigation und wird ebenfalls auf allen Seiten eingebunden.
 
 
 #### **Was passiert in `base.html`?**
@@ -545,17 +555,17 @@ Das `static_project`-Verzeichnis ist für die Bereitstellung und Verwaltung von 
 ### **Navbar (`navbar.html`)**
 
 #### **Funktionalität der Navbar:**
-1. **Benutzerstatus**:
-  - Wenn der Benutzer **nicht eingeloggt** ist, zeigt die Navbar nur eine Login-Option an.
-  - Wenn der Benutzer **eingeloggt** ist:
+1. **Userstatus**:
+  - Wenn der User **nicht eingeloggt** ist, zeigt die Navbar nur eine Login-Option an.
+  - Wenn der User **eingeloggt** ist:
     - Zeigt Links zu wichtigen Bereichen, wie **News-Papers**, **Profil** und **Experiment-Ende**.
-    - Das Profilbild des Benutzers wird angezeigt.
+    - Das Profilbild des Users wird angezeigt.
     - Links zum Logout und zum Abbruch des Experiments stehen zur Verfügung.<br>
      → Profil und Home-Button sind immer sichtbar (Ausnahme: Nicht eingeloggt).
 
 2. **Timer-Funktion**:
   - Zeigt die verbleibende Zeit des Experiments an.
-  - Wenn die Zeit abgelaufen ist, wird der Benutzer automatisch auf die Seite für **Nach-Experiment-Fragen** umgeleitet.
+  - Wenn die Zeit abgelaufen ist, werden User automatisch auf die Seite für **Nach-Experiment-Fragen** umgeleitet.
 
 #### **Experiment-Typen im Überblick**
 
@@ -569,7 +579,7 @@ Die Navbar unterscheidet zwischen zwei Experiment-Varianten, abhängig vom Vorha
 <details><summary>1. Timer-basiertes Experiment</summary>
 
   - **Start**:
-    - Nutzer ist fertig mit Beantwortung der Fragen → `newspaper_entry_time` wird gesetzt → Timer startet.
+    - User ist fertig mit Beantwortung der Fragen → `newspaper_entry_time` wird gesetzt → Timer startet.
 
   - **Timer-Anzeige**:
     - Zweck: Zeigt die verbleibende Zeit des Experiments an.
@@ -583,7 +593,7 @@ Die Navbar unterscheidet zwischen zwei Experiment-Varianten, abhängig vom Vorha
     - VP hat jederzeit die Möglichkeit, das Experiment abzubrechen: Klick auf "Abbrechen" → Session löschen → Zurück zum Login.
 
   #### **User-Journey-Beispiele**
-  - Nutzer wählt eine Zeitung → Timer startet (30 Minuten).
+  - User wählt eine Zeitung → Timer startet (30 Minuten).
   - Navbar zeigt Countdown und "Abbrechen"-Option.
   - Nach 30 Minuten: Automatische Weiterleitung zur Nachbefragung.
 </details>
@@ -591,7 +601,7 @@ Die Navbar unterscheidet zwischen zwei Experiment-Varianten, abhängig vom Vorha
 <details><summary>2. Timer-loses Experiment</summary>
 
   - **Start**:
-    - Nutzer startet direkt die Studie → Keine Zeit wird gespeichert → "Abschließen"-Button erscheint.
+    - User startet direkt die Studie → Keine Zeit wird gespeichert → "Abschließen"-Button erscheint.
 
   - **Studie abschließen (Abschließen-Button)**:
     - Zweck: Manueller Abschluss des Experiments.
@@ -610,11 +620,11 @@ Die Navbar unterscheidet zwischen zwei Experiment-Varianten, abhängig vom Vorha
   - Aktion: Löscht die Session → Keine Daten werden gespeichert.
 
 - **Profil & Zeitungsübersicht**:
-  - Profil-Link: Zeigt Benutzeravatar und -name.
+  - Profil-Link: Zeigt Useravatar und -name.
   - Home-Button: Ermöglicht Rückkehr zur Zeitungsauswahl.
 
 #### **User-Journey-Beispiele**
-- Nutzer startet Demo-Modus → Kein Timer.
+- User startet Demo-Modus → Kein Timer.
 - Navbar zeigt "Abschließen"-Button.
 - Klick auf "Abschließen" → Direkt zur Nachbefragung.
 
@@ -659,7 +669,9 @@ Beispiel:
 ---
 
 <details> <summary> ☞ manage.py in Django</summary>
-<br> TL;DR:Die Datei `manage.py` ist ein zentraler Bestandteil jeder Django-Anwendung. Sie dient als **Schnittstelle für administrative Aufgaben** und wird verwendet, um verschiedene Befehle auszuführen.
+<br> 
+
+**TL;DR:** Die Datei `manage.py` ist ein zentraler Bestandteil jeder Django-Anwendung. Sie dient als **Schnittstelle für administrative Aufgaben** und wird verwendet, um verschiedene Befehle auszuführen.
 
 ---
 
@@ -693,7 +705,7 @@ python src/manage.py help
 ---
 <br>
 
-# Hinweise für Versuchsleiter
+# Hinweise für Versuchsleitende
 
 <details><summary>Umgang mit der Datenbank</summary>
 <br>
@@ -718,25 +730,33 @@ Kurz erklärt:
 
 Die Django-Datenbank besteht aus mehreren Tabellen, die miteinander verknüpft sind. Hier sind die wichtigsten Tabellen und ihre Beziehungen:
 
-### **Benutzer und Profile**
-- **`auth_user`**: Enthält alle Benutzerdaten wie Benutzername, automatisch generierte E-Mail, Passwort usw. Datenschutzhinweis: Das Passwort ist dabei stets anonym und verschlüsselt - also auch für Versuchsleitende nicht einsehbar!
-- **`profiles_profile`**: Enthält zusätzliche Benutzerinformationen wie Bio, Avatar und eine Verknüpfung zum Benutzer (`auth_user`).
+### **User und Profile**
+- **`auth_user`**: Enthält alle Userdaten wie Username, automatisch generierte E-Mail, Passwort usw. Datenschutzhinweis: Das Passwort ist dabei stets anonym und verschlüsselt - also auch für Versuchsleitende nicht einsehbar!
+- **`profiles_profile`**: Enthält zusätzliche Userinformationen wie Bio, Avatar und eine Verknüpfung zum User (`auth_user`).
 
 ### **Artikel und Kommentare**
 - **`articles_article`**: Enthält Artikel mit Titel, Inhalt, Veröffentlichungsdatum usw.
-- **`comments_comment`**: Enthält Kommentare zu Artikeln. Jeder Kommentar ist mit einem Artikel (`articles_article`) und einem Benutzer (`profiles_profile`) verknüpft.
+- **`comments_comment`**: Enthält Kommentare zu Artikeln. Jeder Kommentar ist mit einem Artikel (`articles_article`) und einem Profil (`profiles_profile`) verknüpft.
 
 ### **Fragen und Antworten**
-- **`questions_question`**: Enthält Fragen, die Benutzern gestellt werden.
-- **`questions_answer`**: Enthält Antworten auf Fragen. Jede Antwort ist mit einer Frage (`questions_question`) und einem Benutzer (`auth_user`) verknüpft.
+- **`questions_question`**: Enthält Fragen, die Usern gestellt werden.
+- **`questions_answer`**: Enthält Antworten auf Fragen. Jede Antwort ist mit einer Frage (`questions_question`) und einem User (`auth_user`) verknüpft.
 
 ### **Analytics und Logs**
-- **`analytics_usereventlog`**: Protokolliert Benutzerereignisse wie Klicks oder Anmeldungen.
-- **`analytics_experimentcondition`**: Enthält Informationen zu Experimenten, an denen Benutzer teilnehmen.
+- **`analytics_usereventlog`**: Protokolliert Userereignisse wie Klicks oder Anmeldungen.
+- **`analytics_experimentcondition`**: Enthält die Bedingungen für Experimente, die den Usern zugewiesen werden können. Diese Bedingungen werden verwendet, um Inhalte gezielt an bestimmte Usergruppen auszuliefern.
 
 ### **Weitere wichtige Tabellen**
-- **`django_session`**: Speichert Benutzersitzungen.
+- **`auth_user`**: Enthält grundlegende Userinformationen wie Username und Passwort.
+- **`profiles_profile`**: Enthält zusätzliche Userinformationen wie Biografie, Profilbild und experimentelle Bedingungen.
+- **`articles_article`**: Enthält Artikel mit Titel, Inhalt, Veröffentlichungsdatum usw.
+- **`comments_comment`**: Enthält Kommentare zu Artikeln, verknüpft mit einem Artikel und einem Profil.
+- **`questions_question`**: Enthält Fragen, die Usern gestellt werden.
+- **`questions_answer`**: Enthält Antworten auf Fragen, verknüpft mit einer Frage und einem User.
+- **`analytics_usereventlog`**: Protokolliert Userereignisse wie Klicks oder Anmeldungen.
+- **`django_session`**: Speichert Sessions.
 - **`django_admin_log`**: Protokolliert Änderungen, die im Admin-Panel vorgenommen wurden.
+
 
 ---
 
@@ -757,29 +777,29 @@ Die Django-Datenbank besteht aus mehreren Tabellen, die miteinander verknüpft s
 
 ## 3. **Beziehungen zwischen den Tabellen**
 
-### **Benutzer und Profile**
-- Jeder Benutzer (`auth_user`) hat ein Profil (`profiles_profile`).
+### **User und Profile**
+- Jeder User (`auth_user`) hat ein Profil (`profiles_profile`).
 - Die Verknüpfung erfolgt über das Feld `user` in der `profiles_profile`-Tabelle.
 
 ### **Artikel und Kommentare**
 - Jeder Artikel (`articles_article`) kann mehrere Kommentare (`comments_comment`) haben.
-- Jeder Kommentar ist mit einem Artikel (`articles_article`) und einem Benutzer (`profiles_profile`) verknüpft.
+- Jeder Kommentar ist mit einem Artikel (`articles_article`) und einem Profil (`profiles_profile`) verknüpft.
 
 ### **Fragen und Antworten**
 - Jede Frage (`questions_question`) kann mehrere Antworten (`questions_answer`) haben.
-- Jede Antwort ist mit einer Frage (`questions_question`) und einem Benutzer (`auth_user`) verknüpft.
+- Jede Antwort ist mit einer Frage (`questions_question`) und einem User (`auth_user`) verknüpft.
 
 ---
 
-## 4. **Beispiel: Zugriff auf Benutzerdaten**
+## 4. **Beispiel: Zugriff auf User**
 
-### **Benutzerdaten anzeigen**
+### **Userdaten anzeigen**
 - Gehe im Admin-Panel zu `Auth User`.
-- Hier siehst du alle Benutzer mit ihren Details wie Benutzername, E-Mail (immer username@example.com) und Passwort.
+- Hier siehst du alle User mit ihren Details wie Username, E-Mail (immer username@example.com) und Passwort.
 
 ### **Profile anzeigen**
 - Gehe im Admin-Panel zu `Profiles Profile`.
-- Hier siehst du die Profile der Benutzer mit Informationen wie Bio, Avatar und verknüpftem Benutzer.
+- Hier siehst du die Profile der User mit Informationen wie Bio, Avatar und verknüpftem User.
 
 ---
 
@@ -817,36 +837,36 @@ Falls du weitere Fragen hast, schau gerne in die [Django-Dokumentation](https://
 # Verwendung von Condition Tags und Speicherung der Reihenfolge in der Experimentumgebung
 
 ## 1. Was sind Condition Tags?
-Condition Tags sind optionale Zuordnungen, die genutzt werden, um Inhalte wie Artikel, Zeitungen oder Kommentare gezielt bestimmten Benutzergruppen anzuzeigen. Jeder Benutzer erhält bei der Anmeldung eine Experimentbedingung, die mit einem Tag verknüpft ist. Inhalte mit einem passenden Tag werden nur den Benutzern angezeigt, deren Bedingung mit diesem Tag übereinstimmt.
+Condition Tags sind optionale Zuordnungen, die genutzt werden, um Inhalte wie Artikel, Zeitungen oder Kommentare gezielt bestimmten Usergruppen anzuzeigen. Jeder User erhält bei der Anmeldung eine Experimentbedingung, die über einen Tag mit dem Profil verknüpft ist. Inhalte mit einem passenden Tag werden nur den Usern angezeigt, deren Bedingung mit diesem Tag übereinstimmt.
 
-- **Ohne Tag:** Inhalte, die keinen Tag besitzen, sind für alle Benutzer sichtbar, unabhängig von ihrer Bedingung.
-- **Mit Tag:** Inhalte mit einem spezifischen Tag werden nur Benutzern angezeigt, deren Experimentbedingung den gleichen Tag hat.
+- **Ohne Tag:** Inhalte, die keinen Tag besitzen, sind für alle User sichtbar, unabhängig von ihrer Bedingung.
+- **Mit Tag:** Inhalte mit einem spezifischen Tag werden nur Usern angezeigt, deren Experimentbedingung den gleichen Tag hat.
 
-Condition Tags ermöglichen so die gezielte Steuerung, welche Inhalte eine bestimmte Benutzergruppe im Rahmen eines Experiments sieht. Wichtig: Wenn eine Zeitung einem Tag zugeordnet ist (beispielsweise "Experimental1"), dann ist dies die niedrigste Filterstufe. Natürlicherweise sehen somit nur Versuchspersonen der Experimental1-Bedingung die Zeitung und ihre zugeordneten Artikel - auch wenn diese spetifischen Artikel eventuell keine Tags erhalten haben. Für eine Filterung auf Artikel-Ebene kann die Zeitung ohne Tag verbleiben und dann werden die Artikel zugeordnet. Dieselbe Logik gilt auch für Kommentare und Sekundärkommentare (sog. "Replies").
+Condition Tags ermöglichen so die gezielte Steuerung, welche Inhalte eine bestimmte Versuchspersonen-Gruppe im Rahmen eines Experiments sieht. Wichtig: Wenn eine Zeitung einem Tag zugeordnet ist (beispielsweise "Experimental1"), dann ist dies die niedrigste Filterstufe. Natürlicherweise sehen somit nur Versuchspersonen der Experimental1-Bedingung die Zeitung und ihre zugeordneten Artikel - auch wenn diese spetifischen Artikel eventuell keine Tags erhalten haben. Für eine Filterung auf Artikel-Ebene kann die Zeitung ohne Tag verbleiben und dann werden die Artikel zugeordnet. Dieselbe Logik gilt auch für Kommentare und Sekundärkommentare (sog. "Replies").
 
 ---
 
 ## 2. Speicherung der Reihenfolge von Inhalten
-Um eine individuelle und reproduzierbare Reihenfolge von Artikeln, Zeitungen oder Kommentaren pro Benutzer zu gewährleisten, wird diese Reihenfolge in einer separaten Datenbanktabelle gespeichert. Bei der Anmeldung des Users wird die Reihenfolge randomisiert erstellt und dann in der Datenbanktabelle `usercontentposition` gespeichert.
+Um eine individuelle und reproduzierbare Reihenfolge von Artikeln, Zeitungen oder Kommentaren pro User zu gewährleisten, wird diese Reihenfolge in einer separaten Datenbanktabelle gespeichert. Bei der Anmeldung des Users wird die Reihenfolge randomisiert erstellt und dann in der Datenbanktabelle `usercontentposition` gespeichert.
 
 ### Bedeutung der Reihenfolge:
-- **Individuell:** Jeder Benutzer erhält eine eigene Reihenfolge, die nur für ihn gilt.
+- **Individuell:** Jeder User erhält eine eigene Reihenfolge, die nur für ihn gilt.
 - **Dynamisch:** Inhalte werden beim ersten Laden zufällig sortiert und die Reihenfolge wird gespeichert.
-- **Konsistenz:** Die gespeicherte Reihenfolge bleibt für den Benutzer gleich, auch wenn Inhalte mehrfach abgerufen werden.
+- **Konsistenz:** Die gespeicherte Reihenfolge bleibt für den User gleich, auch wenn Inhalte mehrfach abgerufen werden.
 
 ### Ablauf:
-1. **Filterung der Inhalte:** Inhalte werden anhand des Tags des Benutzers gefiltert. Inhalte ohne Tag sind für alle sichtbar.
-2. **Überprüfung auf bestehende Reihenfolge:** Bevor Inhalte gespeichert werden, wird geprüft, ob für den Benutzer bereits eine Reihenfolge existiert.
+1. **Filterung der Inhalte:** Inhalte werden anhand des Profil-Tags des Users gefiltert. Inhalte ohne Tag sind für alle sichtbar.
+2. **Überprüfung auf bestehende Reihenfolge:** Bevor Inhalte gespeichert werden, wird geprüft, ob für den User bereits eine Reihenfolge existiert.
 3. **Speicherung der Reihenfolge:** Falls keine existiert (beim ersten Login), werden die Inhalte zufällig sortiert und ihre Position wird gespeichert.
 4. **Ergänzung neuer Inhalte:** Neue Inhalte werden geprüft und in die bestehende Reihenfolge eingefügt.
 
 ---
 
 ## 3. Condition Tags für Kommentare
-Kommentare besitzen ebenfalls Condition Tags, um sie bestimmten Benutzergruppen zuzuordnen:
+Kommentare besitzen ebenfalls Condition Tags, um sie bestimmten Usergruppen zuzuordnen:
 - **Hauptkommentare:** Können unabhängig erstellt werden und sind die Grundlage für Sekundärkommentare.
 - **Sekundärkommentare:** Müssen einem Hauptkommentar zugeordnet sein, der zur gleichen Bedingung und zum gleichen Artikel gehört.
-- **Tags:** Kommentare ohne Tag sind für alle Benutzer sichtbar - sofern ebenfalls `ìs_public=True` gilt, während Kommentare mit einem Tag nur für Benutzer mit der passenden Experimentbedingung sichtbar sind.
+- **Tags:** Kommentare ohne Tag sind für alle User sichtbar - sofern ebenfalls `ìs_public=True` gilt, während Kommentare mit einem Tag nur für User mit der passenden Experimentbedingung sichtbar sind.
 
 ---
 
@@ -858,14 +878,14 @@ Kommentare besitzen ebenfalls Condition Tags, um sie bestimmten Benutzergruppen 
 ---
 
 ## 5. Empfehlungen für die Administration
-- **Vorsicht bei Änderungen:** Änderungen an Artikeln, Zeitungen oder Kommentaren sollten mit Bedacht erfolgen, da sie Auswirkungen auf die Benutzererfahrung haben können.
+- **Vorsicht bei Änderungen:** Änderungen an Artikeln, Zeitungen oder Kommentaren sollten mit Bedacht erfolgen, da sie Auswirkungen auf die Usererfahrung haben können.
 - **Konsistenz sicherstellen:** Nach Änderungen sollten veraltete gespeicherte Positionen entfernt und die Reihenfolge bei Bedarf neu generiert werden.
 - **Einschränkungen beachten:** Sekundärkommentare dürfen nur Hauptkommentare desselben Artikels als Parent haben und keine unabhängigen Kommentare sein.
 - Grundsätzlich gilt: Um auf der sicheren Seite zu sein, sollten, sobald ein Experiment läuft, **keine Änderungen an der Datenbank** mehr erfolgen!
 ---
 
 ## Zusammenfassung
-Condition Tags und die Speicherung der Reihenfolge sind essenziell, um Inhalte gezielt und kontrolliert im Rahmen eines Experiments anzeigen zu können. Sie bieten Flexibilität bei der Zuordnung von Inhalten zu Benutzergruppen und gewährleisten eine konsistente Darstellung. Änderungen sollten jedoch immer mit Blick auf bestehende Daten erfolgen, um Inkonsistenzen zu vermeiden.
+Condition Tags und die Speicherung der Reihenfolge sind essenziell, um Inhalte gezielt und kontrolliert im Rahmen eines Experiments anzeigen zu können. Sie bieten Flexibilität bei der Zuordnung von Inhalten zu Usergruppen und gewährleisten eine konsistente Darstellung. Änderungen sollten jedoch immer mit Blick auf bestehende Daten erfolgen, um Inkonsistenzen zu vermeiden.
 </details>
 
 ---
@@ -1119,7 +1139,7 @@ Die folgenden Abschnitte enthalten Details zur Verwendung, Funktionalität und I
 **Nicht zugelassen (not_eligible.html)**
 - Zweck: Informiert Teilnehmende, die die Teilnahme abgelehnt haben oder nicht berechtigt sind.
 - Merkmale:
-  - Zeigt eine benutzerdefinierte Nachricht an.
+  - Zeigt eine admin-definierte Nachricht an.
   - Minimalistisches Design.
 
 **Startseite (start.html)**
@@ -1233,15 +1253,15 @@ participant_info_message_en: "Here is some important information..."
 <summary>User-Profile Duality</summary>
 
 ### Was ist der Unterschied zwischen `User` und `Profile`?
-- **User**: Enthält grundlegende Informationen wie Benutzername und Passwort. Wird für die Anmeldung verwendet.
+- **User**: Enthält grundlegende Informationen wie Username und Passwort. Wird für die Anmeldung verwendet.
 - **Profile**: Enthält zusätzliche Informationen wie Biografie, Profilbild und experimentelle Bedingungen. Wird für alles Tool-bezogene verwendet.
 
 ### Achtung: Variablennamen im Code
-- Im Code wird oft `user` verwendet, obwohl eigentlich `profile` gemeint ist. Zum Beispiel: `user.user` bezieht sich auf das Profil des Benutzers.
+- Im Code wird oft `user` verwendet, obwohl eigentlich `profile` gemeint ist. Zum Beispiel: `user.user` bezieht sich auf das Profil des Users.
 - **Tipp**: Überprüfe immer, ob `user` oder `profile` gemeint ist, indem du den Kontext betrachtest.
 
 
-Das Tool verwendet ein Framework für die Benutzerauthentifizierung, das eine eigene User-Klasse mitbringt. Zusätzlich wird bei der Erstellung eines Benutzers ein eigenes Profile-Objekt erstellt und mit dem neuen Benutzer verknüpft. Der User wird für die Authentifizierung verwendet (Anmeldename, automatisch generierte E-Mail), während das Profile für alles andere Tool-bezogene (Bio, ...) genutzt wird.
+Das Tool verwendet ein Framework für die Userauthentifizierung, das eine eigene User-Klasse mitbringt. Zusätzlich wird bei der Erstellung eines Users ein eigenes Profile-Objekt erstellt und mit dem neuen User verknüpft. Der User wird für die Authentifizierung verwendet (Anmeldename, automatisch generierte E-Mail), während das Profile für alles andere Tool-bezogene (Bio, ...) genutzt wird.
 
 Es gibt einige doppelte Felder: firstname und lastname im User werden ignoriert, und die E-Mail im Profile wird ebenfalls ignoriert.
 
