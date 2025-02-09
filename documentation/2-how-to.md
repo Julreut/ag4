@@ -1267,3 +1267,11 @@ Es gibt einige doppelte Felder: firstname und lastname im User werden ignoriert,
 
 
 </details>
+
+
+<details> 
+<summary>Experiment zweimal durchführen</summary>
+
+Es ist möglich, das Experiment zweimal durchzuführen, um eine längere Studie zu ermöglichen. Daher sollte in einer Studie mit **einmaliger Anmeldung** darauf geachtet werden, ob sich die Person nach dem automatischen Logout erneut angemeldet hat. Dies kann bei der Auswertung des Eventlogs abgelesen werden. Stelle bestenfalls sicher, dass die User nach dem ersten Durchlauf **klare Anweisungen** erhalten, ob sie sich erneut anmelden sollen oder nicht.
+
+</details>
