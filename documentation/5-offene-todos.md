@@ -70,17 +70,27 @@ MIDDLEWARE = [
 
 </details>
 
+---
+
 <details><summary>Auswertungsskript für die Datenbank</summary>
 Offene Aufgabe (TODO): Es fehlt noch ein Skript zur automatischen Analyse der erfassten Daten wie Verweildauer, Klicks und weiteres Nutzerverhalten.
 Aktuell können die Daten zwar exportiert, aber nicht direkt innerhalb des Systems ausgewertet werden. Die Analyse muss derzeit manuell in Python oder R erfolgen. Ein Skript, das diese Auswertung direkt übernimmt, wäre eine sinnvolle Erweiterung.</details>
+
+---
 
 <details><summary>Browser-Navigation ermöglichen</summary>
 Derzeit gibt es **keine** eingebauten "Zurück"- und "Vor"-Buttons. Es gibt eine interne Navigation über einen JavaScript-"Zurück"-Button im Profil und statische "Zurück"-Buttons in den Templates. Das liegt daran, dass die allgemeine JavaScript-Navigation nicht immer zuverlässig funktioniert. In manchen Fällen muss der "Zurück"-Button absichtlich doppelt springen (z. B. nach dem Schreiben eines Kommentars, damit man wirklich auf die vorherige Seite kommt). Dies hatte ich durch den `session-pop`-Befehl gelöst, der jedoch den "Vor"-Button durcheinanderbringt und an anderen Stellen nicht korrekt funktioniert. Dieses Problem muss noch gelöst werden. Aktuell wird die Navigation über Templates und HTML geregelt und ist größtenteils nicht dynamisch.
 </details>
 
+
+---
+
 <details><summary>Responsivität ausbauen</summary>
 Die Anwendung funktioniert bereits auf unterschiedlichen Bildschirmgrößen, benötigt aber noch einige Anpassungen für die mobile Nutzung.
 </details>
+
+---
+
 
 <details><summary>API ausbauen</summary>
 
@@ -102,3 +112,11 @@ The documentation can be interactively visualized using [Swagger](https://editor
 An up to date postman collection documenting the API can be found [here](/docs/api-postman.json).
 
 </details>
+
+
+---
+
+<details><summary>Projekt von restlichen Fakebook-Referenzen bereinigen und umbenennen</summary>
+Offene Aufgabe (TODO): Das Projekt enthält noch einige Verweise auf "Fakebook", die bereinigt und durch den aktuellen Projektnamen ersetzt werden sollten. Obwohl das Projekt auch ohne diese Bereinigung funktioniert, wäre es aus Gründen der Konsistenz ratsam, diese Referenzen zu entfernen.
+</details>
+
