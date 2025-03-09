@@ -5,7 +5,6 @@ from django.db import models
 
 class Configuration(models.Model):
     like_dislike_enabled = models.BooleanField(default=True)
-    registration_enabled = models.BooleanField(default=True)
     management_token = models.CharField(default="changeme", max_length=100)
     is_timer_enabled = models.BooleanField(default=False)
     max_session_duration = models.PositiveIntegerField(default=3600)
